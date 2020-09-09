@@ -1,0 +1,218 @@
+"""
+@Author   : dingxianjie (dwx960115)
+@FileName : pyhooks.py
+@Version  : 0.1.0
+@Created  : 2020-09-09
+@Updated  : 2020-09-09
+@Desc     : 
+"""
+from PySide2.QtCore import Slot
+from PySide2.QtQml import QQmlContext
+from _typing import *
+from lk_utils.lk_logger import lk
+
+
+class PyHooks(QObject):
+    """ Hookup qml objects, and store the reference in Python dict.
+    
+    The Concept:
+        uid: an uid is unique under the same path. e.g. '_mouse_area'.
+        obj: QObject (qml component object).
+        path: e.g. './ui/SomeFolder/SomeComp.qml'.
+        url: consists of `{path}#{uid}`. e.g. './ui/SomeFolder/SomeComp.qml#
+            _mouse_area'.
+    """
+    
+    def __init__(self, root: QQmlContext):
+        """
+        NOTE: You should init this class before the qml engine loads .qml file.
+        :param root: from `qml_engine.rootContext()`.
+        """
+        super().__init__()
+        self.hooks = {}  # type: Dict[QPath, Dict[QUid, QObj]]
+        #   {path: {uid: obj}}
+        #   e.g. {'./ui/SomeComp.qml': {'_txt': PySide2.QtCore.QObject}}
+        self.values = {}  # type: Dict[str, Tuple[QVal, QSource]]
+        root.setContextProperty('PyHooks', self)
+    
+    @Slot(str, QJSValue, str)
+    @Slot(str, QJSValue)
+    def set_value(self, key: str, val: QVal, source=''):
+        """
+        Usecase (in .qml file):
+            // === view.qml ===
+            Item {
+                id: _item
+                Component.onCompleted: {
+                    // a.
+                    PyHooks.set_value("week", "Wednesday", "view.qml#_item")
+                    // b.
+                    PyHooks.set_value("week", "Wednesday")
+                }
+            }
+        
+        :param key:
+        :param val:
+        :param source:
+        :return:
+        """
+        self.values[key] = (val.toVariant(), source)
+    
+    @Slot(str, result=QVar)
+    def get_value(self, key: str):
+        """
+        Usecase (in .qml file):
+            Item {
+                Component.onCompleted: {
+                    let data = PyHooks.get_value("week")  # -> "Wednesday"
+                }
+            }
+        
+        :param key:
+        :return:
+        """
+        return self.values.get(key, [None, ''])[0]
+    
+    # --------------------------------------------------------------------------
+    
+    @Slot()
+    @Slot(str)
+    @Slot(str, str)
+    def debug(self, source='', view='hooks'):
+        lk.loga(source, view)
+        lk.init_count()
+        if view == 'hooks':
+            if self.hooks:
+                for path, val in self.hooks.items():
+                    for uid, obj in val.items():
+                        lk.logax(path, uid, obj)
+            else:
+                lk.loga(self.hooks)
+        elif view == 'values':
+            for k, v in self.values.items():
+                lk.logax(k, v)
+    
+    @staticmethod
+    def _qjsval_2_pylist(qids):
+        """
+        调用方可能有以下两种传递方式:
+            // == SomeComp.qml ==
+            import QtQuick 2.15
+            Rectangle {
+                Component.onCompleted: {
+                    // 方式 1: 请求一个字符串.
+                    var hooks1 = PyHooks.get_hooks("ABC")
+                    # -> {ABC: Object}
+
+                    // 方式 2: 请求一个字符串列表.
+                    var hooks2 = PyHooks.get_hooks(["ABC", "DEF"])
+                    # -> {ABC: Object1, DEF: Object2}
+                }
+            }
+        :param qids:
+        :return:
+        """
+        qids = qids.toVariant()  # type: list
+        # qids.toVariant() 可能是一个列表 (方式 2), 也可能是一个字符串 (方式 1),
+        #   我们得把后者转换成单元素的列表/元组.
+        if isinstance(qids, str):
+            # noinspection PyTypeChecker
+            qids = (qids,)
+        # lk.loga(qids)
+        return qids
+    
+    # --------------------------------------------------------------------------
+    
+    @Slot(str, QObject)
+    def set_one(self, url: str, obj: QObj):
+        path, uid = url.rsplit('#', 1)
+        node = self.hooks.setdefault(path, {})
+        node[uid] = obj
+    
+    @Slot(str, QJSValue)
+    def set_dict(self, path: str, uid2obj: QVal):
+        node = self.hooks.setdefault(path, {})
+        uid2obj = uid2obj.toVariant()  # type: dict
+        node.update(uid2obj)
+    
+    @Slot(QJSValue)
+    @Slot(str, QJSValue)
+    @Slot(str, QObject)
+    def set(self, unknown1: Union[QPath, QUrl, QVal],
+            unknown2: Union[QObj, QVal] = None):
+        """ Set one object or set dict of objects.
+
+        :param unknown1:
+            QPath, QUrl: depends on obj (if obj is QObject, unknown is url, if
+                obj is dict of objects, unknown is path).
+            QJSValue: {url: obj} (in this case obj param must be None).
+        :param unknown2
+            QObject: one object. -> obj
+            QJSValue: one dict of objects. -> {uid: obj}
+        """
+        if isinstance(unknown1, str):
+            if isinstance(unknown2, QObject):  # set one.
+                url, obj = unknown1, unknown2
+                self.set_one(url, obj)
+            else:  # set dict. the unknown2 is `uid2obj` (dict).
+                path, uid2obj = unknown1, unknown2
+                # noinspection PyTypeChecker
+                self.set_dict(path, uid2obj)
+        else:
+            assert unknown2 is None
+            urls2obj = unknown1.toVariant()  # type: dict
+            for url, unknown2 in urls2obj.items():
+                self.set_one(url, unknown2)
+    
+    # --------------------------------------------------------------------------
+    
+    @Slot(str, result=QObject)
+    def get_one(self, url: QUrl):
+        path, uid = url.rsplit('#', 1)
+        try:
+            return self.hooks[path][uid]
+        except KeyError as e:
+            lk.logt('[W2116]', 'Cannot find key', e)
+            return None
+    
+    @Slot(str, result=QVar)
+    def get_list(self, path):
+        """
+        NOTE: This method is not often to use.
+        :param path:
+        :return:
+        """
+        return list(self.hooks[path].values())
+    
+    @Slot(str, result=QVar)
+    def get_dict(self, path):
+        return self.hooks[path]
+    
+    @Slot(str, result=QVar)
+    @Slot(QJSValue, result=QVar)
+    def get(self, unknown: Union[QUrl, QPath, QVal]):
+        """
+        Usecase:
+            PyHooks.get("./ui/SomeComp.qml") -> {'_txt': obj, ...}
+            PyHooks.get("./ui/SomeComp.qml#_txt") -> obj
+            PyHooks.get([
+                "./ui/SomeComp.qml#_txt",
+                "./ui/AnotherComp.qml#_txt",
+            ]) -> [obj1, obj2]
+
+        :param unknown:
+            a. str path -> return {uid: obj, ...} (uid from same path)
+            b. str url -> return single obj
+            c. list urls -> return [obj, ...] (obj from different paths)
+        :return:
+        """
+        if isinstance(unknown, str):
+            if '#' in unknown:
+                url = unknown
+                return self.get_one(url)
+            else:
+                path = unknown
+                return self.get_dict(path)
+        else:
+            urls = unknown.toVariant()  # type: list
+            return list(map(self.get_one, urls))
