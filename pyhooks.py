@@ -1,7 +1,7 @@
 """
 @Author   : dingxianjie (dwx960115)
 @FileName : pyhooks.py
-@Version  : 0.1.0
+@Version  : 0.1.1
 @Created  : 2020-09-09
 @Updated  : 2020-09-09
 @Desc     : 
@@ -35,8 +35,8 @@ class PyHooks(QObject):
         self.values = {}  # type: Dict[str, Tuple[QVal, QSource]]
         root.setContextProperty('PyHooks', self)
     
-    @Slot(str, QJSValue, str)
-    @Slot(str, QJSValue)
+    @Slot(str, QVal, str)
+    @Slot(str, QVal)
     def set_value(self, key: str, val: QVal, source=''):
         """
         Usecase (in .qml file):
@@ -123,35 +123,35 @@ class PyHooks(QObject):
     
     # --------------------------------------------------------------------------
     
-    @Slot(str, QObject)
+    @Slot(str, QObj)
     def set_one(self, url: str, obj: QObj):
         path, uid = url.rsplit('#', 1)
         node = self.hooks.setdefault(path, {})
         node[uid] = obj
     
-    @Slot(str, QJSValue)
+    @Slot(str, QVal)
     def set_dict(self, path: str, uid2obj: QVal):
         node = self.hooks.setdefault(path, {})
         uid2obj = uid2obj.toVariant()  # type: dict
         node.update(uid2obj)
     
-    @Slot(QJSValue)
-    @Slot(str, QJSValue)
-    @Slot(str, QObject)
+    @Slot(QVal)
+    @Slot(str, QVal)
+    @Slot(str, QObj)
     def set(self, unknown1: Union[QPath, QUrl, QVal],
             unknown2: Union[QObj, QVal] = None):
         """ Set one object or set dict of objects.
 
         :param unknown1:
-            QPath, QUrl: depends on obj (if obj is QObject, unknown is url, if
-                obj is dict of objects, unknown is path).
-            QJSValue: {url: obj} (in this case obj param must be None).
+            QPath, QUrl: depends on obj (if obj is QObj, unknown is url, if obj
+                is dict of objects, unknown is path).
+            QVal: {url: obj} (in this case obj param must be None).
         :param unknown2
-            QObject: one object. -> obj
-            QJSValue: one dict of objects. -> {uid: obj}
+            QObj: one object. -> obj
+            QVal: one dict of objects. -> {uid: obj}
         """
         if isinstance(unknown1, str):
-            if isinstance(unknown2, QObject):  # set one.
+            if isinstance(unknown2, QObj):  # set one.
                 url, obj = unknown1, unknown2
                 self.set_one(url, obj)
             else:  # set dict. the unknown2 is `uid2obj` (dict).
@@ -166,7 +166,7 @@ class PyHooks(QObject):
     
     # --------------------------------------------------------------------------
     
-    @Slot(str, result=QObject)
+    @Slot(str, result=QObj)
     def get_one(self, url: QUrl):
         path, uid = url.rsplit('#', 1)
         try:
@@ -189,7 +189,7 @@ class PyHooks(QObject):
         return self.hooks[path]
     
     @Slot(str, result=QVar)
-    @Slot(QJSValue, result=QVar)
+    @Slot(QVal, result=QVar)
     def get(self, unknown: Union[QUrl, QPath, QVal]):
         """
         Usecase:
