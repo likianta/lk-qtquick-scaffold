@@ -1,5 +1,5 @@
-import QtQuick 2.15
-import QtQuick.Controls 2.15
+import QtQuick 2.14
+import QtQuick.Controls 2.14
 import "../Spec/geometry.js" as Geometry
 import "../Spec/palette.js" as Palette
 

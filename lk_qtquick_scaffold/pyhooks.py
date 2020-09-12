@@ -1,15 +1,16 @@
 """
-@Author   : dingxianjie (dwx960115)
+@Author   : likianta (likianta@foxmail.com)
 @FileName : pyhooks.py
 @Version  : 0.1.1
 @Created  : 2020-09-09
-@Updated  : 2020-09-09
+@Updated  : 2020-09-12
 @Desc     : 
 """
 from PySide2.QtCore import Slot
 from PySide2.QtQml import QQmlContext
-from _typing import *
 from lk_utils.lk_logger import lk
+
+from _typing import *
 
 
 class PyHooks(QObject):
@@ -166,6 +167,7 @@ class PyHooks(QObject):
     
     # --------------------------------------------------------------------------
     
+    # noinspection PyTypeChecker
     @Slot(str, result=QObj)
     def get_one(self, url: QUrl):
         path, uid = url.rsplit('#', 1)
