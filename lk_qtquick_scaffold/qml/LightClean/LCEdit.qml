@@ -22,37 +22,21 @@ TextField {
     selectByMouse: true
     selectedTextColor: LCPalette.TextSelected
     selectionColor: LCPalette.TextSelection
-    
-    background: Rectangle {
-        id: _bg
-        // Note: If the background item has no explicit size specified, it 
-        // automatically follows the control's size. In most cases, there is no 
-        // need to specify width or height for a background item.
-        border.color: LCPalette.Border; border.width: 0
-        color: LCPalette.EditbarNormal
-        radius: LCGeometry.RadiusS
-        
-        states: [
-            State {
-                when: _root.activeFocus
-                PropertyChanges {
-                    target: _bg
-                    color: LCPalette.EditbarFocus
-                    border.width: 1
-                }
-            }
-        ]
-        transitions: [
-            Transition {
-                ColorAnimation {
-                    duration: LCMotion.Swift
-                    properties: "color"
-                }
-            }
-        ]
-    }
-    
+
     property alias p_hint: _root.placeholderText
     property alias p_text: _root.text
     property bool p_digitOnly: false
+
+    property alias __active: _root.activeFocus
+
+    background: LCRectangle {
+        id: _bg
+        // Note: If the background item has no explicit size specified, it 
+        //  automatically follows the control's size. In most cases, there is no
+        //  need to specify width or height for a background item.
+        p_active: __active
+        p_border.width: __active ? 1 : 0
+        p_color: LCPalette.EditbarNormal
+        p_pressedColor: LCPalette.EditbarFocus
+    }
 }

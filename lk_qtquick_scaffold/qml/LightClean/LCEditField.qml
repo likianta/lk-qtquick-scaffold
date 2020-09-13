@@ -3,7 +3,6 @@ import "./Spec/geometry.js" as LCGeometry
 
 Item {
     id: _root
-    //width: childrenRect.width; height: LCGeometry.BarHeight
     height: LCGeometry.BarHeight
 
     property alias p_digitOnly: _edt.p_digitOnly

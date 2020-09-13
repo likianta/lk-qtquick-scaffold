@@ -10,17 +10,17 @@ Button {
     width: LCGeometry.ButtonWidth; height: LCGeometry.ButtonHeight
 
     property alias p_text: _txt.text
-    property alias __pressed: _root.pressed
     property bool p_autoSize: false
+
+    property alias __active: _root.pressed
     
     background: LCRectangle {
         id: _bg
         // Note: If the background item has no explicit size specified, it
         //  automatically follows the control's size. In most cases, there is no
         //  need to specify width or height for a background item.
-        //anchors.centerIn: _root
-        p_active: __pressed
-        p_border.width: p_active ? 0 : 1
+        p_active: __active
+        p_border.width: __active ? 0 : 1
         p_color: LCPalette.ButtonNormal; p_pressedColor: LCPalette.ButtonPressed
     }
 
@@ -30,12 +30,12 @@ Button {
             anchors.centerIn: parent
             p_bold: true
             // p_color: LCPalette.TextNormal
-            p_color: __pressed ? LCPalette.TextWhite : LCPalette.TextNormal
+            p_color: __active ? LCPalette.TextWhite : LCPalette.TextNormal
             p_size: LCText.ButtonTextSize
 
             //states: [
             //    State {
-            //        when: __pressed
+            //        when: __active
             //        PropertyChanges {
             //            target: _txt
             //            p_color: LCPalette.TextWhite

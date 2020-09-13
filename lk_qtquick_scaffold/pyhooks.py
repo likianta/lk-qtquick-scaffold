@@ -97,7 +97,7 @@ class PyHooks(QObject):
     def _qjsval_2_pylist(qids):
         """
         调用方可能有以下两种传递方式:
-            // == SomeComp.qml ==
+            // === SomeComp.qml ===
             import QtQuick 2.15
             Rectangle {
                 Component.onCompleted: {

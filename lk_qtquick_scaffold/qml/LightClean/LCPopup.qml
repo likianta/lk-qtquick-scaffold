@@ -1,14 +1,16 @@
 import QtQuick 2.14
 import QtQuick.Controls 2.14
-import "../Spec/geometry.js" as Geometry
-import "../Spec/palette.js" as Palette
+import "./Spec/geometry.js" as LCGeometry
+import "./Spec/motion.js" as LCMotion
+import "./Spec/palette.js" as LCPalette
+import "./Spec/text.js" as LCText
 
 Popup {
     id: _root
     // 在定义时, 写的都是它的末状态. 比如 `anchors.centerIn: Overlay.overlay`.
     anchors.centerIn: Overlay.overlay
     closePolicy: Popup.CloseOnEscape
-    modal: true
+    modal: true  // Forbit user's click event outside the popup panel.
     width: p_endW; height: p_endH
 
     property alias obj_Loader: _loader
