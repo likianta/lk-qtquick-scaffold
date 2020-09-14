@@ -1,5 +1,5 @@
 """
-@Author   : dingxianjie (dwx960115)
+@Author   : dingxianjie (likianta@foxmail.com)
 @FileName : _typing.py
 @Version  : 0.1.0
 @Created  : 2020-09-09
