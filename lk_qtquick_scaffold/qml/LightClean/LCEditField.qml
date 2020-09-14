@@ -1,5 +1,5 @@
 import QtQuick 2.14
-import "./Spec/geometry.js" as LCGeometry
+import "./LCStyle/geometry.js" as LCGeometry
 
 Item {
     id: _root

@@ -6,3 +6,8 @@ LCEditField  1.0  LCEditField.qml
 LCPopup      1.0  LCPopup.qml
 LCRectangle  1.0  LCRectangle.qml
 LCText       1.0  LCText.qml
+
+LCStyle.LCGeometry  1.0  ./LCStyle/geometry.js
+LCStyle.LCMotion    1.0  ./LCStyle/motion.js
+LCStyle.LCPalette   1.0  ./LCStyle/palette.js
+LCStyle.LCText      1.0  ./LCStyle/text.js

@@ -1,7 +1,7 @@
 import QtQuick 2.14
-import "./Spec/geometry.js" as LCGeometry
-import "./Spec/motion.js" as LCMotion
-import "./Spec/palette.js" as LCPalette
+import "./LCStyle/geometry.js" as LCGeometry
+import "./LCStyle/motion.js" as LCMotion
+import "./LCStyle/palette.js" as LCPalette
 
 Rectangle {
     id: _root

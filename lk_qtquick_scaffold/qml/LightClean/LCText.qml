@@ -1,6 +1,6 @@
 import QtQuick 2.14
-import "./Spec/palette.js" as LCPalette
-import "./Spec/text.js" as LCText
+import "./LCStyle/palette.js" as LCPalette
+import "./LCStyle/text.js" as LCText
 
 Text {
     id: _root
