@@ -1,11 +1,12 @@
 module LightClean
 
-LCButton     1.0  LCButton.qml
-LCEdit       1.0  LCEdit.qml
-LCEditField  1.0  LCEditField.qml
-LCPopup      1.0  LCPopup.qml
-LCRectangle  1.0  LCRectangle.qml
-LCText       1.0  LCText.qml
+LCButton     1.0  ./LCButton.qml
+LCEdit       1.0  ./LCEdit.qml
+LCEditField  1.0  ./LCEditField.qml
+LCPopup      1.0  ./LCPopup.qml
+LCRectangle  1.0  ./LCRectangle.qml
+LCText       1.0  ./LCText.qml
+LCWindow     1.0  ./LCWindow.qml
 
 LCStyle.LCGeometry  1.0  ./LCStyle/geometry.js
 LCStyle.LCMotion    1.0  ./LCStyle/motion.js

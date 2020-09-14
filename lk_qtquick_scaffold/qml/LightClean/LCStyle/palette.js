@@ -7,6 +7,8 @@ const ThemeLightBlue = "#00627A"
 // -----------------------------------------------------------------------------
 // Background
 
+const BgGray = "#F2F2f2"
+const BgWhite = "#FFFFFF"
 const EditbarFocus = "#FFFFFF"
 const EditbarNormal = "#F2F2F2"
 

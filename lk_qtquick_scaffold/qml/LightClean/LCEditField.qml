@@ -19,7 +19,6 @@ Item {
         anchors.rightMargin: LCGeometry.MarginM
         height: parent.height
         horizontalAlignment: Text.AlignRight; verticalAlignment: Text.AlignVCenter
-        //width: parent.width - _edt.width; height: parent.height
         p_bold: true
     }
     
@@ -27,5 +26,9 @@ Item {
     LCEdit {
         id: _edt
         anchors.right: parent.right
+    }
+
+    Component.onCompleted: {
+        _root.width = childrenRect.width
     }
 }

@@ -3,12 +3,11 @@
 @FileName : pyhooks.py
 @Version  : 0.1.1
 @Created  : 2020-09-09
-@Updated  : 2020-09-12
+@Updated  : 2020-09-14
 @Desc     : 
 """
 from PySide2.QtCore import Slot
-from PySide2.QtQml import QQmlContext
-from lk_utils.lk_logger import lk
+from lk_logger import lk
 
 from _typing import *
 
@@ -25,10 +24,6 @@ class PyHooks(QObject):
     """
     
     def __init__(self):
-        """
-        NOTE: You should init this class before the qml engine loads .qml file.
-        :param root: from `qml_engine.rootContext()`.
-        """
         super().__init__()
         self.hooks = {}  # type: Dict[QPath, Dict[QUid, QObj]]
         #   {path: {uid: obj}}

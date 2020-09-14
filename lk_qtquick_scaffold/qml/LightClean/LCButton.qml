@@ -7,10 +7,10 @@ import "./LCStyle/text.js" as LCText
 
 Button {
     id: _root
-    width: LCGeometry.ButtonWidth; height: LCGeometry.ButtonHeight
+    height: LCGeometry.ButtonHeight
 
     property alias p_text: _txt.text
-    property bool p_autoSize: false
+    property bool p_autoSize: true
 
     property alias __active: _root.pressed
     
@@ -55,7 +55,7 @@ Button {
 
     Component.onCompleted: {
         if (p_autoSize) {
-            const preferredWidth = p_text.length * 10 + 20
+            const preferredWidth = _txt.contentWidth + 20
             if (preferredWidth > _root.width) {
                 _root.width = preferredWidth
             }
