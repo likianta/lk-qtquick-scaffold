@@ -10,18 +10,13 @@ Popup {
     // 在定义时, 写的都是它的末状态. 比如 `anchors.centerIn: Overlay.overlay`.
     anchors.centerIn: Overlay.overlay
     closePolicy: Popup.CloseOnEscape
-    modal: true  // Forbit user's click event outside the popup panel.
+    modal: true  // Forbit user's click event outside the popup window.
     width: p_endW; height: p_endH
 
-    property alias obj_Loader: _loader
     property int p_endW: 380; property int p_endH: 270
     property int __endX: _root.x; property int __endY: _root.y
     property int p_startW: 0; property int p_startH: 0
     property int p_startX: 0; property int p_startY: 0  // FIXME: no effect
-
-    property int __duration1: 100  // product: 100; debug: 100 * 15 ~ 20
-    property int __duration2: 250  // product: 250; debug: 250 * 15 ~ 20
-    property int __duration3: 400  // product: 400; debug: 400 * 15 ~ 20
 
     property bool p_active: false
     onP_activeChanged: {
@@ -31,121 +26,94 @@ Popup {
             _root.close()
         }
     }
-    onOpenedChanged: {  // to resolve insufficient closing when user pressed escape.
+    onOpenedChanged: {
+        // to resolve insufficient closing when user pressed escape.
         if (p_active && !_root.opened) {
             p_active = _root.opened
         }
     }
 
-    signal clicked
-
     background: Rectangle {
         id: _bg
-        border.color: Palette.BORDER_NORMAL
+        border.color: LCPalette.BorderNormal
         border.width: 1
         clip: true
-        color: Palette.BG_WHITE
-        radius: Geometry.RADIUS_POPUP
+        color: LCPalette.BgWhite
+        radius: LCGeometry.RadiusM
+    }
 
-        Loader {
-            id: _loader
-            anchors.fill: parent
-        }
-
-        // close button
-        Item {
+    contentItem: Item {
+        Item {  // close button
             id: _close
             anchors.right: parent.right
             anchors.top: parent.top
-            width: 40; height: 20
+            width: LCGeometry.ButtonCloseWidth; height: LCGeometry.ButtonCloseHeight
 
-            MyText {
-                //anchors.centerIn: parent
-                anchors.bottom: parent.bottom
-                anchors.left: parent.left
-                p_color: Palette.TEXT_OPT
+            LCText {
+                anchors.centerIn: parent
+                p_color: LCPalette.ThemeLightBlue
                 p_size: 12
                 p_text: "Done"
             }
 
             MouseArea {
                 anchors.fill: parent
-                onClicked: {
-                    p_active = false
-                    _root.clicked()
-                }
+                onClicked: _root.close()
             }
-
-            // the close button showed when popup fully opened
-            //states: [
-            //    State {
-            //        when: p_active && _root.width > p_endW * 0.2
-            //        PropertyChanges { target: _close; opacity: 1.0 }
-            //    }
-            //    //State {
-            //    //    when: !p_active && _root.width > p_endW * 0.7
-            //    //    PropertyChanges { target: _close; opacity: 0.0 }
-            //    //}
-            //]
-            //transitions: Transition {
-            //    NumberAnimation {
-            //        duration: __duration3
-            //        easing.type: Easing.OutQuart
-            //        property: "opacity"
-            //    }
-            //}
         }
     }
 
     enter: Transition {
+        // 进场动画: 从窗口中心点开始, 宽和高从 0 增加到最终尺寸, 由透明变为不透
+        // 明, 动画速度由快到慢, 以强化完成时的动画印象. 透明度动画要比尺寸变化
+        // 快一些, 以避免动画拖沓.
         NumberAnimation {
-            duration: __duration1
-            from: 0.0; to: 1.0
             property: "opacity"
+            duration: LCMotion.Soon
+            from: 0.0; to: 1.0
         }
         NumberAnimation {
-            duration: __duration3
+            property: "width"
+            duration: LCMotion.Soft
             easing.type: Easing.OutQuart  // slowly goes to the end.
             from: p_startW; to: p_endW
-            property: "width"
         }
         NumberAnimation {
-            duration: __duration3
+            property: "height"
+            duration: LCMotion.Soft
             easing.type: Easing.OutQuart  // slowly goes to the end.
             from: p_startH; to: p_endH
-            property: "height"
         }
-        //NumberAnimation {
-        //    duration: __duration3
-        //    easing.type: Easing.InOutQuart
-        //    from: p_startX; to: __endX
-        //    property: "x"  // set different effects on x and y to make the
-        //    //  routine bacome a curve line.
-        //}
-        //NumberAnimation {
-        //    duration: __duration3
-        //    easing.type: Easing.OutInCubic
-        //    from: p_startY; to: __endY
-        //    property: "y"
-        //}
+        // NumberAnimation {
+        //     property: "x"  // set different effects on x and y to make the
+        //     //  routine bacome a curve line.
+        //     duration: LCMotion.Soft
+        //     easing.type: Easing.InOutQuart
+        //     from: p_startX; to: __endX
+        // }
+        // NumberAnimation {
+        //     property: "y"
+        //     duration: LCMotion.Soft
+        //     easing.type: Easing.OutInCubic
+        //     from: p_startY; to: __endY
+        // }
     }
+
     exit: Transition {
         NumberAnimation {
-            duration: __duration2
-            from: 1.0; to: 0.0
             property: "opacity"
+            duration: LCMotion.Swift
+            from: 1.0; to: 0.0
         }
         NumberAnimation {
-            duration: __duration2
-            //easing.type: Easing.InCubic
-            from: p_endW; to: p_startW
             property: "width"
+            duration: LCMotion.Swift
+            from: p_endW; to: p_startW
         }
         NumberAnimation {
-            duration: __duration2
-            //easing.type: Easing.InCubic
-            from: p_endH; to: p_startH
             property: "height"
+            duration: LCMotion.Swift
+            from: p_endH; to: p_startH
         }
     }
 

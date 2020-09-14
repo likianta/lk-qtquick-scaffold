@@ -2,7 +2,7 @@
 // Theme Color
 
 const ThemeDeepBlue = "#043243"
-const ThemeLightBlue = "#00627A"
+const ThemeLightBlue = "#00627a"
 
 // -----------------------------------------------------------------------------
 // Background

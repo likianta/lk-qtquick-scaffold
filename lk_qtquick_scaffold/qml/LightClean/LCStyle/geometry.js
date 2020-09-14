@@ -4,6 +4,8 @@ const BarHeight = 40
 
 const ButtonWidth = 120
 const ButtonHeight = 40
+const ButtonCloseWidth = 40
+const ButtonCloseHeight = 20
 
 const RadiusS = 5
 const RadiusM = 8
