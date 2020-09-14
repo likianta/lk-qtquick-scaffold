@@ -24,7 +24,7 @@ class PyHooks(QObject):
             _mouse_area'.
     """
     
-    def __init__(self, root: QQmlContext):
+    def __init__(self):
         """
         NOTE: You should init this class before the qml engine loads .qml file.
         :param root: from `qml_engine.rootContext()`.
@@ -34,7 +34,6 @@ class PyHooks(QObject):
         #   {path: {uid: obj}}
         #   e.g. {'./ui/SomeComp.qml': {'_txt': PySide2.QtCore.QObject}}
         self.values = {}  # type: Dict[str, Tuple[QVal, QSource]]
-        root.setContextProperty('PyHooks', self)
     
     @Slot(str, QVal, str)
     @Slot(str, QVal)
