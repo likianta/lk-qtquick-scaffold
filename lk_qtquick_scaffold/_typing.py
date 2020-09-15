@@ -3,7 +3,7 @@
 @FileName : _typing.py
 @Version  : 0.1.0
 @Created  : 2020-09-09
-@Updated  : 2020-09-09
+@Updated  : 2020-09-15
 @Desc     : 
 """
 from typing import *

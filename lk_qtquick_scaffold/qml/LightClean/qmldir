@@ -3,6 +3,7 @@ module LightClean
 LCButton     1.0  ./LCButton.qml
 LCEdit       1.0  ./LCEdit.qml
 LCEditField  1.0  ./LCEditField.qml
+LCList       1.0  ./LCList.qml
 LCPopup      1.0  ./LCPopup.qml
 LCRectangle  1.0  ./LCRectangle.qml
 LCText       1.0  ./LCText.qml
