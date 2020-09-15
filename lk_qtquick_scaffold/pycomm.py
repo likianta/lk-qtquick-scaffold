@@ -1,11 +1,13 @@
 """
 @Author   : likianta (likianta@foxmail.com)
 @FileName : pycomm.py
-@Version  : 0.2.1
+@Version  : 0.3.1
 @Created  : 2020-09-09
 @Updated  : 2020-09-15
 @Desc     : 
 """
+from asyncio import sleep
+
 from PySide2.QtCore import QAbstractListModel, QMetaObject, Qt, Slot
 from lk_logger import lk
 
@@ -218,24 +220,50 @@ class PyHooks(QObject):
 class QtHooks:
     
     def __init__(self, engine, pyhooks: PyHooks):
-        self.engine = engine
-        self.pyhooks = pyhooks
+        self._engine = engine
+        self._pyhooks = pyhooks
     
     def get(self, uid: QUid):
-        return self.pyhooks.get(uid)
+        return self._pyhooks.get(uid)
     
     find = get
     
     def update(self, uid: QUid, prop: str, value: Any):
         qobj = self.get(uid)  # type: QObj
         qobj.setProperty(prop, value)
-
+    
     # noinspection PyTypeChecker
-    def update_list_model(self, uid: QUid, bridge_method: str, *values: dict,
-                          clear=False):
+    def update_list_model(self, uid: QUid, *values: dict,
+                          clear=False, birdge_data='py_newData',
+                          bridge_method='pyAppend'):
         qobj = self.get(uid)  # type: QAbstractListModel
         if clear:
             QMetaObject.invokeMethod(qobj, 'clear', Qt.AutoConnection)
         for v in values:
-            qobj.setProperty('p_newData', v)
+            qobj.setProperty(birdge_data, v)
             QMetaObject.invokeMethod(qobj, bridge_method, Qt.AutoConnection)
+    
+    @Slot(QUid, str)
+    @Slot(QUid)
+    async def uid_msg_box(self, uid, msg=''):
+        return uid, msg
+    
+    async def recv(self, *uids: QUid, timeout=None):
+        elapsed_time = 0.0
+        while True:
+            await sleep(0.5)
+            elapsed_time += 0.5
+            
+            uid, msg = await self.uid_msg_box()
+            if uid in uids:
+                return uid, msg
+            elif timeout is not None and elapsed_time > timeout:
+                return uid, msg
+
+    # noinspection PyTypeChecker
+    def invoke_qml(self, uid: QUid, method: str):
+        """ Invoke QML method.
+        仅支持调用无参方法.
+        """
+        qobj = self.get(uid)
+        QMetaObject.invokeMethod(qobj, method, Qt.AutoConnection)
