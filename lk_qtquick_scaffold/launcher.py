@@ -1,9 +1,9 @@
 """
 @Author  : Likianta <likianta@foxmail.com>
-@Module  : launch.py
+@Module  : launcher.py
 @Created : 2020-08-30
-@Updated : 2020-09-14
-@Version : 0.2.3
+@Updated : 2020-09-15
+@Version : 0.2.4
 @Desc    :
 """
 from sys import exit
@@ -36,7 +36,7 @@ class Application(QApplication):
         #   告信息:
         #       QML Settings: The following application identifiers have not
         #       been set: QVector("organizationName", "organizationDomain")
-
+        
         self.__holder = {}
         self._entrance = entrance
         self.engine = QQmlApplicationEngine()
@@ -45,8 +45,10 @@ class Application(QApplication):
         for i in lib:
             self.engine.addImportPath(i)
         
-        from pyhooks import PyHooks
-        self.register_pyhandler('PyHooks', PyHooks())
+        from pyhooks import PyHooks, QtHooks
+        self.pyhooks = PyHooks()
+        self.qthooks = QtHooks(self.engine, self.pyhooks)
+        self.register_pyhandler('PyHooks', self.pyhooks)
     
     def register_pyhandler(self, name, handler: QObject):
         """ 将 Python 中定义好的 (继承自 QObject 的) 对象作为全局变量加载到 QML
@@ -65,7 +67,18 @@ class Application(QApplication):
         exit(self.exec_())
 
 
+# ------------------------------------------------------------------------------
+
+
+app: Application
+
+
+def init_app(entrance, *lib, **kwargs):
+    global app
+    app = Application(entrance, *lib, **kwargs)
+
+
 if __name__ == '__main__':
-    _app = Application('./qml/Demo/LightCleanDemo.qml',
-                       './qml')
+    _app = Application(
+        './qml/Demo/LightCleanDemo.qml', './qml')
     _app.start()

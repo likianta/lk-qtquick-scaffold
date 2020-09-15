@@ -48,6 +48,7 @@ Popup {
             anchors.right: parent.right
             anchors.top: parent.top
             width: LCGeometry.ButtonCloseWidth; height: LCGeometry.ButtonCloseHeight
+            z: 1
 
             LCText {
                 anchors.centerIn: parent

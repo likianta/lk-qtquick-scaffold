@@ -1,9 +1,9 @@
 """
 @Author   : likianta (likianta@foxmail.com)
 @FileName : pyhooks.py
-@Version  : 0.1.1
+@Version  : 0.2.0
 @Created  : 2020-09-09
-@Updated  : 2020-09-14
+@Updated  : 2020-09-15
 @Desc     : 
 """
 from PySide2.QtCore import Slot
@@ -54,7 +54,7 @@ class PyHooks(QObject):
         self.values[key] = (val.toVariant(), source)
     
     @Slot(str, result=QVar)
-    def get_value(self, key: str):
+    def get_value(self, key: str) -> Any:
         """
         Usecase (in .qml file):
             Item {
@@ -88,7 +88,7 @@ class PyHooks(QObject):
                 lk.logax(k, v)
     
     @staticmethod
-    def _qjsval_2_pylist(qids):
+    def _qjsval_2_pylist(qids):  # DELETE
         """
         调用方可能有以下两种传递方式:
             // === SomeComp.qml ===
@@ -163,7 +163,7 @@ class PyHooks(QObject):
     
     # noinspection PyTypeChecker
     @Slot(str, result=QObj)
-    def get_one(self, url: QUrl):
+    def get_one(self, url: QUrl) -> Union[QObj, None]:
         path, uid = url.rsplit('#', 1)
         try:
             return self.hooks[path][uid]
@@ -172,7 +172,7 @@ class PyHooks(QObject):
             return None
     
     @Slot(str, result=QVar)
-    def get_list(self, path):
+    def get_list(self, path) -> List[QObj]:
         """
         NOTE: This method is not often to use.
         :param path:
@@ -181,12 +181,13 @@ class PyHooks(QObject):
         return list(self.hooks[path].values())
     
     @Slot(str, result=QVar)
-    def get_dict(self, path):
+    def get_dict(self, path) -> Dict[QUid, QObj]:
         return self.hooks[path]
     
     @Slot(str, result=QVar)
     @Slot(QVal, result=QVar)
-    def get(self, unknown: Union[QUrl, QPath, QVal]):
+    def get(self, unknown: Union[QUrl, QPath, QVal]) \
+            -> Union[QObj, List[QObj], Dict[QUid, QObj], None]:
         """
         Usecase:
             PyHooks.get("./ui/SomeComp.qml") -> {'_txt': obj, ...}
@@ -212,3 +213,19 @@ class PyHooks(QObject):
         else:
             urls = unknown.toVariant()  # type: list
             return list(map(self.get_one, urls))
+
+
+class QtHooks:
+    
+    def __init__(self, engine, pyhooks: PyHooks):
+        self.engine = engine
+        self.pyhooks = pyhooks
+
+    def get(self, uid: QUid):
+        return self.pyhooks.get(uid)
+    
+    find = get
+    
+    def update(self, uid, prop, value):
+        obj = self.get(uid)  # type: QObj
+        obj.setProperty(prop, value)
