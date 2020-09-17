@@ -1,9 +1,9 @@
 """
 @Author   : dingxianjie (likianta@foxmail.com)
 @FileName : __init__.py
-@Version  : 0.1.0
+@Version  : 0.2.0
 @Created  : 2020-09-15
-@Updated  : 2020-09-15
+@Updated  : 2020-09-17
 @Desc     : 通过导入 lk_qtquick_scaffold, 获得全局变量 app, pyhooks 和 qthooks.
     Usage:
         # === my_launcher.py ===
@@ -24,24 +24,28 @@
 """
 from launcher import Application
 from pycomm import PyHooks, QtHooks
+from pyhandler import PyHandler
 
 __version__ = '0.1.0'
 
 app: Application
 pyhooks: PyHooks
 qthooks: QtHooks
+pyhandler: PyHandler
 
 
 def init_app(entrance, *lib, **kwargs):
     """ Init app at program starts. """
-    global app, pyhooks, qthooks
+    global app, pyhooks, qthooks, pyhandler
     
     app = Application(entrance, *lib, **kwargs)
     
     pyhooks = PyHooks()
     qthooks = QtHooks(app.engine, pyhooks)
+    pyhandler = PyHandler()
     
     app.register_pyhandler('PyHooks', pyhooks)
     app.register_pyhandler('QtHooks', qthooks)
+    app.register_pyhandler('PyHandler', pyhandler)
     
     return app
