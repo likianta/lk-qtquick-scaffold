@@ -1,11 +1,13 @@
 import QtQuick 2.14
+import "./LCStyle/geometry.js" as LCGeometry
 
 Item {
     id: _root
-    // property alias obj_ListView: _list
+
     property alias p_delegate: _list.delegate
+    property alias p_spacing: _list.spacing
     property bool p_autoSize: false
-    property int p_maxHeight: 100
+    property int p_maxHeight: 0
 
     function fn_clear() {
         _model.clear()
@@ -22,8 +24,11 @@ Item {
         }
 
         if (p_autoSize) {
-            const height = _model.count * 20
-            _root.height = height > p_maxHeight ? p_maxHeight : height
+            let height = _model.count * 20
+            if (p_maxHeight > 0) {
+                height = height > p_maxHeight ? p_maxHeight : height
+            }
+            _root.height = height
         }
     }
 
@@ -34,7 +39,10 @@ Item {
     ListView {
         id: _list
         anchors.fill: parent
+        anchors.margins: LCGeometry.MarginM
+        clip: true
         model: _model
+        spacing: LCGeometry.SpacingM.VSpacingS
     }
 
     Component.onCompleted: {
