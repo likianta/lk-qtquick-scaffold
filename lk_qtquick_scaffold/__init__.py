@@ -23,10 +23,9 @@
             )
 """
 from launcher import Application
-from pycomm import PyHooks, QtHooks
-from pyhandler import PyHandler
+from pycomm import PyHooks, QtHooks, PyHandler
 
-__version__ = '0.1.0'
+__version__ = '0.2.0'
 
 app: Application
 pyhooks: PyHooks

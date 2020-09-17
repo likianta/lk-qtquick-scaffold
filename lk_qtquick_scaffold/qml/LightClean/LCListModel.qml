@@ -11,7 +11,7 @@ ListModel {
         _model.append(py_newData)
     }
 
-    // function pyClear() {
+    // function py_clear() {
     //     _model.clear()
     // }
 }

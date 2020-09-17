@@ -1,9 +1,9 @@
 """
 @Author   : likianta (likianta@foxmail.com)
 @FileName : pycomm.py
-@Version  : 0.3.2
+@Version  : 0.4.2
 @Created  : 2020-09-09
-@Updated  : 2020-09-15
+@Updated  : 2020-09-17
 @Desc     : 
 """
 
@@ -259,25 +259,71 @@ class QtHooks(QObject):
     def put_in_msg(self, uid, msg=''):
         self.__msg_box[uid] = msg
         return uid, msg
+
+    # TODO
+    # def recv(self, *uids, timeout=None):
+    #     # from asyncio import sleep, get_event_loop, wait
+    #     def listen(_uids):
+    #         lk.logax(_uids)
+    #
+    #         elapsed_time = 0.0
+    #
+    #         # while True:
+    #         for uid in _uids:
+    #             if uid in self.__msg_box:
+    #                 self.__msg_box.clear()
+    #                 return uid, self.__msg_box[uid]
+    #
+    #         elapsed_time += 0.5
+    #         if timeout is not None and elapsed_time > timeout:
+    #             self.__msg_box.clear()
+    #             return '', ''
+    #
+    #         self.__msg_box.clear()
+    #         return '', ''
+
+
+class PyHandler(QObject):
     
-    def recv(self, *uids, timeout=None):
-        # from asyncio import sleep, get_event_loop, wait
-        # TODO
-        def listen(_uids):
-            lk.logax(_uids)
-            
-            elapsed_time = 0.0
-            
-            # while True:
-            for uid in _uids:
-                if uid in self.__msg_box:
-                    self.__msg_box.clear()
-                    return uid, self.__msg_box[uid]
-            
-            elapsed_time += 0.5
-            if timeout is not None and elapsed_time > timeout:
-                self.__msg_box.clear()
-                return '', ''
-            
-            self.__msg_box.clear()
-            return '', ''
+    def __init__(self):
+        super().__init__()
+        self.__pymethods_dict = {}
+    
+    @Slot(str, QVal, result=QVar)
+    @Slot(str, result=QVar)
+    def main(self, method: str, params: QVal = None):
+        try:
+            if params is None:
+                return self.__pymethods_dict.get(method, self._invalid_method)()
+            else:
+                # noinspection PyArgumentList
+                return self.__pymethods_dict.get(method, self._invalid_method)(
+                    params.toVariant()
+                )
+        except Exception as e:
+            raise Exception('PyHandler executing error', e)
+    
+    def register_pymethod(self, func: staticmethod):
+        """
+        https://medium.com/%40mgarod/dynamically-add-a-method-to-a-class-in
+            -python-c49204b85bd6+&cd=3&hl=zh-CN&ct=clnk&gl=sg
+        """
+        lk.loga(func.__name__)
+        self.__pymethods_dict[func.__name__] = func  # A
+        # setattr(self, func.__name__, func)  # B
+    
+    def _invalid_method(self, *args):
+        return
+    
+    def update_list_model(self, uid, ):
+        pass
+
+
+if __name__ == '__main__':
+    def _xxx():
+        print('hi')
+    
+    
+    handler = PyHandler()
+    handler.register_pymethod(_xxx)
+    handler.main('_xxx')
