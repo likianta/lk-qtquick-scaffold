@@ -42,5 +42,6 @@ def init_app(entrance, *lib, **kwargs):
     qthooks = QtHooks(app.engine, pyhooks)
     
     app.register_pyhandler('PyHooks', pyhooks)
+    app.register_pyhandler('QtHooks', qthooks)
     
     return app

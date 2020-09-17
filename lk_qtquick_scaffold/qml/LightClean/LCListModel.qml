@@ -10,4 +10,8 @@ ListModel {
     function pyAppend() {
         _model.append(py_newData)
     }
+
+    // function pyClear() {
+    //     _model.clear()
+    // }
 }

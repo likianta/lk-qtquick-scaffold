@@ -1,12 +1,11 @@
 """
 @Author   : likianta (likianta@foxmail.com)
 @FileName : pycomm.py
-@Version  : 0.3.1
+@Version  : 0.3.2
 @Created  : 2020-09-09
 @Updated  : 2020-09-15
 @Desc     : 
 """
-from asyncio import sleep
 
 from PySide2.QtCore import QAbstractListModel, QMetaObject, Qt, Slot
 from lk_logger import lk
@@ -217,9 +216,10 @@ class PyHooks(QObject):
             return list(map(self.get_one, urls))
 
 
-class QtHooks:
+class QtHooks(QObject):
     
     def __init__(self, engine, pyhooks: PyHooks):
+        super().__init__()
         self._engine = engine
         self._pyhooks = pyhooks
     
@@ -233,9 +233,8 @@ class QtHooks:
         qobj.setProperty(prop, value)
     
     # noinspection PyTypeChecker
-    def update_list_model(self, uid: QUid, *values: dict,
-                          clear=False, birdge_data='py_newData',
-                          bridge_method='pyAppend'):
+    def update_list_model(self, uid: QUid, *values: dict, clear=False,
+                          birdge_data='py_newData', bridge_method='pyAppend'):
         qobj = self.get(uid)  # type: QAbstractListModel
         if clear:
             QMetaObject.invokeMethod(qobj, 'clear', Qt.AutoConnection)
@@ -243,23 +242,6 @@ class QtHooks:
             qobj.setProperty(birdge_data, v)
             QMetaObject.invokeMethod(qobj, bridge_method, Qt.AutoConnection)
     
-    @Slot(QUid, str)
-    @Slot(QUid)
-    async def uid_msg_box(self, uid, msg=''):
-        return uid, msg
-    
-    async def recv(self, *uids: QUid, timeout=None):
-        elapsed_time = 0.0
-        while True:
-            await sleep(0.5)
-            elapsed_time += 0.5
-            
-            uid, msg = await self.uid_msg_box()
-            if uid in uids:
-                return uid, msg
-            elif timeout is not None and elapsed_time > timeout:
-                return uid, msg
-
     # noinspection PyTypeChecker
     def invoke_qml(self, uid: QUid, method: str):
         """ Invoke QML method.
@@ -267,3 +249,35 @@ class QtHooks:
         """
         qobj = self.get(uid)
         QMetaObject.invokeMethod(qobj, method, Qt.AutoConnection)
+    
+    # --------------------------------------------------------------------------
+    
+    __msg_box = {}
+    
+    @Slot(QUid)
+    @Slot(QUid, str)
+    def put_in_msg(self, uid, msg=''):
+        self.__msg_box[uid] = msg
+        return uid, msg
+    
+    def recv(self, *uids, timeout=None):
+        # from asyncio import sleep, get_event_loop, wait
+        # TODO
+        def listen(_uids):
+            lk.logax(_uids)
+            
+            elapsed_time = 0.0
+            
+            # while True:
+            for uid in _uids:
+                if uid in self.__msg_box:
+                    self.__msg_box.clear()
+                    return uid, self.__msg_box[uid]
+            
+            elapsed_time += 0.5
+            if timeout is not None and elapsed_time > timeout:
+                self.__msg_box.clear()
+                return '', ''
+            
+            self.__msg_box.clear()
+            return '', ''

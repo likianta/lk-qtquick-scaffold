@@ -4,6 +4,7 @@ LCButton     1.0  ./LCButton.qml
 LCEdit       1.0  ./LCEdit.qml
 LCEditField  1.0  ./LCEditField.qml
 LCListModel  1.0  ./LCListModel.qml
+LCListView   1.0  ./LCListView.qml
 LCPopup      1.0  ./LCPopup.qml
 LCRectangle  1.0  ./LCRectangle.qml
 LCText       1.0  ./LCText.qml
