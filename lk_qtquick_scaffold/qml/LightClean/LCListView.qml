@@ -1,4 +1,5 @@
 import QtQuick 2.14
+import QtQml.Models 2.14
 import "./LCStyle/geometry.js" as LCGeometry
 
 Item {
@@ -32,7 +33,7 @@ Item {
         }
     }
 
-    LCListModel {
+    ListModel {
         id: _model
     }
 
@@ -42,7 +43,7 @@ Item {
         anchors.margins: LCGeometry.MarginM
         clip: true
         model: _model
-        spacing: LCGeometry.SpacingM.VSpacingS
+        spacing: LCGeometry.VSpacingXS
     }
 
     Component.onCompleted: {

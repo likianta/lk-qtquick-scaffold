@@ -29,7 +29,7 @@ TextField {
 
     property alias __active: _root.activeFocus
 
-    background: LCRectangle {
+    background: LCRectangleBg {
         id: _bg
         // Note: If the background item has no explicit size specified, it 
         //  automatically follows the control's size. In most cases, there is no
