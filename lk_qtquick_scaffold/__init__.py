@@ -1,5 +1,5 @@
 """
-@Author   : dingxianjie (likianta@foxmail.com)
+@Author   : likianta (likianta@foxmail.com)
 @FileName : __init__.py
 @Version  : 0.2.0
 @Created  : 2020-09-15

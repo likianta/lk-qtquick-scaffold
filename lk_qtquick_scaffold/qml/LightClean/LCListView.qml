@@ -10,6 +10,10 @@ Item {
     property bool p_autoSize: false
     property int p_maxHeight: 0
 
+    function fn_getItem(index) {
+        return _model.get(index)
+    }
+
     function fn_clear() {
         _model.clear()
     }

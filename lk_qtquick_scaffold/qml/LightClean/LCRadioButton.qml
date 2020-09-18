@@ -33,12 +33,12 @@ RadioButton {
         }
     }
 
-    Component.onCompleted: {
-        console.log(
-            "LCRadioButton",
-            _root.width, _root.height,
-            _txt.width, _txt.height,
-            _indicator.width, _indicator.height,
-        )
-    }
+    // Component.onCompleted: {
+    //     console.log(
+    //         "LCRadioButton",
+    //         _root.width, _root.height,
+    //         _txt.width, _txt.height,
+    //         _indicator.width, _indicator.height,
+    //     )
+    // }
 }
