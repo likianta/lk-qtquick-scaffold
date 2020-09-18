@@ -5,12 +5,61 @@ import "./LCStyle/geometry.js" as LCGeometry
 Item {
     id: _root
 
+    ListModel {
+        id: _model
+    }
+
+    ListView {
+        id: _list
+        anchors.fill: parent
+        anchors.margins: LCGeometry.MarginM
+        clip: true
+        model: _model
+        spacing: LCGeometry.VSpacingXS
+
+        // onCurrentIndexChanged: {
+        //     console.log("LCListView", _list.currentIndex, _list.currentItem)
+        // }
+    }
+
+    property alias p_currentIndex: _list.currentIndex
+    property alias p_currentItem: _list.currentItem
     property alias p_delegate: _list.delegate
     property alias p_spacing: _list.spacing
     property bool p_autoSize: false
     property int p_maxHeight: 0
 
-    function fn_getItem(index) {
+    function fn_getCurrent() {
+        return [
+            _list.currentIndex,
+            _list.currentItem,
+            _model.get(_list.currentIndex)
+        ]
+    }
+
+    function fn_getCurrentIndex() {
+        return _list.currentIndex
+    }
+
+    function fn_getCurrentItem() {
+        return _list.currentItem
+    }
+
+    function fn_getCurrentModel() {
+        return _model.get(_list.currentIndex)
+    }
+
+    function fn_findItem(index) {
+        // https://forum.qt.io/topic/80573/qt-quick-listview-access-to-delegate-item+&cd=1&hl=zh-CN&ct=clnk&gl=sg
+        if (index < _model.count) {
+            _list.currentIndex = index
+            return _list.currentItem
+        } else {
+            return null
+        }
+    }
+
+    function fn_findData(index) {
         return _model.get(index)
     }
 
@@ -35,19 +84,6 @@ Item {
             }
             _root.height = height
         }
-    }
-
-    ListModel {
-        id: _model
-    }
-
-    ListView {
-        id: _list
-        anchors.fill: parent
-        anchors.margins: LCGeometry.MarginM
-        clip: true
-        model: _model
-        spacing: LCGeometry.VSpacingXS
     }
 
     Component.onCompleted: {

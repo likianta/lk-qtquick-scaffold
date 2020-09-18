@@ -1,2 +1,5 @@
+lk-logger
 lk-utils
+matplotlib
 pyside2
+pysimplegui
