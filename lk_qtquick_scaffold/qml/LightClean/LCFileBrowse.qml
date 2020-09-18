@@ -1,38 +1,28 @@
 import QtQuick 2.14
-import QtQuick.Dialogs 1.3
 import "./LCStyle/geometry.js" as LCGeometry
 
 Row {
-    property alias p_filetypes: _dialog.nameFilters  // e.g. ["Excel file (*.xlsx *.xls)"]
-    property string p_path
-    property alias p_selectFolder: _dialog.selectFolder
-    property alias p_selectMultiple: _dialog.selectMultiple
-    property alias p_title: _dialog.title
+    spacing: LCGeometry.HSpacingS
+
+    property alias p_digitOnly: _edit.p_digitOnly
+    property alias p_hint: _edit.p_hint
+    property alias p_title: _edit.p_title
+    property alias p_value: _edit.p_value
+
+    property alias p_dialogTitle: _browse.p_dialogTitle
+    property alias p_filetype: _browse.p_filetype
+    property alias p_path: _browse.p_path
+    property alias p_selectFolder: _browse.p_selectFolder
+    property alias p_selectMultiple: _browse.p_selectMultiple
 
     LCEditField {
         id: _edit
-        anchors.left: parent.left
         anchors.verticalCenter: parent.verticalCenter
+        p_title: "Input"
     }
 
-    FileDialog {
-        id: _dialog
-        anchors.left: _edit.right
+    LCFileBrowseButton {
+        id: _browse
         anchors.verticalCenter: parent.verticalCenter
-        // heigth: _edit.height
-        width: LCGeometry.ButtonWidth; height: LCGeometry.ButtonHeight
-
-        selectExisting: true
-        selectFolder: false
-        selectMultiple: false
-        title: "File dialog"
-
-        onAccepted: {
-            // Note that `fileUrl` is typeof Object, not string. We should
-            //  convert it to string first.
-            // Use `fileUrl + ""` to make it string, the value is
-            //  'file:///d:/...', slice out 'file:///' then pass it to `p_path`.
-            p_path = (fileUrl + "").slice(8)
-        }
     }
 }

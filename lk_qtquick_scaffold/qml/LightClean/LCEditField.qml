@@ -5,17 +5,17 @@ Item {
     id: _root
     height: LCGeometry.BarHeight
 
-    property alias p_digitOnly: _edt.p_digitOnly
-    property alias p_hint: _edt.p_hint
+    property alias p_digitOnly: _edit.p_digitOnly
+    property alias p_hint: _edit.p_hint
     property alias p_title: _title.p_text
-    property alias p_value: _edt.p_text
+    property alias p_value: _edit.p_text
 
     signal fn_clicked
 
     // Title field
     LCText {
         id: _title
-        anchors.right: _edt.left
+        anchors.right: _edit.left
         anchors.rightMargin: LCGeometry.MarginM
         height: parent.height
         horizontalAlignment: Text.AlignRight; verticalAlignment: Text.AlignVCenter
@@ -24,7 +24,7 @@ Item {
     
     // Editbar
     LCEdit {
-        id: _edt
+        id: _edit
         anchors.right: parent.right
     }
 
