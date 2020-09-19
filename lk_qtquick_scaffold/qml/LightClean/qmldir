@@ -13,6 +13,7 @@ LCPopup             1.0  ./LCPopup.qml
 LCRadioButton       1.0  ./LCRadioButton.qml
 LCRectangle         1.0  ./LCRectangle.qml
 LCRectangleBg       1.0  ./LCRectangleBg.qml
+LCRow               1.0  ./LCRow.qml
 LCText              1.0  ./LCText.qml
 LCWindow            1.0  ./LCWindow.qml
 
