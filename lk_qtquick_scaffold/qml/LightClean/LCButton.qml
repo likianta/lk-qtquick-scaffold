@@ -9,11 +9,10 @@ Button {
     id: _root
     height: LCGeometry.ButtonHeight
 
-    property alias p_text: _txt.text
     property bool p_autoSize: true
-
+    property alias p_text: _txt.text
     property alias __active: _root.pressed
-    
+
     background: LCRectangleBg {
         id: _bg
         // Note: If the background item has no explicit size specified, it
