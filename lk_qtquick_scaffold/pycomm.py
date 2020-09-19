@@ -1,9 +1,9 @@
 """
 @Author   : likianta (likianta@foxmail.com)
 @FileName : pycomm.py
-@Version  : 0.4.2
+@Version  : 0.4.3
 @Created  : 2020-09-09
-@Updated  : 2020-09-17
+@Updated  : 2020-09-19
 @Desc     : 
 """
 
@@ -259,7 +259,7 @@ class QtHooks(QObject):
     def put_in_msg(self, uid, msg=''):
         self.__msg_box[uid] = msg
         return uid, msg
-
+    
     # TODO
     # def recv(self, *uids, timeout=None):
     #     # from asyncio import sleep, get_event_loop, wait
@@ -294,12 +294,12 @@ class PyHandler(QObject):
     def main(self, method: str, params: QVal = None):
         try:
             if params is None:
-                return self.__pymethods_dict.get(method, self._invalid_method)()
+                return self.__pymethods_dict.get(
+                    method, self._invalid_method)()
             else:
                 # noinspection PyArgumentList
-                return self.__pymethods_dict.get(method, self._invalid_method)(
-                    params.toVariant()
-                )
+                return self.__pymethods_dict.get(
+                    method, self._invalid_method)(params.toVariant())
         except Exception as e:
             raise Exception('PyHandler executing error', e)
     
@@ -315,15 +315,15 @@ class PyHandler(QObject):
     def _invalid_method(self, *args):
         return
     
-    def update_list_model(self, uid, ):
-        pass
-
-
-if __name__ == '__main__':
-    def _xxx():
-        print('hi')
-    
-    
-    handler = PyHandler()
-    handler.register_pymethod(_xxx)
-    handler.main('_xxx')
+    @staticmethod
+    def find_pyhandler_related_methods(qmldir: str, base: str):
+        from lk_utils.filesniff import findall_files, path_on_rel
+        from lk_utils.read_and_write import read_file_by_line
+        
+        for filepath in findall_files(qmldir, suffix='.qml'):
+            for i, x in enumerate(read_file_by_line(filepath, 1)):
+                if (x := x.strip()).startswith('//'):
+                    continue
+                if 'PyHandler.main' in x:
+                    relpath = path_on_rel(filepath, base)
+                    print(f'{relpath}:{i}', '>>', x)

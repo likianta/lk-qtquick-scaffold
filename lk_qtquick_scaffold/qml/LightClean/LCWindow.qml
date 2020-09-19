@@ -10,4 +10,10 @@ Window {
     width: LCGeometry.WinWidth; height: LCGeometry.WinHeight
 
     property alias p_color: _root.color
+
+    Component.onCompleted: {
+        // TODO: iterate children recursively, set child items which has
+        //  objectName to PyHooks.
+        // TODO: enumerate methods related to PyHandler.
+    }
 }
