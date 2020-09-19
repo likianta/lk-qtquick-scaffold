@@ -2,7 +2,8 @@
 // Theme Color
 
 const ThemeDeepBlue = "#043243"
-const ThemeLightBlue = "#00627a"
+const ThemeBlue = "#00627a"
+const ThemeLightBlue = "#0075FF"
 
 // -----------------------------------------------------------------------------
 // Background
@@ -15,8 +16,9 @@ const EditbarNormal = "#F2F2F2"
 // -----------------------------------------------------------------------------
 // Button
 
-const ButtonPrimary = ThemeLightBlue
+const ButtonPrimary = ThemeBlue
 const ButtonNormal = "#FFFFFF"
+const ButtonChecked = ThemeLightBlue
 const ButtonPressed = ThemeDeepBlue
 
 // -----------------------------------------------------------------------------

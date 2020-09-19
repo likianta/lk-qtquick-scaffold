@@ -8,14 +8,14 @@ Rectangle {
     border.color: LCPalette.BorderNormal
     color: p_color
     radius: LCGeometry.RadiusS
-    
+
+    property bool p_active: false
     property alias p_border: _root.border  // Set both `p_border.width` and
     //  `p_border.color`. For LCEdit, init width = 0, color is invisible; for
     //  LCButton, init width = 1, color is visible.
-    property alias p_radius: _root.radius
-    property bool p_active: false
     property string p_color: LCPalette.BgWhite
     property string p_pressedColor: ""
+    property alias p_radius: _root.radius
 
     states: [
         State {

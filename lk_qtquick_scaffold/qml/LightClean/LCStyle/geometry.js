@@ -10,8 +10,13 @@ const ButtonHeightS = 20
 const ButtonHeightM = 40
 const ButtonCloseWidth = 40
 const ButtonCloseHeight = 20
-const ButtonRadioWidth = 16
-const ButtonRadioHeight = 16
+
+const IndicatorCheckWidth = 12
+const IndicatorCheckHeight = 12
+const IndicatorCheckRadius = 2
+const IndicatorRadioWidth = 16
+const IndicatorRadioHeight = 16
+const IndicatorRadioRadius = IndicatorRadioWidth / 2
 
 // -----------------------------------------------------------------------------
 

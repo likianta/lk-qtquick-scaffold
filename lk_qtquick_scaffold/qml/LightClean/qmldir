@@ -1,6 +1,8 @@
 module LightClean
 
 LCButton            1.0  ./LCButton.qml
+LCCheckBox          1.0  ./LCCheckBox.qml
+LCColumn            1.0  ./LCColumn.qml
 LCEdit              1.0  ./LCEdit.qml
 LCEditField         1.0  ./LCEditField.qml
 LCFileBrowse        1.0  ./LCFileBrowse.qml

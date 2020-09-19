@@ -9,7 +9,6 @@ RadioButton {
 
     property alias p_text: _txt.p_text
     property alias __active: _root.checked
-    property alias __indicatorSize: _txt.height
 
     contentItem: LCText {
         id: _txt
@@ -22,8 +21,8 @@ RadioButton {
         id: _indicator
         anchors.verticalCenter: parent.verticalCenter
         border.width: 1; border.color: LCPalette.BorderNormal
-        width: LCGeometry.ButtonRadioWidth; height: LCGeometry.ButtonRadioHeight
-        radius: width / 2
+        radius: LCGeometry.IndicatorRadioRadius
+        width: LCGeometry.IndicatorRadioWidth; height: LCGeometry.IndicatorRadioHeight
 
         Rectangle {
             anchors.fill: parent

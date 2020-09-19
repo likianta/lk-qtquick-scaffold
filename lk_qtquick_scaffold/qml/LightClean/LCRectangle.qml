@@ -10,8 +10,6 @@ Rectangle {
     radius: LCGeometry.RadiusS
 
     property alias p_border: _root.border
-    property alias p_borderColor: _root.border.color
-    property alias p_borderWidth: _root.border.width
     property alias p_color: _root.color
     property alias p_radius: _root.radius
 }

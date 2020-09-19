@@ -22,12 +22,13 @@ Item {
         // }
     }
 
+    property bool p_autoSize: false
+    property alias p_count: _model.count
     property alias p_currentIndex: _list.currentIndex
     property alias p_currentItem: _list.currentItem
     property alias p_delegate: _list.delegate
-    property alias p_spacing: _list.spacing
-    property bool p_autoSize: false
     property int p_maxHeight: 0
+    property alias p_spacing: _list.spacing
 
     function fn_getCurrent() {
         return [
