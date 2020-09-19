@@ -2,8 +2,8 @@
 @Author  : Likianta <likianta@foxmail.com>
 @Module  : launcher.py
 @Created : 2020-08-30
-@Updated : 2020-09-15
-@Version : 0.2.5
+@Updated : 2020-09-19
+@Version : 0.2.6
 @Desc    :
 """
 from sys import exit
@@ -42,6 +42,10 @@ class Application(QApplication):
         self.engine = QQmlApplicationEngine()
         self.root = self.engine.rootContext()
         
+        if not lib:
+            lib = (__file__.rsplit('\\', 1)[0] + '\\qml',)
+            #   __file__ = lk_qtquick_scaffold\\lk_qtquick_scaffold\\__init__.py
+            #   lib = (lk_qtquick_scaffold\\lk_qtquick_scaffold\\qml,)
         for i in lib:
             self.engine.addImportPath(i)
     
