@@ -3,6 +3,7 @@ import "./LCStyle/geometry.js" as LCGeometry
 
 Column {
     id: _root
+    // anchors.fill: parent
     anchors.margins: LCGeometry.MarginM
     padding: 0
     spacing: LCGeometry.VSpacingM
@@ -11,18 +12,23 @@ Column {
     property bool p_fillWidth: true
     property alias p_margins: _root.anchors.margins
     property alias p_spacing: _root.spacing
-    property alias p_topPadding: _root.topPadding; property alias p_bottomPadding: _root.bottomPadding
+    // property alias p_topPadding: _root.topPadding; property alias p_bottomPadding: _root.bottomPadding
+    property int p_vpadding: 0
 
     Component.onCompleted: {
+        _root.topPadding = p_vpadding
+        _root.bottomPadding = p_vpadding
+
         if (p_alignCenter) {
-            _root.children.forEach(x => {
-                x.anchors.horizontalCenter = _root.horizontalCenter
-            })
+            for (let i in _root.children) {
+                _root.children[i].anchors.horizontalCenter = _root.horizontalCenter
+            }
         }
+
         if (p_fillWidth) {
-            _root.children.forEach(x => {
-                x.width = _root.width
-            })
+            for (let i in _root.children) {
+                _root.children[i].width = _root.width
+            }
         }
     }
 }

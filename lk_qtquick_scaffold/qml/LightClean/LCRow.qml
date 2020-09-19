@@ -10,20 +10,25 @@ Row {
 
     property bool p_alignCenter: true
     property bool p_fillHeight: true
+    property int p_hpadding: 0
+    // property alias p_leftPadding: _root.leftPadding; property alias p_rightPadding: _root.rightPadding
     property alias p_margins: _root.anchors.margins
     property alias p_spacing: _root.spacing
-    property alias p_topPadding: _root.topPadding; property alias p_bottomPadding: _root.bottomPadding
 
     Component.onCompleted: {
+        _root.leftPadding = p_hpadding
+        _root.rightPadding = p_hpadding
+    
         if (p_alignCenter) {
-            _root.children.forEach(x => {
-                x.anchors.horizontalCenter = _root.horizontalCenter
-            })
+            for (let i in _root.children) {
+                _root.children[i].anchors.verticalCenter = _root.verticalCenter
+            }
         }
+        
         if (p_fillHeight) {
-            _root.children.forEach(x => {
-                x.height = _root.height
-            })
+            for (let i in _root.children) {
+                _root.children[i].height = _root.height
+            }
         }
     }
 }
