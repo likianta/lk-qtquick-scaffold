@@ -9,6 +9,7 @@ Row {
     spacing: LCGeometry.HSpacingM
 
     property bool p_alignCenter: false
+    property bool p_fillEnd: true
     property bool p_fillHeight: true
     property int p_hpadding: 0
     // property alias p_leftPadding: _root.leftPadding; property alias p_rightPadding: _root.rightPadding
@@ -19,8 +20,8 @@ Row {
         // https://stackoverflow.com/questions/24577075/what-is-the-order-of-component-oncompleted-in-a-qml-file-with-many-items
         // Because of the undefined order of instantiating in
         //  `Component.onCompleted`, we cannot dicide `p_fillHeight` whether
-        //  works as our expect. So we observe the height changing and update to
-        //  make sure the children got exactly height-filled.
+        //  works as our expect. So we observe the height changing and updates
+        //  to make sure the children got exactly height-filled.
         if (p_fillHeight) {
             for (let i in _root.children) {
                 _root.children[i].height = _root.height
@@ -37,6 +38,9 @@ Row {
             for (let i in _root.children) {
                 _root.children[i].anchors.verticalCenter = _root.verticalCenter
             }
+        }
+        if (p_fillEnd) {
+            _root.children[-1].width = _root.width - _root.children[-1].x - p_rightPadding
         }
     }
 }

@@ -9,6 +9,8 @@ Column {
     spacing: LCGeometry.VSpacingM
 
     property bool p_alignCenter: false
+    property bool p_fillEnd: true  // auto make the last item fill the remaining space.
+    //  https://stackoverflow.com/questions/27319985/how-to-make-last-item-in-qml-container-fill-remaining-space
     property bool p_fillWidth: true
     property alias p_margins: _root.anchors.margins
     property alias p_spacing: _root.spacing
@@ -32,6 +34,9 @@ Column {
             for (let i in _root.children) {
                 _root.children[i].anchors.horizontalCenter = _root.horizontalCenter
             }
+        }
+        if (p_fillEnd) {
+            _root.children[-1].height = _root.height - _root.children[-1].y - p_bottomPadding
         }
     }
 }
