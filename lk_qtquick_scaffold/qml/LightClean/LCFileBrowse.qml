@@ -25,4 +25,8 @@ Row {
         id: _browse
         anchors.verticalCenter: parent.verticalCenter
     }
+
+    Component.onCompleted: {
+        p_path = p_value
+    }
 }

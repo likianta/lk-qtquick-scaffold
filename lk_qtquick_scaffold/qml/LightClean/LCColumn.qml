@@ -8,7 +8,7 @@ Column {
     padding: 0
     spacing: LCGeometry.VSpacingM
 
-    property bool p_alignCenter: true
+    property bool p_alignCenter: false
     property bool p_fillWidth: true
     property alias p_margins: _root.anchors.margins
     property alias p_spacing: _root.spacing

@@ -2,8 +2,8 @@
 @Author  : Likianta <likianta@foxmail.com>
 @Module  : launcher.py
 @Created : 2020-08-30
-@Updated : 2020-09-19
-@Version : 0.2.6
+@Updated : 2020-09-20
+@Version : 0.2.7
 @Desc    :
 """
 from sys import exit
@@ -49,7 +49,7 @@ class Application(QApplication):
         for i in lib:
             self.engine.addImportPath(i)
     
-    def register_pyhandler(self, name, handler: QObject):
+    def register_pyobj(self, name, handler: QObject):
         """ 将 Python 中定义好的 (继承自 QObject 的) 对象作为全局变量加载到 QML
             布局的上下文当中.
             
