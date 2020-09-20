@@ -2,12 +2,11 @@ const WinWidth = 800
 const WinHeight = 600
 
 const BarWidth = 380
-const BarHeight = 40
+const BarHeight = 30
 
-const ButtonWidth = 120
-const ButtonHeight = 40
+const ButtonWidthM = 80
 const ButtonHeightS = 20
-const ButtonHeightM = 40
+const ButtonHeightM = 30
 const ButtonCloseWidth = 40
 const ButtonCloseHeight = 20
 

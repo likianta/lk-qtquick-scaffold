@@ -15,6 +15,15 @@ Column {
     // property alias p_topPadding: _root.topPadding; property alias p_bottomPadding: _root.bottomPadding
     property int p_vpadding: 0
 
+    onWidthChanged: {
+        // See docstring from `LCRow.onHeightChanged`.
+        if (p_fillWidth) {
+            for (let i in _root.children) {
+                _root.children[i].width = _root.width
+            }
+        }
+    }
+
     Component.onCompleted: {
         _root.topPadding = p_vpadding
         _root.bottomPadding = p_vpadding
@@ -22,12 +31,6 @@ Column {
         if (p_alignCenter) {
             for (let i in _root.children) {
                 _root.children[i].anchors.horizontalCenter = _root.horizontalCenter
-            }
-        }
-
-        if (p_fillWidth) {
-            for (let i in _root.children) {
-                _root.children[i].width = _root.width
             }
         }
     }

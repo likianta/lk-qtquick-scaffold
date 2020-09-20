@@ -15,6 +15,20 @@ Row {
     property alias p_margins: _root.anchors.margins
     property alias p_spacing: _root.spacing
 
+    onHeightChanged: {
+        // https://stackoverflow.com/questions/24577075/what-is-the-order-of-component-oncompleted-in-a-qml-file-with-many-items
+        // Because of the undefined order of instantiating in
+        //  `Component.onCompleted`, we cannot dicide `p_fillHeight` whether
+        //  works as our expect. So we observe the height changing and update to
+        //  make sure the children got exactly height-filled.
+        if (p_fillHeight) {
+            for (let i in _root.children) {
+                _root.children[i].height = _root.height
+                // console.log("LCRow", _root.height, _root.children[i].height)
+            }
+        }
+    }
+
     Component.onCompleted: {
         _root.leftPadding = p_hpadding
         _root.rightPadding = p_hpadding
@@ -22,12 +36,6 @@ Row {
         if (p_alignCenter) {
             for (let i in _root.children) {
                 _root.children[i].anchors.verticalCenter = _root.verticalCenter
-            }
-        }
-        
-        if (p_fillHeight) {
-            for (let i in _root.children) {
-                _root.children[i].height = _root.height
             }
         }
     }

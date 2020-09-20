@@ -7,7 +7,7 @@ import "./LCStyle/text.js" as LCText
 
 Button {
     id: _root
-    height: LCGeometry.ButtonHeight
+    height: LCGeometry.ButtonHeightM
 
     property bool p_autoSize: true
     property alias p_text: _txt.text
