@@ -308,7 +308,7 @@ class PyHandler(QObject):
         https://medium.com/%40mgarod/dynamically-add-a-method-to-a-class-in
             -python-c49204b85bd6+&cd=3&hl=zh-CN&ct=clnk&gl=sg
         """
-        lk.loga(func.__name__)
+        lk.loga(func.__name__, h='parent')
         self.__pymethods_dict[func.__name__] = func  # A
         # setattr(self, func.__name__, func)  # B
     

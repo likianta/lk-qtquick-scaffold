@@ -11,12 +11,11 @@ Window {
     width: 300; height: 120
     title: "Qml Hot Reloader"
 
-    property string p_target: "../layout/Main.qml"  // You must define the target to use.
+    property string p_target: ""  // You must define the target to use.
 
     Loader {
         id: _loader
         anchors.centerIn: parent
-        source: p_target
 
         function reload() {
             source = ""

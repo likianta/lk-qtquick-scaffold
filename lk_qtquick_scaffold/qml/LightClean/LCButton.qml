@@ -7,17 +7,21 @@ import "./LCStyle/text.js" as LCText
 
 Button {
     id: _root
-    height: LCGeometry.ButtonHeightM
+    // height: LCGeometry.ButtonHeightM
 
     property bool p_autoSize: true
+    property alias p_border: _bg.p_border  // you can set `p_border.width: 0` to
+    //      make button frameless.
     property alias p_text: _txt.text
+    property alias p_width: _bg.implicitWidth; property alias p_height: _bg.implicitHeight
     property alias __active: _root.pressed
 
     background: LCRectangleBg {
         id: _bg
         // Note: If the background item has no explicit size specified, it
-        //  automatically follows the control's size. In most cases, there is no
-        //  need to specify width or height for a background item.
+        //      automatically follows the control's size. In most cases, there
+        //      is no need to specify width or height for a background item.
+        implicitWidth: LCGeometry.ButtonWidthM; implicitHeight: LCGeometry.ButtonHeightM
         p_active: __active
         p_border.width: __active ? 0 : 1
         p_color: LCPalette.ButtonNormal; p_pressedColor: LCPalette.ButtonPressed
@@ -32,23 +36,23 @@ Button {
             p_color: __active ? LCPalette.TextWhite : LCPalette.TextNormal
             p_size: LCText.ButtonTextSize
 
-            //states: [
-            //    State {
-            //        when: __active
-            //        PropertyChanges {
-            //            target: _txt
-            //            p_color: LCPalette.TextWhite
-            //        }
-            //    }
-            //]
-            //transitions: [
-            //    Transition {
-            //        ColorAnimation {
-            //            duration: LCMotion.Swift
-            //            properties: "p_color"
-            //        }
-            //    }
-            //]
+            // states: [
+            //     State {
+            //         when: __active
+            //         PropertyChanges {
+            //             target: _txt
+            //             p_color: LCPalette.TextWhite
+            //         }
+            //     }
+            // ]
+            // transitions: [
+            //     Transition {
+            //         ColorAnimation {
+            //             duration: LCMotion.Swift
+            //             properties: "p_color"
+            //         }
+            //     }
+            // ]
         }
     }
 
@@ -56,7 +60,7 @@ Button {
         if (p_autoSize) {
             const preferredWidth = _txt.contentWidth + 20
             if (preferredWidth > _root.width) {
-                _root.width = preferredWidth
+                p_width = preferredWidth
             }
         }
     }
