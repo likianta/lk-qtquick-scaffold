@@ -2,7 +2,7 @@ import QtQuick 2.14
 import "./LCStyle/geometry.js" as LCGeometry
 
 Row {
-    spacing: LCGeometry.HSpacingS
+    spacing: LCGeometry.HSpacingM
 
     property alias p_digitOnly: _edit.p_digitOnly
     property alias p_hint: _edit.p_hint

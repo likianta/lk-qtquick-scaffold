@@ -1,27 +1,36 @@
 import QtQuick 2.14
-import QtQuick.Layouts 1.14
 import "./LCStyle/geometry.js" as LCGeometry
 
-ColumnLayout {
+Column {
     id: _root
-    // anchors.leftMargin: LCGeometry.MarginM; anchors.rightMargin: LCGeometry.MarginM
     anchors.margins: LCGeometry.MarginM
-    width: LCGeometry.BarWidth
-    spacing: LCGeometry.HSpacingM
+    spacing: LCGeometry.VSpacingM
 
+    property bool p_alignCenter: false
+    property bool p_fillEnd: false  // auto make the last item fill the remaining space.
+    //      https://stackoverflow.com/questions/27319985/how-to-make-last-item-in-qml-container-fill-remaining-space
     property bool p_fillWidth: true
-    property int p_hmargins: 0
     property alias p_margins: _root.anchors.margins
     property alias p_spacing: _root.spacing
+    // property int p_vpadding: 0
 
     Component.onCompleted: {
-        if (p_hmargins > 0) {
-            _root.anchors.leftMargin = p_hmargins
-            _root.anchors.rightMargin = p_hmargins
-        }
+        // _root.topPadding = p_vpadding
+        // _root.bottomPadding = p_vpadding
+
         if (p_fillWidth) {
             for (let i in _root.children) {
-                _root.children[i].Layout.fillWidth = true
+                // console.log("LCColumn", _root, _root.width, _root.children[i].width)
+                _root.children[i].width = _root.width
+            }
+        }
+        if (p_fillEnd) {
+            const lastChild = _root.children[_root.children.length - 1]
+            lastChild.height = _root.height - lastChild.y - _root.anchors.margins
+        }
+        if (p_alignCenter) {
+            for (let i in _root.children) {
+                _root.children[i].anchors.horizontalCenter = _root.horizontalCenter
             }
         }
     }

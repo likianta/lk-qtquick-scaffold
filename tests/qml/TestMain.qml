@@ -14,10 +14,10 @@ Window {
         id: _row
         anchors.fill: parent
         width: 400
-        height: 30
+        height: 0
 
         LCRow {
-
+            height: 30
             LCFileBrowse {
                 id: _browse1
                 width: 380; height: 30
@@ -30,7 +30,8 @@ Window {
         }
 
         LCRow {
-
+            height: 200
+            Layout.alignment: Qt.AlignTop
             LCFileBrowse {
                 id: _browse2
                 width: 380; height: 30
