@@ -25,6 +25,7 @@ const ButtonPressed = ThemeDeepBlue
 // Text
 
 const TextHint = "#CCCCCC"
+const TextHighlight = ThemeLightBlue
 const TextNormal = "#383838"
 const TextSelected = "#FFFFFF"
 const TextSelection = ThemeDeepBlue
@@ -32,6 +33,8 @@ const TextWhite = "#FFFFFF"
 
 // -----------------------------------------------------------------------------
 // Other
+
+const Transparent = "transparent"
 
 const Border = "#CCCCCC"
 const BorderNormal = "#CCCCCC"

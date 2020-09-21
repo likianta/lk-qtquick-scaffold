@@ -1,23 +1,26 @@
 module LightClean
 
-LCButton            1.0  ./LCButton.qml
-LCCheckBox          1.0  ./LCCheckBox.qml
-LCColumn            1.0  ./LCColumn.qml
-LCEdit              1.0  ./LCEdit.qml
-LCEditField         1.0  ./LCEditField.qml
-LCFileBrowse        1.0  ./LCFileBrowse.qml
-LCFileBrowseButton  1.0  ./LCFileBrowseButton.qml
-LCListModel         1.0  ./LCListModel.qml
-LCListView          1.0  ./LCListView.qml
-LCPopup             1.0  ./LCPopup.qml
-LCRadioButton       1.0  ./LCRadioButton.qml
-LCRectangle         1.0  ./LCRectangle.qml
-LCRectangleBg       1.0  ./LCRectangleBg.qml
-LCRow               1.0  ./LCRow.qml
-LCText              1.0  ./LCText.qml
-LCWindow            1.0  ./LCWindow.qml
+LCButton            1.0  LCButton.qml
+LCCheckBox          1.0  LCCheckBox.qml
+LCColumn            1.0  LCColumn.qml
+LCDividerLine       1.0  LCDividerLine.qml
+LCEdit              1.0  LCEdit.qml
+LCEditField         1.0  LCEditField.qml
+LCFileBrowse        1.0  LCFileBrowse.qml
+LCFileBrowseButton  1.0  LCFileBrowseButton.qml
+LCListModel         1.0  LCListModel.qml
+LCListView          1.0  LCListView.qml
+LCPopup             1.0  LCPopup.qml
+LCRadioButton       1.0  LCRadioButton.qml
+LCRectangle         1.0  LCRectangle.qml
+LCRectangleBg       1.0  LCRectangleBg.qml
+LCRow               1.0  LCRow.qml
+LCText              1.0  LCText.qml
+LCWindow            1.0  LCWindow.qml
 
-LCStyle.LCGeometry  1.0  ./LCStyle/geometry.js
-LCStyle.LCMotion    1.0  ./LCStyle/motion.js
-LCStyle.LCPalette   1.0  ./LCStyle/palette.js
-LCStyle.LCText      1.0  ./LCStyle/text.js
+LCButtons.LCFlatButton  1.0  LCButtons/LCFlatButton.qml
+
+LCStyle.LCGeometry  1.0  LCStyle/geometry.js
+LCStyle.LCMotion    1.0  LCStyle/motion.js
+LCStyle.LCPalette   1.0  LCStyle/palette.js
+LCStyle.LCText      1.0  LCStyle/text.js
