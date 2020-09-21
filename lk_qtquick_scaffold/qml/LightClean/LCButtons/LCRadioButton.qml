@@ -1,7 +1,8 @@
 import QtQuick 2.14
 import QtQuick.Controls 2.14
-import "./LCStyle/geometry.js" as LCGeometry
-import "./LCStyle/palette.js" as LCPalette
+import "../"
+import "../LCStyle/geometry.js" as LCGeometry
+import "../LCStyle/palette.js" as LCPalette
 
 RadioButton {
     id: _root
@@ -31,13 +32,4 @@ RadioButton {
             radius: parent.radius
         }
     }
-
-    // Component.onCompleted: {
-    //     console.log(
-    //         "LCRadioButton",
-    //         _root.width, _root.height,
-    //         _txt.width, _txt.height,
-    //         _indicator.width, _indicator.height,
-    //     )
-    // }
 }

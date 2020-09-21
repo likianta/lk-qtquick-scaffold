@@ -1,5 +1,6 @@
 import QtQuick 2.14
 import QtQuick.Dialogs 1.3
+import "./LCButtons"
 import "./LCStyle/geometry.js" as LCGeometry
 
 LCButton {

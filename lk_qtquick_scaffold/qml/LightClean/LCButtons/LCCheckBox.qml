@@ -1,7 +1,8 @@
 import QtQuick 2.14
 import QtQuick.Controls 2.14
-import "./LCStyle/geometry.js" as LCGeometry
-import "./LCStyle/palette.js" as LCPalette
+import "../"
+import "../LCStyle/geometry.js" as LCGeometry
+import "../LCStyle/palette.js" as LCPalette
 
 CheckBox {
     id: _root
@@ -37,7 +38,7 @@ CheckBox {
 
             p_active: __active
             p_border.width: 0
-            p_color: "transparent"; p_pressedColor: LCPalette.ButtonChecked
+            p_color0: "transparent"; p_color1: LCPalette.ButtonChecked
             p_radius: parent.radius
         }
     }

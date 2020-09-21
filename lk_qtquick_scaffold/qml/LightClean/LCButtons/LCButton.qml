@@ -1,9 +1,10 @@
 import QtQuick 2.14
 import QtQuick.Controls 2.14
-import "./LCStyle/geometry.js" as LCGeometry
-import "./LCStyle/motion.js" as LCMotion
-import "./LCStyle/palette.js" as LCPalette
-import "./LCStyle/text.js" as LCText
+import "../"
+import "../LCStyle/geometry.js" as LCGeometry
+import "../LCStyle/motion.js" as LCMotion
+import "../LCStyle/palette.js" as LCPalette
+import "../LCStyle/text.js" as LCText
 
 Button {
     id: _root
@@ -24,7 +25,7 @@ Button {
         implicitWidth: LCGeometry.ButtonWidthM; implicitHeight: LCGeometry.ButtonHeightM
         p_active: __active
         p_border.width: __active ? 0 : 1
-        p_color: LCPalette.ButtonNormal; p_pressedColor: LCPalette.ButtonPressed
+        p_color0: LCPalette.ButtonNormal; p_color1: LCPalette.ButtonPressed
     }
 
     contentItem: Item {

@@ -1,7 +1,5 @@
 module LightClean
 
-LCButton            1.0  LCButton.qml
-LCCheckBox          1.0  LCCheckBox.qml
 LCColumn            1.0  LCColumn.qml
 LCDividerLine       1.0  LCDividerLine.qml
 LCEdit              1.0  LCEdit.qml
@@ -11,14 +9,19 @@ LCFileBrowseButton  1.0  LCFileBrowseButton.qml
 LCListModel         1.0  LCListModel.qml
 LCListView          1.0  LCListView.qml
 LCPopup             1.0  LCPopup.qml
-LCRadioButton       1.0  LCRadioButton.qml
 LCRectangle         1.0  LCRectangle.qml
 LCRectangleBg       1.0  LCRectangleBg.qml
 LCRow               1.0  LCRow.qml
+LCTableView         1.0  LCTableView.qml
 LCText              1.0  LCText.qml
 LCWindow            1.0  LCWindow.qml
 
-LCButtons.LCFlatButton  1.0  LCButtons/LCFlatButton.qml
+LCButtons.LCBaseButton       1.0  LCBaseButton.qml
+LCButtons.LCButton           1.0  LCButton.qml
+LCButtons.LCCheckBox         1.0  LCCheckBox.qml
+LCButtons.LCFlatButton       1.0  LCFlatButton.qml
+LCButtons.LCFlatRadioButton  1.0  LCFlatRadioButton.qml
+LCButtons.LCRadioButton      1.0  LCRadioButton.qml
 
 LCStyle.LCGeometry  1.0  LCStyle/geometry.js
 LCStyle.LCMotion    1.0  LCStyle/motion.js

@@ -36,7 +36,7 @@ TextField {
         //  need to specify width or height for a background item.
         p_active: __active
         p_border.width: __active ? 1 : 0
-        p_color: LCPalette.EditbarNormal
-        p_pressedColor: LCPalette.EditbarFocus
+        p_color0: LCPalette.EditbarNormal
+        p_color1: LCPalette.EditbarFocus
     }
 }

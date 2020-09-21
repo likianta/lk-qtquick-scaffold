@@ -68,6 +68,10 @@ Item {
         _model.clear()
     }
 
+    function fn_append(data) {
+        _model.append(data)
+    }
+
     function fn_addList(data) {
         for (var i in data) {
             // console.log("LCListModel", data[i])
