@@ -12,6 +12,8 @@ LCPopup             1.0  LCPopup.qml
 LCRectangle         1.0  LCRectangle.qml
 LCRectangleBg       1.0  LCRectangleBg.qml
 LCRow               1.0  LCRow.qml
+LCTable             1.0  LCTable.qml
+LCTableModel        1.0  LCTableModel.qml
 LCTableView         1.0  LCTableView.qml
 LCText              1.0  LCText.qml
 LCWindow            1.0  LCWindow.qml

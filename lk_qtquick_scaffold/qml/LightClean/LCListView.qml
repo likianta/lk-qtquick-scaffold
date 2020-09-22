@@ -16,19 +16,15 @@ Item {
         clip: true
         model: _model
         spacing: LCGeometry.VSpacingXS
-
-        // onCurrentIndexChanged: {
-        //     console.log("LCListView", _list.currentIndex, _list.currentItem)
-        // }
     }
 
-    property bool p_autoSize: false
-    property alias p_count: _model.count
+    property bool p_autoSize: false  // DEL
     property alias p_currentIndex: _list.currentIndex
-    property alias p_currentItem: _list.currentItem
     property alias p_delegate: _list.delegate
     property int p_maxHeight: 0
     property alias p_spacing: _list.spacing
+    property alias r_count: _model.count
+    property alias r_currentItem: _list.currentItem
 
     function fn_getCurrent() {
         return [

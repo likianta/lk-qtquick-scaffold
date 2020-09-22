@@ -4,23 +4,23 @@ import QtQuick.Window 2.15
 import QtQuick.Layouts 1.14
 import LightClean 1.0
 import LightClean.LCButtons 1.0
+import Qt.labs.qmlmodels 1.0
+import QtQml.Models 2.14
 
 Window {
     id: _root
     // color: "#F2F2F2"
     visible: true
-    width: 800; height: 370
+    width: 800; height: 600
 
-    LCFlatButton {
-        id: _btn
-        p_width: 100; p_height: 100
-        p_text: "234234"
-    }
+    LCTable {
+        //anchors.centerIn: parent
+        width: 500; height: 300
 
-    Component.onCompleted: {
-        // console.log(_btn.background)
-        // console.log(_btn.background.color)
-        // console.log(_btn.contentItem.children[0])
-        // console.log(_btn.contentItem.children[0].text)
+        p_header: ["aaa", "bbb"]
+        p_model: [
+            {"aaa": "alpha", "bbb": "beta"},
+            {"aaa": "asdfasdf", "bbb": "baaetrrt"},
+        ]
     }
 }
