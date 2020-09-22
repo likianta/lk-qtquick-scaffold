@@ -15,9 +15,9 @@ LCBaseButton {
     p_colorText1: LCPalette.TextHighlight
     // more:
     //      p_active
+    //      p_height
     //      p_text
     //      p_width
-    //      p_height
 
     __bg.color: {
         if (_root.hovered) {

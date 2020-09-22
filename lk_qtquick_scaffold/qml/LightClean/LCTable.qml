@@ -1,17 +1,16 @@
 import QtQuick 2.14
 import QtQuick.Controls 2.14
-import QtQml.Models 2.14
 import "./LCStyle/geometry.js" as LCGeometry
 
 ScrollView {
     id: _root
     anchors.margins: LCGeometry.MarginM
-    clip: true
+    // clip: true
     contentWidth: __realContentWidth; contentHeight: childrenRect.height
 
     property var p_header
     //      [str title, ...]
-    property var p_model
+    property alias p_model: _rows.model
     //      [{title: value}, ...]. assert p_model[0].keys() == p_header
     property var __childrenWidthsManager: Array(p_header.length)
     //      [headerCell1, headerCell2, ...]. assert len(self) == len(p_header)
@@ -21,7 +20,7 @@ ScrollView {
 
     function fn__updateContentWidth(m, n) {
         __realContentWidth = __realContentWidth - m + n
-        console.log("LCTable.qml:23", __realContentWidth)
+        // console.log("LCTable.qml:24", __realContentWidth)
     }
 
     // -------------------------------------------------------------------------
@@ -29,24 +28,20 @@ ScrollView {
 
     Item {
         id: _mainTable
-        // width: __realContentWidth; height: childrenRect.height
+        height: parent.height
 
         ListView {
             id: _rows
             anchors.left: parent.left
             anchors.top: _header.bottom
-            model: p_model
+            height: parent.height
             orientation: ListView.Vertical
             spacing: 0
-
-            // the width and height determined by the children
-            // implicitWidth: __realContentWidth; implicitHeight: childrenRect.height
 
             delegate: Row {
                 id: _row
                 height: LCGeometry.BarHeight
                 spacing: 0
-                // width: LCGeometry.BarWidth; height: LCGeometry.BarHeight
 
                 property int __rowx: model.index
 
@@ -55,7 +50,7 @@ ScrollView {
                     model: p_header
                     delegate: LCRectangle {
                         id: _cell
-                        clip: true
+                        //clip: true
                         height: parent.height
 
                         p_border.width: 1
@@ -94,7 +89,7 @@ ScrollView {
                             }
                             // hook up width in strong reference
                             _cell.width = __childrenWidthsManager[model.index].width
-                            console.log("LCTable.qml:101#_cell", model.index, _cell.width)
+                            console.log("LCTable.qml:97#_cell", model.index, _cell.width)
                         }
                     }
                 }
@@ -146,8 +141,8 @@ ScrollView {
 
                     Component.onCompleted: {
                         const preferredWidth = _headerTxt.width + LCGeometry.HSpacingM * 2
-                        __childrenWidthsManager[model.index] = _headerRect
                         _headerRect.width = preferredWidth
+                        __childrenWidthsManager[model.index] = _headerRect
                         fn__updateContentWidth(0, preferredWidth)
                         // after this component completed, the `__childrenWidthsManager` got initialized, too.
                         // console.log("LCTable.qml:141#_headerRect", '__childrenWidthsManager initialized')
@@ -181,19 +176,5 @@ ScrollView {
         onPressAndHold: mouse.accepted = false
         onPressed: mouse.accepted = false
         onReleased: mouse.accepted = false
-    }
-
-    Component.onCompleted: {
-        // _rows.anchors.top = _header.bottom
-
-        // _root.contentWidth = _header.width
-        // _root.contentHeight = _root.height
-        // console.log("LCTable.qml:185",
-        //             _root.width, _root.height,
-        //             _root.contentWidth, _root.contentHeight,
-        //             _mainBody.width, _mainBody.height)
-        // for (let i in __childrenWidthsManager) {
-        //     console.log("LCTable.qml:190", __childrenWidthsManager[i].width)
-        // }
     }
 }
