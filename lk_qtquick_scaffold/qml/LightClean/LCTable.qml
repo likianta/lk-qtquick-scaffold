@@ -1,13 +1,17 @@
 import QtQuick 2.14
+import QtQuick.Controls 2.14
 import QtQml.Models 2.14
 import "./LCStyle/geometry.js" as LCGeometry
 
-Item {
+ScrollView {
     id: _root
     anchors.margins: LCGeometry.MarginM
+    clip: true
 
     property var p_header  // [str title, ...]
-    property var p_model  // [{title: value}, ...]
+    property var p_model  // [{title: value}, ...]. p_model[0].keys() == p_header
+    property var p_widths: []  // [float, ...]. len(self) == len(p_header)
+    property real __cellWidth
 
     Row {
         id: _header
@@ -16,6 +20,7 @@ Item {
         Repeater {
             model: p_header
             delegate: LCRectangle {
+                width: __cellWidth; height: parent.height
                 p_border.width: 1
                 p_radius: 0
 
@@ -36,6 +41,16 @@ Item {
                     }
                 }
             }
+        }
+
+        Component.onCompleted: {
+            __cellWidth = _root.width / p_header.length
+            // TODO: `p_widths` not ready to use.
+            // if (p_widths.length == 0) {
+            //     __cellWidth = _root.width / p_header.length
+            // } else {
+            //
+            // }
         }
     }
 
@@ -60,6 +75,9 @@ Item {
                 model: p_header
                 delegate: LCRectangle {
                     id: _cell
+                    clip: true
+                    width: __cellWidth; height: parent.height
+
                     p_border.width: 1
                     p_radius: 0
 
@@ -90,6 +108,7 @@ Item {
                             parent.p_index,  // rowx
                             _rows.model[parent.p_index][p_title]  // allData[rowx][title]
                         )
+                        _cell.width = _cell.childrenRect.width
                     }
                 }
             }
