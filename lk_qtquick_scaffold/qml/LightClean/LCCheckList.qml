@@ -24,15 +24,7 @@ LCListView {
         p_text: modelData
         property int p_index: model.index
         onClicked: {
-            r_data[p_index] = checked
-            if (checked) {
-                r_checked.push(p_index)
-                r_unchecked = fn__remove(r_unchecked, p_index)
-            } else {
-                r_unchecked.push(p_index)
-                r_checked = fn__remove(r_unchecked, p_index)
-            }
-
+            fn__updateCheckState(_item)
             fn_clicked(p_index, _item)
         }
 
@@ -40,23 +32,36 @@ LCListView {
             for (let k in p_childrenProps) {
                 _item[k] = p_childrenProps[k]
             }
+            fn__updateCheckState(_item)
         }
     }
 
-    function fn__remove(arr, val) {
-        // https://www.jianshu.com/p/b01363f88e64
-        const pos = arr.indexOf(val)
-        if (pos >= 0) {
-            arr.splice(pos, 1)
+    function fn__updateCheckState(item) {
+        r_data[item.p_index] = item.checked
+        if (item.checked) {
+            r_checked.push(item.p_index)
+
+            const pos = r_unchecked.indexOf(item.p_index)
+            if (pos >= 0) {
+                r_unchecked.splice(pos, 1)
+            }
+        } else {
+            r_unchecked.push(item.p_index)
+            const pos = r_checked.indexOf(item.p_index)
+            if (pos >= 0) {
+                r_checked.splice(pos, 1)
+            }
         }
-        return arr
     }
 
     Component.onCompleted: {
         for (let i in p_default) {
             r_data[p_default[i]] = true
             r_checked.push(p_default[i])
-            r_unchecked = fn__remove(r_unchecked, p_default[i])
+            const pos = r_unchecked.indexOf(p_default[i])
+            if (pos >= 0) {
+                r_unchecked.splice(pos, 1)
+            }
         }
     }
 }

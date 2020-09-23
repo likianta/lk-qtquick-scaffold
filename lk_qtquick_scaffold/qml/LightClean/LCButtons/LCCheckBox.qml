@@ -33,6 +33,7 @@ CheckBox {
     indicator: LCRectangle {
         id: _indicator
         anchors.verticalCenter: parent.verticalCenter
+        clip: true
         width: LCGeometry.IndicatorCheckWidth; height: LCGeometry.IndicatorCheckHeight
 
         p_border.width: 1; p_border.color: __active ? LCPalette.ButtonChecked : LCPalette.ButtonUnchecked

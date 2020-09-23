@@ -30,6 +30,25 @@ class PyHooks(QObject):
         #   {path: {uid: obj}}
         #   e.g. {'./ui/SomeComp.qml': {'_txt': PySide2.QtCore.QObject}}
         self.values = {}  # type: Dict[str, Tuple[QVal, QSource]]
+        
+    @Slot(QObj)
+    def scanning_qml_tree(self, root: QObj):  # TODO
+        lk.loga(root.children(), type(root.children()))
+        
+        params = {}
+        
+        def _search_pykv_prop(node: QObj):
+            for i in node.children():
+                # item..property('pykv') -> <None, QVal>
+                #   -> QVal.toVariant(): dict, mostly one key-value pair.
+                if kv := i.property('pykv'):  # type: QVal
+                    params.update(kv.toVariant())
+                else:
+                    _search_pykv_prop(i)
+                # lk.loga(i.property('pykv'))
+    
+        _search_pykv_prop(root)
+        lk.loga(params)
     
     @Slot(str, QVal, str)
     @Slot(str, QVal)
