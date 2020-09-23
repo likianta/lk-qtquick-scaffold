@@ -63,6 +63,8 @@ ScrollView {
                 id: _list
                 objectName: "LCTable.qml#_list" + p_colx
 
+                // TODO: disable dragging effect.
+
                 clip: true
                 height: __cellHeight * (model.length + 1)  // `+1` indicates to the header.
                 model: __data[p_colx]  // -> [value1, value2, ...]
