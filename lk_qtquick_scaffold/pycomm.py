@@ -1,7 +1,7 @@
 """
 @Author   : likianta (likianta@foxmail.com)
 @FileName : pycomm.py
-@Version  : 0.5.0
+@Version  : 0.5.1
 @Created  : 2020-09-09
 @Updated  : 2020-09-23
 @Desc     : 
@@ -30,7 +30,7 @@ class PyHooks(QObject):
         #   {path: {uid: obj}}
         #   e.g. {'./ui/SomeComp.qml': {'_txt': PySide2.QtCore.QObject}}
         self.values = {}  # type: Dict[str, Tuple[QVal, QSource]]
-        self._params = {}
+        self._params = {}  # {str key: (QObj item, str item_prop)}
     
     @Slot(QObj)
     def scanning_qml_tree(self, root: QObj):
@@ -49,6 +49,7 @@ class PyHooks(QObject):
             一个属性.
         注意:
             1. 在静态组件中设置 pykv
+            2. pykv 必须是 dict
         """
         self._params.clear()
         
@@ -58,10 +59,10 @@ class PyHooks(QObject):
                 #   -> QVal.toVariant(): dict, mostly one key-value pair.
                 if kv := i.property('pykv'):  # type: QVal
                     x = self._params.setdefault(i, {})
-                    x.update(kv.toVariant())
+                    for k, v in kv.toVariant().items():
+                        x[k] = (i, v)
                 else:
                     _search_pykv_prop(i)
-                # lk.loga(i.property('pykv'))
         
         _search_pykv_prop(root)
         lk.loga(self._params)
