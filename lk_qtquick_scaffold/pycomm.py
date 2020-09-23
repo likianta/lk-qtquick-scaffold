@@ -1,9 +1,9 @@
 """
 @Author   : likianta (likianta@foxmail.com)
 @FileName : pycomm.py
-@Version  : 0.4.3
+@Version  : 0.5.0
 @Created  : 2020-09-09
-@Updated  : 2020-09-19
+@Updated  : 2020-09-23
 @Desc     : 
 """
 
@@ -30,25 +30,41 @@ class PyHooks(QObject):
         #   {path: {uid: obj}}
         #   e.g. {'./ui/SomeComp.qml': {'_txt': PySide2.QtCore.QObject}}
         self.values = {}  # type: Dict[str, Tuple[QVal, QSource]]
-        
+        self._params = {}
+    
     @Slot(QObj)
-    def scanning_qml_tree(self, root: QObj):  # TODO
-        lk.loga(root.children(), type(root.children()))
-        
-        params = {}
+    def scanning_qml_tree(self, root: QObj):
+        """
+        QML 使用方式:
+            对要被扫描的组件, 添加一个属性:
+                Button {
+                    objectName: "MyButton"
+                    text: "Click me"
+                    property var pykv: {
+                        "button_text": "text",
+                        "button_id": "objectName"
+                    }
+                }
+            其中, key 是字符串类型, 内容自定义. val 也是字符串类型, 表示该对象的
+            一个属性.
+        注意:
+            1. 在静态组件中设置 pykv
+        """
+        self._params.clear()
         
         def _search_pykv_prop(node: QObj):
             for i in node.children():
                 # item..property('pykv') -> <None, QVal>
                 #   -> QVal.toVariant(): dict, mostly one key-value pair.
                 if kv := i.property('pykv'):  # type: QVal
-                    params.update(kv.toVariant())
+                    x = self._params.setdefault(i, {})
+                    x.update(kv.toVariant())
                 else:
                     _search_pykv_prop(i)
                 # lk.loga(i.property('pykv'))
-    
+        
         _search_pykv_prop(root)
-        lk.loga(params)
+        lk.loga(self._params)
     
     @Slot(str, QVal, str)
     @Slot(str, QVal)
