@@ -1,13 +1,10 @@
-import QtQuick 2.14
 import "./LCStyle/palette.js" as LCPalette
 
-Rectangle {
+LCRectangle {
     id: _root
     // when you need to put a field item, just define the property `p_key` & `p_val` in that item. LCForm will iterate
     //      these properties and post as a whole data.
-    border.width: p_border ? 1 : 0; border.color: LCPalette.BorderNormal
 
-    property bool p_border: false
     property var p_data: Object()
 
     // call `fn_collectData(_root)`

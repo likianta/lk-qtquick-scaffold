@@ -14,4 +14,10 @@ ListView {
     property alias p_spacing: _root.spacing
     property int r_count: p_model.length
     property alias r_currentItem: _root.currentItem
+
+    Component.onCompleted: {
+        if (_root.height == 0) {
+            _root.height = childrenRect.height
+        }
+    }
 }

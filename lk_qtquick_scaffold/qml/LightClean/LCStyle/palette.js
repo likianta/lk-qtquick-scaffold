@@ -18,7 +18,8 @@ const EditbarNormal = "#F2F2F2"
 
 const ButtonPrimary = ThemeBlue
 const ButtonNormal = "#FFFFFF"
-const ButtonChecked = ThemeLightBlue
+const ButtonChecked = ThemeDeepBlue
+const ButtonUnchecked = "#CCCCCC"
 const ButtonHovered = "#C7E5FF"
 const ButtonPressed = ThemeDeepBlue
 

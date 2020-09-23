@@ -15,6 +15,13 @@ CheckBox {
     //     console.log("LCCheckBox", "check changed", __active)
     // }
 
+    background: LCRectangle {
+        id: _bg
+        implicitWidth: LCGeometry.ButtonWidthM; implicitHeight: LCGeometry.ButtonHeightM
+        p_border.width: 0
+        p_color: "transparent"
+    }
+
     contentItem: LCText {
         id: _txt
         anchors.fill: parent
@@ -28,7 +35,7 @@ CheckBox {
         anchors.verticalCenter: parent.verticalCenter
         width: LCGeometry.IndicatorCheckWidth; height: LCGeometry.IndicatorCheckHeight
 
-        p_border.width: 1
+        p_border.width: 1; p_border.color: __active ? LCPalette.ButtonChecked : LCPalette.ButtonUnchecked
         p_radius: LCGeometry.IndicatorCheckRadius
 
         LCRectangleBg {
@@ -38,7 +45,7 @@ CheckBox {
 
             p_active: __active
             p_border.width: 0
-            p_color0: "transparent"; p_color1: LCPalette.ButtonChecked
+            p_color0: LCPalette.Transparent; p_color1: LCPalette.ButtonChecked
             p_radius: parent.radius
         }
     }
