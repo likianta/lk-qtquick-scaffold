@@ -4,17 +4,19 @@ import "./LCStyle/geometry.js" as LCGeometry
 
 ScrollView {
     id: _root
+    clip: true
     contentWidth: _row.width; contentHeight: _row.height
     wheelEnabled: true
 
-    property int p_cellWidthMax: LCGeometry.BarWidth
     property var p_dataA  // {field: list values}  // suggest
     property var p_dataB  // [list row_values, ...]  // not suggest
-    property var p_delegates: Object()  // {colx: CellComponent}  // FIXME: this is experimental property
+    property var p_delegates: Object()  // {title: CellComponent}  // FIXME: this is experimental property
     property var p_header  // [str field, ...]
     property var __data: Object()
     //      [list col_values, ...], you can use `__data[0][1]` to fetch (2nd row, 1st col)'s cell value.
     property int __cellHeight: LCGeometry.BarHeight
+    property int __cellWidthMax: LCGeometry.BarWidth
+    property int __cellWidthMin: LCGeometry.ButtonWidthM
 
     onP_dataAChanged: {
         let colx
@@ -47,7 +49,7 @@ ScrollView {
 
     Row {  // horizontal linear constraint
         id: _row
-        height: parent.height
+        height: childrenRect.height
         // width: __cellHeight * __data.length
         //      while width matches children content width. or: `width = __cellHeight * __data.length`
 
@@ -58,27 +60,77 @@ ScrollView {
             model: p_header
 
             delegate: ListView {
-                // TODO: drag the right edge to resize ListView's width.
                 id: _list
                 objectName: "LCTable.qml#_list" + p_colx
+
+                clip: true
+                height: __cellHeight * (model.length + 1)  // `+1` indicates to the header.
                 model: __data[p_colx]  // -> [value1, value2, ...]
-                width: LCGeometry.ButtonWidthM
-                property string p_title: modelData  // provided by parent (Repeater)
+                width: __preferredWidth + __deltaX
+
                 property int p_colx: p_header.indexOf(modelData)
+                property string p_title: modelData  // provided by parent (Repeater)
+                property int __deltaX: 0
+                property int __preferredWidth: __cellWidthMin
 
                 delegate: {
-                    if (p_delegates[p_colx]) {
-                        return p_delegates[p_colx]
+                    if (p_delegates[p_title]) {
+                        return p_delegates[p_title]
                     } else {
                         return _defaultCell
                     }
                 }
 
-                Component.onCompleted: {
-                    _list.height = childrenRect.height
-                    console.log("LCTable.qml:78", p_colx, _list.model,
-                                [_list.width, _list.height], )
+                header: LCRectangle {
+                    width: parent.parent.width; height: __cellHeight
+                    //     ^ `parent.parent` points to ListView
+                    z: 2
+                    p_border.width: 1
+                    p_radius: 0
+
+                    LCText {
+                        anchors.centerIn: parent
+                        p_text: p_title
+                    }
+
+                    Item {
+                        // color: "red"
+                        width: 10; height: parent.height
+                        y: 0
+
+                        property int __offset
+
+                        // make ListView header draggable (drag right edge to chage its width)
+                        //      https://stackoverflow.com/questions/29087710/how-to-make-a-resizable-rectangle-in-qml
+                        MouseArea {
+                            id: _draggie
+                            anchors.fill: parent
+                            drag.axis: Drag.XAxis
+                            drag.minimumX: 0  // 0 or delegate.item.width?
+                            drag.target: parent
+
+                            property int __minX: -1 * __cellWidthMin
+
+                            onMouseXChanged: {
+                                if (drag.active) {
+                                    // console.log("LCTable.qml:116", mouseX, parent.x)
+                                    __deltaX = parent.x - parent.__offset
+                                }
+                            }
+                        }
+
+                        Component.onCompleted: {
+                            x = parent.x + parent.width - width
+                            __offset = x
+                        }
+                    }
                 }
+
+                // Component.onCompleted: {
+                //     console.log("LCTable.qml:78", p_colx, _list.model,
+                //                 [_list.width, _list.height],
+                //                 [_list.headerItem.width, _list.headerItem.height])
+                // }
             }
         }
 
@@ -115,12 +167,12 @@ ScrollView {
                     // //                                     ^ this is ListView
 
                     let preferredWidth = _txt.width + LCGeometry.HSpacingM * 2
-                    if (preferredWidth > p_cellWidthMax) {
-                        preferredWidth = p_cellWidthMax
+                    if (preferredWidth > __cellWidthMax) {
+                        preferredWidth = __cellWidthMax
                     }
 
-                    if (preferredWidth > parent.parent.width) {
-                        parent.parent.width = preferredWidth
+                    if (preferredWidth > parent.parent.__preferredWidth) {
+                        parent.parent.__preferredWidth = preferredWidth
                     }
 
                     // console.log("LCTable.qml:125",
@@ -144,6 +196,12 @@ ScrollView {
                 } else {
                     _root.ScrollBar.horizontal.increase()
                 }
+            } else {
+                if (wheel.angleDelta.y > 0) {
+                    _root.ScrollBar.vertical.decrease()
+                } else {
+                    _root.ScrollBar.vertical.increase()
+                }
             }
         }
 
@@ -156,10 +214,10 @@ ScrollView {
         onReleased: mouse.accepted = false
     }
 
-    Component.onCompleted: {
-        // console.log("LCTable.qml:159",
-        //             [_root.width, _root.height],
-        //             [_root.contentWidth, _root.contentHeight],
-        //             [_row.width, _row.height],)
-    }
+    // Component.onCompleted: {
+    //     console.log("LCTable.qml:191",
+    //                 [_root.width, _root.height],
+    //                 [_root.contentWidth, _root.contentHeight],
+    //                 [_row.width, _row.height],)
+    // }
 }
