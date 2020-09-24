@@ -6,7 +6,6 @@
 @Updated  : 2020-09-24
 @Desc     : 
 """
-
 from PySide2.QtCore import QAbstractListModel, QMetaObject, Qt, Slot
 from lk_logger import lk
 
@@ -103,7 +102,7 @@ class PyHooks(QObject):
             if isinstance(v, str) and v.startswith(':'):
                 # e.g. k = 'btn_name', v = ':text'
                 #   -> yield 'btn_name', item.property('text')
-                yield k, item.property(v[1:])
+                yield k, item.property(v[1:]).toVariant()
             else:
                 # e.g. k = 'btn_width', v = 80
                 #   -> yield 'btn_width', 80
@@ -132,7 +131,7 @@ class PyHooks(QObject):
                     for (k, v) in kv:
                         yield from _unpack_kv()
     
-    def get_qparams(self):
+    def get_qparams(self) -> dict:
         return {k: v for k, v in self._unpack_hooks()}
     
     @Slot(str, QVal, str)

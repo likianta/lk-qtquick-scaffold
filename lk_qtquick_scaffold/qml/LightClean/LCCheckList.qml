@@ -5,13 +5,13 @@ LCListView {
 
     property var p_childrenProps: Object()
     property var p_default: Array()
-    property var r_checked: Set()
+    property var r_checked: Array()
     property var r_checks: Object()
-    property var r_unchecked: Set()
+    property var r_unchecked: Array()
     // extend props:
     //      p_currentIndex
     //      p_delegate
-    //      p_model
+    //      p_model  // [str, ...]
     //      p_spacing
     //      r_count
     //      r_currentItem
@@ -20,37 +20,50 @@ LCListView {
 
     p_delegate: LCCheckBox {
         id: _item
-        checked: r_data[p_index] ? true : false
         p_text: modelData
-        property int p_index: model.index
+        property int r_index: model.index
         onClicked: {
             fn__updateCheckState(_item)
-            fn_clicked(p_index, _item)
+            fn_clicked(r_index, _item)
         }
 
         Component.onCompleted: {
             for (let k in p_childrenProps) {
                 _item[k] = p_childrenProps[k]
             }
-            fn__updateCheckState(_item)
+            // console.log("LCCheckList.qml:34", r_checked)
+            if (p_default.indexOf(_item.r_index) != -1) {
+                _item.checked = true
+            }
         }
     }
 
     function fn__updateCheckState(item) {
-        r_data[item.p_index] = item.checked
+        r_checks[item.r_index] = item.checked
         if (item.checked) {
-            r_checked.add(item.p_index)
-            r_unchecked.delete(item.p_index)
+            if (r_checked.indexOf(item.r_index) == -1) {
+                r_checked.push(item.r_index)
+            }
+            const pos = r_unchecked.indexOf(item.r_index)
+            if (pos != -1) {
+                r_unchecked.splice(pos, 1)
+            }
         } else {
-            r_checked.delete(item.p_index)
-            r_unchecked.add(item.p_index)
+            if (r_unchecked.indexOf(item.r_index) == -1) {
+                r_unchecked.push(item.r_index)
+            }
+            const pos = r_checked.indexOf(item.r_index)
+            if (pos != -1) {
+                r_checked.splice(pos, 1)
+            }
         }
     }
 
     Component.onCompleted: {
         for (let i in p_default) {
-            r_data[p_default[i]] = true
-            r_checked.add(p_default[i])
+            r_checks[p_default[i]] = true
+            r_checked.push(p_default[i])
         }
+        // console.log("LCCheckList.qml:67", r_checked)
     }
 }
