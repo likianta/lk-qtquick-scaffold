@@ -1,9 +1,9 @@
 """
 @Author   : likianta (likianta@foxmail.com)
 @FileName : pycomm.py
-@Version  : 0.5.1
+@Version  : 0.6.0
 @Created  : 2020-09-09
-@Updated  : 2020-09-23
+@Updated  : 2020-09-24
 @Desc     : 
 """
 
@@ -13,6 +13,7 @@ from lk_logger import lk
 from _typing import *
 
 
+# noinspection PyUnresolvedReferences
 class PyHooks(QObject):
     """ Hookup qml objects, and store the reference in Python dict.
     
@@ -26,46 +27,113 @@ class PyHooks(QObject):
     
     def __init__(self):
         super().__init__()
-        self.hooks = {}  # type: Dict[QPath, Dict[QUid, QObj]]
+        self._datapot = {}  # type: Dict[str, Tuple[QVal, QSource]]
+        self._hooks = set()  # type: Set[QObj]
+        self._qobj_holder = {}  # type: Dict[QPath, Dict[QUid, QObj]]
         #   {path: {uid: obj}}
         #   e.g. {'./ui/SomeComp.qml': {'_txt': PySide2.QtCore.QObject}}
-        self.values = {}  # type: Dict[str, Tuple[QVal, QSource]]
-        self._params = {}  # {str key: (QObj item, str item_prop)}
     
     @Slot(QObj)
     def scanning_qml_tree(self, root: QObj):
         """
-        QML 使用方式:
-            对要被扫描的组件, 添加一个属性:
-                Button {
-                    objectName: "MyButton"
-                    text: "Click me"
-                    property var pykv: {
-                        "button_text": "text",
-                        "button_id": "objectName"
+        使用方法:
+            示例: 在 QML 根布局中 (通常是 Window), 调用:
+                    Window {
+                        id: _root
+                        ...
+                        Component.onCompleted: {
+                            PyHooks.scanning_qml_tree(_root)
+                        }
                     }
-                }
-            其中, key 是字符串类型, 内容自定义. val 也是字符串类型, 表示该对象的
-            一个属性.
+                PyHooks 将从根布局出发, 遍历所有子对象, 如果子对象中包含以下属性:
+                    Item {
+                        property var pyhook
+                        ...
+                    }
+                则该对象的 pyhook 会经过解析, 更新到 PyHooks._hooks 字典中.
+            语法格式定义:
+                `property var pyhook` 支持以下格式:
+                    1. property var pyhook: {key: val, ...}
+                        key 可以自定义, 但需保证全局唯一.
+                        val 可以是常见的 js 类型 (基本类型, list, dict), 也可以
+                            是指该组件的某个已存在的属性值, 比如 Button 的 text,
+                            width, height, x, y, background 等, 注意:
+                            1. 当作属性时, 格式为 ':width' (以冒号开头的字符串).
+                            2. 属性 id 不能用作 val, 即 ':id' 会导致程序有报错的
+                                风险.
+                        示例: Button {
+                            property var pyhook: {
+                                'description': 'the main button',
+                                'btn_name': ':text',
+                            }
+                        }
+                    2. property var pyhook: [str key, str prop]
+                        key 可以自定义, 但需保证全局唯一.
+                        prop 指该组件的某个已存在的属性值, 比如 Button 的 text,
+                        width, height, x, y, background 等, 注意 id 不能使用.
+                        示例: Button {property var pyhook: ['event', 'text']}
+                    3. property var pyhook: [[str key, str prop], ...]
+                       示例: Button {
+                            property var pyhook: [
+                                ['btn_width', ':width'],
+                                ['btn_height', ':height'],
+                            ]
+                        }
         注意:
-            1. 在静态组件中设置 pykv
-            2. pykv 必须是 dict
+            1. 在静态组件中设置 pyhook
+            3. LCWindow 根布局不能设置 pyhook
+            4. Repeater, ListView 等的 children 不能设置 pyhook. 如 children 需要
+                更新 pyhook, 请调用 parent 的 pyhook
         """
-        self._params.clear()
+        self._hooks.clear()
         
-        def _search_pykv_prop(node: QObj):
-            for i in node.children():
-                # item..property('pykv') -> <None, QVal>
-                #   -> QVal.toVariant(): dict, mostly one key-value pair.
-                if kv := i.property('pykv'):  # type: QVal
-                    x = self._params.setdefault(i, {})
-                    for k, v in kv.toVariant().items():
-                        x[k] = (i, v)
+        def _search_pyhooks(node: QObj):
+            for child_node in node.children():
+                # lk.loga(child_node, child_node.property('pyhook'))
+                if child_node.property('pyhook'):
+                    self._hooks.add(child_node)
+                else:  # None
+                    _search_pyhooks(child_node)
+        
+        _search_pyhooks(root)
+        lk.loga(len(self._hooks))
+    
+    def _unpack_hooks(self):
+        def _unpack_kv():
+            if isinstance(v, str) and v.startswith(':'):
+                # e.g. k = 'btn_name', v = ':text'
+                #   -> yield 'btn_name', item.property('text')
+                yield k, item.property(v[1:])
+            else:
+                # e.g. k = 'btn_width', v = 80
+                #   -> yield 'btn_width', 80
+                yield k, v
+        
+        for item in self._hooks:
+            kv = item.property('pyhook').toVariant()
+            """ |dict|list|double_list|
+                dict: {key: val, ...}
+                    key: str
+                    val: |str|int|bool|list|dict|None|
+                        str: 1. str startswith ':' like ':text', it aims to
+                                item's existed property.
+                             2. str not startswith ':', it just a plain string.
+                list: [key, val]
+                double_list: [[key1, val1], [key2, val2], ...]
+            """
+            if isinstance(kv, dict):
+                for k, v in kv.items():
+                    yield from _unpack_kv()
+            else:
+                if isinstance(kv[0], str):
+                    k, v = kv
+                    yield from _unpack_kv()
                 else:
-                    _search_pykv_prop(i)
-        
-        _search_pykv_prop(root)
-        lk.loga(self._params)
+                    for (k, v) in kv:
+                        yield from _unpack_kv()
+    
+    def get_qparams(self):
+        return {k: v for k, v in self._unpack_hooks()}
     
     @Slot(str, QVal, str)
     @Slot(str, QVal)
@@ -88,7 +156,7 @@ class PyHooks(QObject):
         :param source:
         :return:
         """
-        self.values[key] = (val.toVariant(), source)
+        self._datapot[key] = (val.toVariant(), source)
     
     @Slot(str, result=QVar)
     def get_value(self, key: str) -> Any:
@@ -103,25 +171,25 @@ class PyHooks(QObject):
         :param key:
         :return:
         """
-        return self.values.get(key, [None, ''])[0]
+        return self._datapot.get(key, [None, ''])[0]
     
     # --------------------------------------------------------------------------
     
     @Slot()
     @Slot(str)
     @Slot(str, str)
-    def debug(self, source='', view='hooks'):
+    def debug(self, source='', view='_qobj_holder'):
         lk.loga(source, view)
         lk.init_count()
-        if view == 'hooks':
-            if self.hooks:
-                for path, val in self.hooks.items():
+        if view == '_qobj_holder':
+            if self._qobj_holder:
+                for path, val in self._qobj_holder.items():
                     for uid, obj in val.items():
                         lk.logax(path, uid, obj)
             else:
-                lk.loga(self.hooks)
-        elif view == 'values':
-            for k, v in self.values.items():
+                lk.loga(self._qobj_holder)
+        elif view == '_datapot':
+            for k, v in self._datapot.items():
                 lk.logax(k, v)
     
     @staticmethod
@@ -158,12 +226,12 @@ class PyHooks(QObject):
     @Slot(str, QObj)
     def set_one(self, url: str, obj: QObj):
         path, uid = url.rsplit('#', 1)
-        node = self.hooks.setdefault(path, {})
+        node = self._qobj_holder.setdefault(path, {})
         node[uid] = obj
     
     @Slot(str, QVal)
     def set_dict(self, path: str, uid2obj: QVal):
-        node = self.hooks.setdefault(path, {})
+        node = self._qobj_holder.setdefault(path, {})
         uid2obj = uid2obj.toVariant()  # type: dict
         node.update(uid2obj)
     
@@ -203,7 +271,7 @@ class PyHooks(QObject):
     def get_one(self, url: QUrl) -> Union[QObj, None]:
         path, uid = url.rsplit('#', 1)
         try:
-            return self.hooks[path][uid]
+            return self._qobj_holder[path][uid]
         except KeyError as e:
             lk.logt('[W2116]', 'Cannot find key', e)
             return None
@@ -215,11 +283,11 @@ class PyHooks(QObject):
         :param path:
         :return:
         """
-        return list(self.hooks[path].values())
+        return list(self._qobj_holder[path].values())
     
     @Slot(str, result=QVar)
     def get_dict(self, path) -> Dict[QUid, QObj]:
-        return self.hooks[path]
+        return self._qobj_holder[path]
     
     @Slot(str, result=QVar)
     @Slot(QVal, result=QVar)

@@ -5,9 +5,9 @@ LCListView {
 
     property var p_childrenProps: Object()
     property var p_default: Array()
-    property var r_checked: Array()
-    property var r_data: Object()
-    property var r_unchecked: Array()
+    property var r_checked: Set()
+    property var r_checks: Object()
+    property var r_unchecked: Set()
     // extend props:
     //      p_currentIndex
     //      p_delegate
@@ -39,29 +39,18 @@ LCListView {
     function fn__updateCheckState(item) {
         r_data[item.p_index] = item.checked
         if (item.checked) {
-            r_checked.push(item.p_index)
-
-            const pos = r_unchecked.indexOf(item.p_index)
-            if (pos >= 0) {
-                r_unchecked.splice(pos, 1)
-            }
+            r_checked.add(item.p_index)
+            r_unchecked.delete(item.p_index)
         } else {
-            r_unchecked.push(item.p_index)
-            const pos = r_checked.indexOf(item.p_index)
-            if (pos >= 0) {
-                r_checked.splice(pos, 1)
-            }
+            r_checked.delete(item.p_index)
+            r_unchecked.add(item.p_index)
         }
     }
 
     Component.onCompleted: {
         for (let i in p_default) {
             r_data[p_default[i]] = true
-            r_checked.push(p_default[i])
-            const pos = r_unchecked.indexOf(p_default[i])
-            if (pos >= 0) {
-                r_unchecked.splice(pos, 1)
-            }
+            r_checked.add(p_default[i])
         }
     }
 }
