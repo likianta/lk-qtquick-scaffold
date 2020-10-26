@@ -13,12 +13,12 @@ Popup {
     modal: true  // Forbit user's click event outside the popup window.
     width: p_endW; height: p_endH
 
+    property bool p_active: false
     property int p_endW: 380; property int p_endH: 270
     property int __endX: _root.x; property int __endY: _root.y
     property int p_startW: 0; property int p_startH: 0
     property int p_startX: 0; property int p_startY: 0  // FIXME: no effect
 
-    property bool p_active: false
     onP_activeChanged: {
         if (p_active) {
             _root.open()

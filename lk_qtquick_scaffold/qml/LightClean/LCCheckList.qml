@@ -2,7 +2,6 @@ import QtQuick 2.14
 import "./LCButtons"
 
 LCListView {
-
     property var p_childrenProps: Object()
     property var p_default: Array()
     property var r_checked: Array()

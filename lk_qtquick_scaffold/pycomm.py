@@ -3,7 +3,7 @@
 @FileName : pycomm.py
 @Version  : 0.6.0
 @Created  : 2020-09-09
-@Updated  : 2020-09-24
+@Updated  : 2020-10-13
 @Desc     : 
 """
 from PySide2.QtCore import QAbstractListModel, QMetaObject, Qt, Slot
@@ -81,8 +81,8 @@ class PyHooks(QObject):
         注意:
             1. 在静态组件中设置 pyhook
             3. LCWindow 根布局不能设置 pyhook
-            4. Repeater, ListView 等的 children 不能设置 pyhook. 如 children 需要
-                更新 pyhook, 请调用 parent 的 pyhook
+            4. Repeater, ListView 等的 children 不能设置 pyhook. 如 children 需
+                要更新 pyhook, 请调用 parent 的 pyhook
         """
         self._hooks.clear()
         
@@ -101,7 +101,7 @@ class PyHooks(QObject):
         def _unpack_kv():
             if isinstance(v, str) and v.startswith(':'):
                 # e.g. k = 'btn_name', v = ':text'
-                #   -> yield 'btn_name', item.property('text')
+                #   -> yield 'btn_name', item.property('text').toVariant()
                 yield k, item.property(v[1:]).toVariant()
             else:
                 # e.g. k = 'btn_width', v = 80
@@ -110,10 +110,10 @@ class PyHooks(QObject):
         
         for item in self._hooks:
             kv = item.property('pyhook').toVariant()
-            """ |dict|list|double_list|
+            """ |dict, list, double_list|
                 dict: {key: val, ...}
                     key: str
-                    val: |str|int|bool|list|dict|None|
+                    val: |str, int, bool, list, dict, None|
                         str: 1. str startswith ':' like ':text', it aims to
                                 item's existed property.
                              2. str not startswith ':', it just a plain string.
@@ -319,7 +319,7 @@ class PyHooks(QObject):
             return list(map(self.get_one, urls))
 
 
-class QtHooks(QObject):
+class QtHooks(QObject):  # DELETE
     
     def __init__(self, engine, pyhooks: PyHooks):
         super().__init__()

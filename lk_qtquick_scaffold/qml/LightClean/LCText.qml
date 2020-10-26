@@ -18,9 +18,21 @@ Text {
         if (p_alignment == 'center') {
             _root.horizontalAlignment = Text.AlignHCenter
             _root.verticalAlignment = Text.AlignVCenter
-        } else if (p_alignment == 'hcenter') {  // not often used
+        } else if (p_alignment == 'hcenter') {
             _root.horizontalAlignment = Text.AlignHCenter
+        } else if (p_alignment == 'htop') {
+            _root.horizontalAlignment = Text.AlignHCenter
+            _root.verticalAlignment = Text.AlignTop
+        } else if (p_alignment == 'hbottom') {
+            _root.horizontalAlignment = Text.AlignHCenter
+            _root.verticalAlignment = Text.AlignBottom
         } else if (p_alignment == 'vcenter') {
+            _root.verticalAlignment = Text.AlignVCenter
+        } else if (p_alignment == 'vleft') {
+            _root.horizontalAlignment = Text.AlignLeft
+            _root.verticalAlignment = Text.AlignVCenter
+        } else if (p_alignment == 'vright') {
+            _root.horizontalAlignment = Text.AlignRight
             _root.verticalAlignment = Text.AlignVCenter
         }
     }
