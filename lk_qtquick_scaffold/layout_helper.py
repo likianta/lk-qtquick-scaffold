@@ -3,7 +3,7 @@
 @FileName : layout_helper.py
 @Version  : 0.1.0
 @Created  : 2020-10-20
-@Updated  : 2020-10-20
+@Updated  : 2020-11-12
 @Desc     : 帮助 QML 布局减少代码量, 使用封装好的函数实现批量化的属性操作 (替代
     部分 JavaScript 功能).
 """
@@ -15,7 +15,7 @@ from _typing import *
 from launcher import Application
 
 
-class LayoutHelper(QObject):
+class LayoutHelper(QObj):
     """
     注意事项:
         锚点系统无法通过 LayoutHelper 设置. 例如, `Rectangle.left`, 它是一个
@@ -29,9 +29,9 @@ class LayoutHelper(QObject):
     def __init__(self, app: Application):
         super().__init__()
         app.register_pyobj('LayoutHelper', self)
-
+    
     @staticmethod
-    def _get_children(item: QObject) -> List[QObject]:
+    def _get_children(item: QObj) -> List[QObj]:
         """
         注意: `item.children()` 返回的列表中, 包含位置的 QObject.
             测试示例:
@@ -56,9 +56,9 @@ class LayoutHelper(QObject):
         """
         return [child for child in item.children()
                 if child.property('enabled') is not None]
-
+    
     @Slot(QObj)
-    def debug(self, item: QObject):
+    def debug(self, item: QObj):
         from PySide2.QtQml import QQmlProperty
         parent = item.parent()
         x = QQmlProperty(item, 'anchors')
@@ -67,9 +67,9 @@ class LayoutHelper(QObject):
         z = QQmlProperty(x.read(), 'right')
         lk.loga(z)
         z.write(y)
-
+    
     @Slot(QObj, QVar)
-    def set_children_props(self, parent: QObj, props: QJSValue):
+    def set_children_props(self, parent: QObj, props: QVal):
         props = props.toVariant()  # type: dict
         for child in self._get_children(parent):
             for k, v in props.items():
@@ -77,7 +77,7 @@ class LayoutHelper(QObject):
                 prop = QQmlProperty(child, k)  # B
                 prop.write(v)  # B
                 #   NOTE: scheme B is more stable than A.
-
+    
     '''
     def _emulate_anchors(self, qobj1, qobj2, align: str):  # FIXME or DELETE
         if '-' in align:

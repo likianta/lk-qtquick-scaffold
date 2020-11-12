@@ -7,17 +7,19 @@
 @Desc     : 
 """
 from typing import *
-from PySide2.QtCore import QObject
-from PySide2.QtQml import QJSValue
+from PySide2.QtCore import QObject as _QObject
+from PySide2.QtQml import QJSValue as _QJSValue
 
-QObj = QObject
+QObj = _QObject
 QPath = str  # e.g. './ui/SomeFolder/SomeComp.qml'
 QUid = str  # e.g. '_mouse_area'
 QUrl = str  # e.g. './ui/SomeFolder/SomeComp.qml#_mouse_area'
-QVal = QJSValue
+QVal = _QJSValue
 # QVal = Union[str, int, float, bool, list]
 QVar = 'QVariant'
 
+QSource = QPath
+
 # ------------------------------------------------------------------------------
 
-QSource = QPath
+PyVal = Union[bool, float, int, str, list, dict]
