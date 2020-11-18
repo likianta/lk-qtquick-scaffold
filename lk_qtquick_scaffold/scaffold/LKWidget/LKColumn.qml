@@ -1,15 +1,15 @@
 import QtQuick 2.15
-import "./LKStyle/dimension.js" as LKGeometry
+import "./LKStyle/dimension.js" as LKDimension
 
 Column {
     id: _root
-    anchors.margins: LKGeometry.MarginM
-    spacing: LKGeometry.VSpacingM
+    anchors.margins: LKDimension.MarginM
+    spacing: LKDimension.VSpacingM
 
-    property bool p_alignCenter: false
-    property bool p_fillEnd: false  // auto make the last item fill the remaining space.
-    //      https://stackoverflow.com/questions/27319985/how-to-make-last-item-in-qml-container-fill-remaining-space
-    property bool p_fillWidth: true
+    property bool  p_alignCenter: false
+    property bool  p_fillEnd: false  // auto make the last item fill the remaining space.
+    //  https://stackoverflow.com/questions/27319985/how-to-make-last-item-in-qml-container-fill-remaining-space
+    property bool  p_fillWidth: true
     property alias p_margins: _root.anchors.margins
     property alias p_spacing: _root.spacing
     // property int p_vpadding: 0

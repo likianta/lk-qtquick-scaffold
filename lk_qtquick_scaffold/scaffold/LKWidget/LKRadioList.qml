@@ -1,12 +1,12 @@
 import QtQuick 2.15
-import "./LKButtons"
+import "./LKButtons/LKRadioButton.qml" as LKRadioButton
 
 LKListView {
     id: _root
 
-    property var p_childrenProps: Object()
-    property int p_default: -1
-    property alias r_select: _root.p_currentIndex
+    property var   p_childrenProps: Object()
+    property int   p_default: -1
+    property alias r_select: _root.currentIndex
     // extend props:
     //      p_currentIndex
     //      p_delegate
@@ -15,14 +15,14 @@ LKListView {
     //      r_count
     //      r_currentItem
 
-    function fn_clicked(i, item) {}
+    function clicked(i, item) {}
 
     p_delegate: LKRadioButton {
         id: _item
         p_text: modelData
         property int p_index: model.index
         onClicked: {
-            p_currentIndex = p_index
+            _root.currentIndex = p_index
             fn_clicked(p_index, _item)
         }
 
@@ -37,7 +37,7 @@ LKListView {
 
     Component.onCompleted: {
         if (p_default > -1) {
-            p_currentIndex = p_default
+            _root.currentIndex = p_default
         }
     }
 }

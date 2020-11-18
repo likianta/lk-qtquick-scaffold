@@ -13,7 +13,7 @@ from PySide2.QtQml import QQmlProperty
 from _typing import *
 
 
-class QObjectWrapper:
+class QObjectDelegator:
     
     def __init__(self, qobj):
         self.qobj = qobj
@@ -26,8 +26,8 @@ class QObjectWrapper:
         out = []
         for child in self.children():
             if child.property('enabled') is not None:
-                out.append(QObjectWrapper(child))
-        return out  # type: List[QObjectWrapper]
+                out.append(QObjectDelegator(child))
+        return out  # type: List[QObjectDelegator]
     
     def __getattr__(self, item):
         """
@@ -38,7 +38,7 @@ class QObjectWrapper:
             raise Exception('QObjectWrapper is not fully initialized!')
         prop = QQmlProperty(self.qobj, item)
         if isinstance((out := prop.read()), QObj):
-            out = QObjectWrapper(out)
+            out = QObjectDelegator(out)
         else:
             self._holder[item] = out
         return out
@@ -67,7 +67,7 @@ def adapt_types(func):
         new_args = []
         for i in args:
             if isinstance(i, QObj):
-                new_args.append(QObjectWrapper(i))
+                new_args.append(QObjectDelegator(i))
             elif isinstance(i, QVal):
                 new_args.append(i.toVariant())
             else:
@@ -78,7 +78,7 @@ def adapt_types(func):
 
 
 @adapt_types
-def set_children_props(parent: QObjectWrapper, props: dict):
+def set_children_props(parent: QObjectDelegator, props: dict):
     for child in parent.children():
         for p, v in props.items():
             if p == 'size':

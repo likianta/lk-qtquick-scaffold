@@ -3,8 +3,8 @@ import "./LKButtons/LKCheckBox.qml" as LKCheckBox
 
 LKListView {
     id: _root
-    property var p_childrenProps: Object()
     property var p_checks: Object()  // {index: bool, ...}
+    property var p_childrenProps: Object()
     // inherits props:
     //      p_currentIndex
     //      p_delegate
@@ -13,7 +13,7 @@ LKListView {
     //      r_count
     //      r_currentItem
 
-    function fn_clicked(i, item) {}
+    function clicked(i, item) {}
 
     function getChecked() {  // -> [index, ...]
         let out = []
@@ -45,13 +45,16 @@ LKListView {
         }
     }
 
+    signal updateChecked(int)
+    signal updateUnchecked(int)
+
     p_delegate: LKCheckBox {
         id: _item
         p_text: modelData
         property int r_index: model.index
         onClicked: {
             _root.p_checks[_item.r_index] = _item.checked
-            fn_clicked(_item.r_index, _item)
+            _root.clicked(_item.r_index, _item)
         }
 
         Component.onCompleted: {
