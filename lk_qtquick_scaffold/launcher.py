@@ -1,9 +1,9 @@
 """
-@Author  : Likianta <likianta@foxmail.com>
+@Author  : likianta <likianta@foxmail.com>
 @Module  : launcher.py
 @Created : 2020-08-30
-@Updated : 2020-09-20
-@Version : 0.2.7
+@Updated : 2020-11-18
+@Version : 0.2.8
 @Desc    :
 """
 from sys import exit
@@ -22,16 +22,19 @@ class Application(QApplication):
     
     def __init__(self, entrance: str, *lib: str, **kwargs):
         """
-        :param entrance: 启动时要载入的 .qml 文件. 通常为 'somedir/main.qml'.
+        :param entrance: 启动时要载入的 .qml 文件. 通常为 '{somedir}/main.qml'
+            或 '{somedir}/view.qml'.
         :param lib: 要引入外部自定义 QML 模块, 则填写该模块的父目录路径. 例如,
-            我们在 A 项目中引入 lk_qtquick_scaffold 脚手架项目的 LightClean 模
-            块, 则:
-                lib = 'D:/somedir/lk_qtquick_scaffold/lk_qtquick_scaffold/qml',
-        :param kwargs: support keys: 'organization'.
+            我们在 A 项目中引入 lk_qtquick_scaffold 脚手架项目的 LKWidget 模块,
+            则:
+                lib: '~/lk_qtquick_scaffold/scaffold'
+        :param kwargs:
+            :key 'organization'
         """
         super().__init__()
         self.setOrganizationName(kwargs.get(
-            'organization', 'dev.likianta.lk_qtquick_scaffold'))
+            'organization', 'dev.likianta.lk_qtquick_scaffold'
+        ))
         #   该步骤是为了避免在 QML 中使用 QtQuick.Dialogs.FileDialog 时, 出现警
         #   告信息:
         #       QML Settings: The following application identifiers have not
@@ -43,11 +46,12 @@ class Application(QApplication):
         self.root = self.engine.rootContext()
         
         if not lib:
-            lib = (__file__.rsplit('\\', 1)[0] + '\\qml',)
-            #   __file__ = lk_qtquick_scaffold\\lk_qtquick_scaffold\\__init__.py
-            #   lib = (lk_qtquick_scaffold\\lk_qtquick_scaffold\\qml,)
-        for i in lib:
-            self.engine.addImportPath(i)
+            lib = (__file__.rsplit('\\', 1)[0] + '\\scaffold',)
+            #   __file__ = '~\\lk_qtquick_scaffold\\lk_qtquick_scaffold\\
+            #   __init__.py' -> lib = ('lk_qtquick_scaffold\\lk_qtquick_scaffold
+            #   \\scaffold',)
+        for p in lib:
+            self.engine.addImportPath(p)
     
     def register_pyobj(self, name, handler: QObject):
         """ 将 Python 中定义好的 (继承自 QObject 的) 对象作为全局变量加载到 QML
@@ -67,5 +71,5 @@ class Application(QApplication):
 
 
 if __name__ == '__main__':
-    _app = Application('./qml/Demo/LightCleanDemo.qml', './qml')
+    _app = Application('./qml/Demo/LightCleanDemo.qml', './scaffold')
     _app.start()

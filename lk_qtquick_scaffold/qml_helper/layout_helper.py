@@ -1,5 +1,5 @@
 """
-@Author   : Likianta <likianta@foxmail.com>
+@Author   : likianta <likianta@foxmail.com>
 @FileName : layout_helper.py
 @Version  : 0.2.0
 @Created  : 2020-11-12
@@ -35,7 +35,7 @@ class QObjectWrapper:
              -objects-property-from-my-python-file
         """
         if '_QObjectWrapper__inited' not in self.__dict__:
-            raise Exception('The wrapper is not fully initialized!')
+            raise Exception('QObjectWrapper is not fully initialized!')
         prop = QQmlProperty(self.qobj, item)
         if isinstance((out := prop.read()), QObj):
             out = QObjectWrapper(out)

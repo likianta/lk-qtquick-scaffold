@@ -3,7 +3,7 @@
 @FileName : pycomm.py
 @Version  : 0.6.0
 @Created  : 2020-09-09
-@Updated  : 2020-10-13
+@Updated  : 2020-11-18
 @Desc     : 
 """
 from PySide2.QtCore import QAbstractListModel, QMetaObject, Qt, Slot
@@ -11,6 +11,37 @@ from lk_logger import lk
 
 from _typing import *
 
+
+class MiddleProc:
+    """ 用于辅助处理 LKWidget 的中间过程数据.
+    
+    示例:
+        // LKListView.qml
+        ListView {
+            id: listview
+            property var checked_items
+            delegate: CheckBox {
+                text: modelData.text
+                onClicked: {
+                    MiddleProc.main('update_checked_items', listview, modelData)
+                }
+            }
+        }
+        
+        # pycomm.py
+        class MiddleProc:
+            ...
+            @pyconv
+            def update_checked_items(self, listview, data):
+                items = listview.checked_items  # type: dict
+                items[data['index']] = data
+                listview.checked_items = items
+    
+    """
+    pass
+    
+
+# ------------------------------------------------------------------------------
 
 # noinspection PyUnresolvedReferences
 class PyHooks(QObject):
@@ -202,7 +233,6 @@ class PyHooks(QObject):
                     // 方式 1: 请求一个字符串.
                     var hooks1 = PyHooks.get_hooks("ABC")
                     # -> {ABC: Object}
-
                     // 方式 2: 请求一个字符串列表.
                     var hooks2 = PyHooks.get_hooks(["ABC", "DEF"])
                     # -> {ABC: Object1, DEF: Object2}
@@ -319,7 +349,7 @@ class PyHooks(QObject):
             return list(map(self.get_one, urls))
 
 
-class QtHooks(QObject):  # DELETE
+class QtHooks(QObj):  # DELETE
     
     def __init__(self, engine, pyhooks: PyHooks):
         super().__init__()
@@ -386,7 +416,7 @@ class QtHooks(QObject):  # DELETE
     #         return '', ''
 
 
-class PyHandler(QObject):
+class PyHandler(QObj):
     
     def __init__(self):
         super().__init__()

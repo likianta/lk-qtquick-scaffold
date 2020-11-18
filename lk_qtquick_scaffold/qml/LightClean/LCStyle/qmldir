@@ -1,6 +1,0 @@
-module LCStyle
-
-LCGeometry  1.0  geometry.js
-LCMotion    1.0  motion.js
-LCPalette   1.0  palette.js
-LCText      1.0  text.js
