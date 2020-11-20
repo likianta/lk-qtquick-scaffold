@@ -6,7 +6,6 @@ LCListView {
 
     property var   p_childrenProps: Object()
     property int   p_default: -1
-    property alias r_select: _root.currentIndex
     // extend props:
     //      p_currentIndex
     //      p_delegate
@@ -21,6 +20,7 @@ LCListView {
         id: _item
         p_text: modelData
         property int p_index: model.index
+
         onClicked: {
             _root.currentIndex = p_index
             fn_clicked(p_index, _item)
