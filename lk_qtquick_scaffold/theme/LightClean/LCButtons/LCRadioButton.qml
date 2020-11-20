@@ -1,70 +1,46 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
+
 import "../"
 import "../LCStyle/dimension.js" as LCDimension
 import "../LCStyle/palette.js" as LCPalette
 
+
 RadioButton {
     id: _root
-    height: LCDimension.BarHeightS
+    width: LCDimension.ButtonWidthM; height: LCDimension.ButtonHeightM
 
-    property bool  p_showIndicator: true
-    property alias p_text: _txt.p_text
+    property alias p_text: _root.text
     property alias r_active: _root.checked
 
-    contentItem: LCRectangle {
+    background: LCRectangle {
         id: _bgrect
-        anchors.fill: parent
-        color: "transparent"
-        radius: parent.radius
-
-        LCText {
-            anchors {
-                left: parent.left
-                leftMargin: LCDimension.HSpacingS
-                verticalCenter: parent.verticalCenter
+        color: {
+            if (r_active) {
+                return LCPalette.ButtonPressed
+            } else if (_area.containsMouse) {
+                return LCPalette.ButtonHovered
+            } else {
+                return LCPalette.Transparent
             }
-            p_bold: r_active
         }
+        radius: LCDimension.RadiusS
 
         MouseArea {
+            id: _area
             anchors.fill: parent
             hoverEnabled: true
-            onEntered: {
-                _bgrect.color = r_active ? LCPalette.ButtonPressed : LCPalette.ButtonHovered
-            }
-            onExited: {
-                _bgrect.color = r_active ? LCPalette.ButtonPressed : "transparent"
-            }
             onClicked: {
-                _root.clicked()
-                _bgrect.color = r_active ? LCPalette.ButtonPressed : "transparent"
+                _root.checked = !_root.checked  // r_active changed
             }
         }
     }
+
+    contentItem: LCText {
+        id: _txt
+        p_color: r_active ? LCPalette.TextWhite : LCPalette.TextNormal
+        p_text: _root.text
+    }
+
     indicator: Item {}
-
-    /*
-        contentItem: LCText {
-            id: _txt
-            anchors.fill: parent
-            anchors.leftMargin: _indicator.width + LCDimension.HSpacingS
-            p_alignment: "vcenter"
-            p_bold: r_active
-        }
-        indicator: Rectangle {
-            id: _indicator
-            anchors.verticalCenter: parent.verticalCenter
-            border.width: 1; border.color: LCPalette.BorderNormal
-            radius: LCDimension.IndicatorRadioRadius
-            width: LCDimension.IndicatorRadioWidth; height: LCDimension.IndicatorRadioHeight
-
-            Rectangle {
-                anchors.fill: parent
-                anchors.margins: 1
-                color: r_active ? LCPalette.ButtonPressed : "transparent"
-                radius: parent.radius
-            }
-        }
-    */
 }

@@ -23,8 +23,7 @@ Rectangle {
             PropertyChanges {
                 target: _root
                 // border.width: Math.abs(_root.border.width - 1)
-                color: p_color1  // For LCEdit, be lighter; for LCButton, be
-                //      deeper.
+                color: p_color1  // For LCEdit, be lighter; for LCButton, be deeper.
             }
         }
     ]

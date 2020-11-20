@@ -1,4 +1,4 @@
-module LCWidget
+module LightClean
 
 LCCheckList         1.0  LCCheckList.qml
 LCColumn            1.0  LCColumn.qml
@@ -19,12 +19,12 @@ LCTable             1.0  LCTable.qml
 LCText              1.0  LCText.qml
 LCWindow            1.0  LCWindow.qml
 
-LCButtons.LCBaseButton       1.0  LCBaseButton.qml
-LCButtons.LCButton           1.0  LCButton.qml
-LCButtons.LCCheckBox         1.0  LCCheckBox.qml
-LCButtons.LCFlatButton       1.0  LCFlatButton.qml
-LCButtons.LCFlatRadioButton  1.0  LCFlatRadioButton.qml
-LCButtons.LCRadioButton      1.0  LCRadioButton.qml
+LCButtons.LCBaseButton       1.0  LCButtons/LCBaseButton.qml
+LCButtons.LCButton           1.0  LCButtons/LCButton.qml
+LCButtons.LCCheckBox         1.0  LCButtons/LCCheckBox.qml
+LCButtons.LCFlatButton       1.0  LCButtons/LCFlatButton.qml
+LCButtons.LCFlatRadioButton  1.0  LCButtons/LCFlatRadioButton.qml
+LCButtons.LCRadioButton      1.0  LCButtons/LCRadioButton.qml
 
 LCStyle.LCGeometry  1.0  LCStyle/dimension.js
 LCStyle.LCMotion    1.0  LCStyle/motion.js

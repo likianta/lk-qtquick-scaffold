@@ -1,7 +1,7 @@
-module LKStyle
+module LCStyle
 
-LKDimension  1.0  dimension.js
-LKMotion     1.0  motion.js
-LKPalette    1.0  palette.js
-LKShape      1.0  shape.js
-LKTyporaphy  1.0  typography.js
+LCDimension  1.0  dimension.js
+LCMotion     1.0  motion.js
+LCPalette    1.0  palette.js
+LCShape      1.0  shape.js
+LCTyporaphy  1.0  typography.js
