@@ -1,17 +1,21 @@
-import QtQuick 2.14
-import QtQuick.Window 2.14
-import LightClean 1.0
+import QtQuick 2.15
+import QtQuick.Controls 2.15
+import QtQuick.Window 2.15
 
-// https://qml.guide/live-reloading-hot-reloading-qml/+&cd=1&hl=zh-CN&ct=clnk&gl=sg
-// https://stackoverflow.com/questions/58716153/how-to-force-loader-to-reload-reset-or-delete-the-cache-of-preloaded-qml-page
-//  ^ this seems not work.
+/* 
+    References:
+        https://qml.guide/live-reloading-hot-reloading-qml/+&cd=1&hl=zh-CN&ct=clnk&gl=sg
+        https://stackoverflow.com/questions/58716153/how-to-force-loader-to-reload-reset-or-delete-the-cache-of-preloaded-qml-page 
+        (↑ This seems not work.)
+ */
 
 Window {
+    color: '#f2f2f2'
     visible: true
     width: 300; height: 120
-    title: "Qml Hot Reloader"
+    title: "Hot Reloader"
 
-    property string p_target: ""  // You must define the target to use.
+    property string p_target: ""
 
     Loader {
         id: _loader
@@ -19,15 +23,31 @@ Window {
 
         function reload() {
             source = ""
-            // QmlEngine.clearComponentCache()
-            PyHandler.main('clearComponentCache')
-            source = p_target
+            // See `debugger.main.py:19`
+            PyHandler.main('clearComponentCache')  
+            source = p_target  // This will open a new window to show the target
+            //  (cause the target usually has a root Window widget itself).
         }
     }
 
-    LCButton {
-        anchors.fill: parent
-        p_text: "Click to reload"
+    Button {
+        id: _btn
+        anchors.centerIn: parent
+        text: "Reload"
+        width: 70; height: 20
+
+        background: Rectangle {
+            border.width: 1; border.color: '#cccccc'
+            color: _btn.pressed ? '#4285f4' : 'white'
+            radius: 12
+        }
+
+        contentItem: Text {
+            font.family: 'Microsoft YaHei'
+            horizontalAlignment: Text.AlignHCenter; verticalAlignment: Text.AlignVCenter
+            text: _btn.text
+        }
+
         onClicked: _loader.reload()
     }
 }

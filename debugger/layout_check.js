@@ -1,3 +1,5 @@
+// NOTE: This file is going to be removed.
+
 function checkSize(rootItem) {
     let child
 

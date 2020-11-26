@@ -3,13 +3,13 @@
 @FileName : pycomm.py
 @Version  : 0.6.0
 @Created  : 2020-09-09
-@Updated  : 2020-11-18
+@Updated  : 2020-11-26
 @Desc     : 
 """
 from PySide2.QtCore import QAbstractListModel, QMetaObject, Qt, Slot
 from lk_logger import lk
 
-from _typing import *
+from ._typing import *
 
 
 class MiddleProc:
@@ -39,12 +39,12 @@ class MiddleProc:
     
     """
     pass
-    
+
 
 # ------------------------------------------------------------------------------
 
 # noinspection PyUnresolvedReferences
-class PyHooks(QObject):
+class PyHooks(QType.QObj):
     """ Hookup qml objects, and store the reference in Python dict.
     
     The Concept:
@@ -57,14 +57,14 @@ class PyHooks(QObject):
     
     def __init__(self):
         super().__init__()
-        self._datapot = {}  # type: Dict[str, Tuple[QVal, QSource]]
-        self._hooks = set()  # type: Set[QObj]
-        self._qobj_holder = {}  # type: Dict[QPath, Dict[QUid, QObj]]
+        self._datapot = {}  # type: HooksType.Datapot
+        self._hooks = set()  # type: HooksType.Hooks
+        self._qobj_holder = {}  # type: HooksType.Holder
         #   {path: {uid: obj}}
         #   e.g. {'./ui/SomeComp.qml': {'_txt': PySide2.QtCore.QObject}}
     
-    @Slot(QObj)
-    def scanning_qml_tree(self, root: QObj):
+    @Slot(QType.QObj)
+    def scanning_qml_tree(self, root: QType.QObj):
         """
         使用方法:
             示例: 在 QML 根布局中 (通常是 Window), 调用:
@@ -117,7 +117,7 @@ class PyHooks(QObject):
         """
         self._hooks.clear()
         
-        def _search_pyhooks(node: QObj):
+        def _search_pyhooks(node: QType.QObj):
             for child_node in node.children():
                 # lk.loga(child_node, child_node.property('pyhook'))
                 if child_node.property('pyhook'):
@@ -165,9 +165,9 @@ class PyHooks(QObject):
     def get_qparams(self) -> dict:
         return {k: v for k, v in self._unpack_hooks()}
     
-    @Slot(str, QVal, str)
-    @Slot(str, QVal)
-    def set_value(self, key: str, val: QVal, source=''):
+    @Slot(str, QType.QVal, str)
+    @Slot(str, QType.QVal)
+    def set_value(self, key: str, val: QType.QVal, source=''):
         """
         Usecase (in .qml file):
             // === view.qml ===
@@ -188,7 +188,7 @@ class PyHooks(QObject):
         """
         self._datapot[key] = (val.toVariant(), source)
     
-    @Slot(str, result=QVar)
+    @Slot(str, result=QType.QVar)
     def get_value(self, key: str) -> Any:
         """
         Usecase (in .qml file):
@@ -252,23 +252,24 @@ class PyHooks(QObject):
     
     # --------------------------------------------------------------------------
     
-    @Slot(str, QObj)
-    def set_one(self, url: str, obj: QObj):
+    @Slot(str, QType.QObj)
+    def set_one(self, url: str, obj: QType.QObj):
         path, uid = url.rsplit('#', 1)
         node = self._qobj_holder.setdefault(path, {})
         node[uid] = obj
     
-    @Slot(str, QVal)
-    def set_dict(self, path: str, uid2obj: QVal):
+    @Slot(str, QType.QVal)
+    def set_dict(self, path: str, uid2obj: QType.QVal):
         node = self._qobj_holder.setdefault(path, {})
         uid2obj = uid2obj.toVariant()  # type: dict
         node.update(uid2obj)
     
-    @Slot(QVal)
-    @Slot(str, QVal)
-    @Slot(str, QObj)
-    def set(self, unknown1: Union[QPath, QUrl, QVal],
-            unknown2: Union[QObj, QVal] = None):
+    @Slot(QType.QVal)
+    @Slot(str, QType.QVal)
+    @Slot(str, QType.QObj)
+    def set(self,
+            unknown1: HooksType.UnknownSet1,
+            unknown2: HooksType.UnknownSet2 = None):
         """ Set one object or set dict of objects.
 
         :param unknown1:
@@ -280,7 +281,7 @@ class PyHooks(QObject):
             QVal: one dict of objects. -> {uid: obj}
         """
         if isinstance(unknown1, str):
-            if isinstance(unknown2, QObj):  # set one.
+            if isinstance(unknown2, QType.QObj):  # set one.
                 url, obj = unknown1, unknown2
                 self.set_one(url, obj)
             else:  # set dict. the unknown2 is `uid2obj` (dict).
@@ -296,8 +297,8 @@ class PyHooks(QObject):
     # --------------------------------------------------------------------------
     
     # noinspection PyTypeChecker
-    @Slot(str, result=QObj)
-    def get_one(self, url: QUrl) -> Union[QObj, None]:
+    @Slot(str, result=QType.QObj)
+    def get_one(self, url: QType.QUrl) -> Union[QType.QObj, None]:
         path, uid = url.rsplit('#', 1)
         try:
             return self._qobj_holder[path][uid]
@@ -305,8 +306,8 @@ class PyHooks(QObject):
             lk.logt('[W2116]', 'Cannot find key', e)
             return None
     
-    @Slot(str, result=QVar)
-    def get_list(self, path) -> List[QObj]:
+    @Slot(str, result=QType.QVar)
+    def get_list(self, path) -> List[QType.QObj]:
         """
         NOTE: This method is not often to use.
         :param path:
@@ -314,14 +315,13 @@ class PyHooks(QObject):
         """
         return list(self._qobj_holder[path].values())
     
-    @Slot(str, result=QVar)
-    def get_dict(self, path) -> Dict[QUid, QObj]:
+    @Slot(str, result=QType.QVar)
+    def get_dict(self, path) -> Dict[QType.QUid, QType.QObj]:
         return self._qobj_holder[path]
     
-    @Slot(str, result=QVar)
-    @Slot(QVal, result=QVar)
-    def get(self, unknown: Union[QUrl, QPath, QVal]) \
-            -> Union[QObj, List[QObj], Dict[QUid, QObj], None]:
+    @Slot(str, result=QType.QVar)
+    @Slot(QType.QVal, result=QType.QVar)
+    def get(self, unknown: HooksType.UnknownGet) -> HooksType.GetRet:
         """
         Usecase:
             PyHooks.get("./ui/SomeComp.qml") -> {'_txt': obj, ...}
@@ -349,24 +349,24 @@ class PyHooks(QObject):
             return list(map(self.get_one, urls))
 
 
-class QtHooks(QObj):  # DELETE
+class QtHooks(QType.QObj):  # DELETE
     
     def __init__(self, engine, pyhooks: PyHooks):
         super().__init__()
         self._engine = engine
         self._pyhooks = pyhooks
     
-    def get(self, uid: QUid):
+    def get(self, uid: QType.QUid):
         return self._pyhooks.get(uid)
     
     find = get
     
-    def update(self, uid: QUid, prop: str, value: Any):
-        qobj = self.get(uid)  # type: QObj
+    def update(self, uid: QType.QUid, prop: str, value):
+        qobj = self.get(uid)  # type: QType.QObj
         qobj.setProperty(prop, value)
     
     # noinspection PyTypeChecker
-    def update_list_model(self, uid: QUid, *values: dict, clear=False,
+    def update_list_model(self, uid: QType.QUid, *values: dict, clear=False,
                           birdge_data='py_newData', bridge_method='pyAppend'):
         qobj = self.get(uid)  # type: QAbstractListModel
         if clear:
@@ -376,7 +376,7 @@ class QtHooks(QObj):  # DELETE
             QMetaObject.invokeMethod(qobj, bridge_method, Qt.AutoConnection)
     
     # noinspection PyTypeChecker
-    def invoke_qml(self, uid: QUid, method: str):
+    def invoke_qml(self, uid: QType.QUid, method: str):
         """ Invoke QML method.
         仅支持调用无参方法.
         """
@@ -387,8 +387,8 @@ class QtHooks(QObj):  # DELETE
     
     __msg_box = {}
     
-    @Slot(QUid)
-    @Slot(QUid, str)
+    @Slot(QType.QUid)
+    @Slot(QType.QUid, str)
     def put_in_msg(self, uid, msg=''):
         self.__msg_box[uid] = msg
         return uid, msg
@@ -416,15 +416,15 @@ class QtHooks(QObj):  # DELETE
     #         return '', ''
 
 
-class PyHandler(QObj):
+class PyHandler(QType.QObj):
     
     def __init__(self):
         super().__init__()
         self.__pymethods_dict = {}
     
-    @Slot(str, QVal, result=QVar)
-    @Slot(str, result=QVar)
-    def main(self, method: str, params: QVal = None):
+    @Slot(str, QType.QVal, result=QType.QVar)
+    @Slot(str, result=QType.QVar)
+    def main(self, method: str, params: QType.QVal = None):
         try:
             if params is None:
                 return self.__pymethods_dict.get(
@@ -450,7 +450,7 @@ class PyHandler(QObj):
     
     @staticmethod
     def find_pyhandler_related_methods(qmldir: str, base: str):
-        from lk_utils.filesniff import findall_files, path_on_rel
+        from lk_utils.filesniff import findall_files, relpath
         from lk_utils.read_and_write import read_file_by_line
         
         for filepath in findall_files(qmldir, suffix='.qml'):
@@ -458,5 +458,5 @@ class PyHandler(QObj):
                 if (x := x.strip()).startswith('//'):
                     continue
                 if 'PyHandler.main' in x:
-                    relpath = path_on_rel(filepath, base)
+                    relpath = relpath(filepath, base)
                     print(f'{relpath}:{i}', '>>', x)

@@ -22,8 +22,8 @@
                 'qml/Main.qml#_listModel', 'model', ['a', 'b', 'c']
             )
 """
-from launcher import Application
-from pycomm import PyHooks, QtHooks, PyHandler
+from .launcher import Application
+from .pycomm import PyHooks, QtHooks, PyHandler
 
 __version__ = '0.2.0'
 
