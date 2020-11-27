@@ -1,9 +1,9 @@
 """
 @Author   : likianta (likianta@foxmail.com)
 @FileName : pycomm.py
-@Version  : 0.6.0
+@Version  : 0.6.2
 @Created  : 2020-09-09
-@Updated  : 2020-11-26
+@Updated  : 2020-11-27
 @Desc     : 
 """
 from PySide2.QtCore import QAbstractListModel, QMetaObject, Qt, Slot
@@ -12,53 +12,72 @@ from lk_logger import lk
 from ._typing import *
 
 
-class MiddleProc:
-    """ 用于辅助处理 LKWidget 的中间过程数据.
-    
-    示例:
-        // LKListView.qml
-        ListView {
-            id: listview
-            property var checked_items
-            delegate: CheckBox {
-                text: modelData.text
-                onClicked: {
-                    MiddleProc.main('update_checked_items', listview, modelData)
-                }
-            }
-        }
-        
-        # pycomm.py
-        class MiddleProc:
-            ...
-            @pyconv
-            def update_checked_items(self, listview, data):
-                items = listview.checked_items  # type: dict
-                items[data['index']] = data
-                listview.checked_items = items
-    
-    """
-    pass
-
-
-class PyComm(QType.QObj):
+class PyHandler(QType.QObj):
     """ Python Communication with Qml Runtime.
-    
+
     Usages:
-        See 'docs/PyPyComm 使用示例.md'
+        See 'docs/PyComm 使用示例.md'
     """
+    __pymethods_dict = {}
     
     def __init__(self, object_name=''):
+        super().__init__()
+        from . import app
         self.object_name = object_name or self.__class__.__name__
-        
-    def register_object(self, object_name: str, qobj: QType.QObj):
-        pass
+        app.register_pyobj(self, self.object_name)
     
-    def register_function(self, func):
-        pass
+    def register_pyfunc(self, func: PyHandlerType.Func, name=''):
+        """
+        References:
+            https://medium.com/%40mgarod/dynamically-add-a-method-to-a-class-in\
+            -python-c49204b85bd6+&cd=3&hl=zh-CN&ct=clnk&gl=sg
+        """
+        name = name or func.__name__
+        # lk.loga(name, h='parent')
+        self.__pymethods_dict[name] = func
+
+    @Slot(PyHandlerType.FuncName, result=QType.QVar)
+    @Slot(PyHandlerType.FuncName, QType.QVal, result=QType.QVar)
+    def call(self, func_name: PyHandlerType.FuncName, param: QType.QVal = None):
+        """ Call Python functions in Qml.
+        
+        Args:
+            func_name
+            param
+        
+        Examples:
+            // view.qml
+            Item {
+                property string directory
+                Component.onCompleted: {
+                    const files = PyHandler.call('get_files', this.directory)
+                }
+            }
+        """
+        if param is not None:
+            param = param.toVariant()
+        return self.main(func_name, param)
+    
+    def main(self, method: str, param):
+        lk.loga(method, param, h='parent')
+        if param is None:
+            return self.__pymethods_dict.get(
+                method, self._invalid_method
+            )()
+        else:
+            # noinspection PyArgumentList
+            return self.__pymethods_dict.get(
+                method, self._invalid_method
+            )(param)
+
+    # noinspection PyUnusedLocal,PyMethodMayBeStatic
+    def _invalid_method(self, *args, **kwargs):
+        lk.logt("[W0855]", 'The method is invalid', h='grand_parent')
+        return
 
 
 # ------------------------------------------------------------------------------
+# DELETE ALL BELOW
 
 # noinspection PyUnresolvedReferences
 class PyHooks(QType.QObj):
@@ -433,7 +452,7 @@ class QtHooks(QType.QObj):  # DELETE
     #         return '', ''
 
 
-class PyHandler(QType.QObj):
+class PyHandlerOld(QType.QObj):
     
     def __init__(self):
         super().__init__()
@@ -480,4 +499,4 @@ class PyHandler(QType.QObj):
 
 
 if __name__ == '__main__':
-    comm = PyComm()
+    handle = PyHandler()

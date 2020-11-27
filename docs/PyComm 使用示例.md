@@ -2,10 +2,10 @@
 
 ```python
 # control.py
-from pycomm import PyComm
+from pycomm import PyHandler
 
 
-class FileFinder(PyComm):
+class FileFinder(PyHandler):
 
     def get_files(self):
         pass
@@ -32,10 +32,10 @@ Item {
 
 ```python
 # control.py
-from pycomm import PyComm
+from pycomm import PyHandler
 
 
-class FileFinder(PyComm):
+class FileFinder(PyHandler):
 
     def __init__(self, home_dir, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -45,9 +45,9 @@ class FileFinder(PyComm):
         pass  # Here used self.home_dir...
 
 
-finder = FileFinder('A/B', object_name='Finder1')  
-finder = FileFinder('A/C', object_name='Finder2')
-#                          ^-------------------^
+finder1 = FileFinder('A/B', object_name='Finder1')  
+finder2 = FileFinder('A/C', object_name='Finder2')
+#                           ^-------------------^
 #   The `object_name` defines what you can use in Qml context. The default name
 #   is FileFinder's class name.
 

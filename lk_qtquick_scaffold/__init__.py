@@ -1,48 +1,26 @@
 """
 @Author   : likianta (likianta@foxmail.com)
 @FileName : __init__.py
-@Version  : 0.2.0
+@Version  : 0.2.2
 @Created  : 2020-09-15
-@Updated  : 2020-09-17
-@Desc     : 通过导入 lk_qtquick_scaffold, 获得全局变量 app, pyhooks 和 qthooks.
+@Updated  : 2020-11-27
+@Desc     : 通过导入 lk_qtquick_scaffold, 获得全局变量 app, pyhandler.
+    
     Usage:
-        # === my_launcher.py ===
+        '''
+        |- myprj
+            |- control.py
+            |- view.qml
+        '''
+        # control.py
         from lk_qtquick_scaffold import init_app
-        import submodule
         
         if __name__ == '__main__':
-            my_app = init_app()
-            my_app.start()
-            submodule.main()
-            
-        # === submodule.py ===
-        def main():
-            from lk_qtquick_scaffold import app, pyhooks, qthooks
-            model = qthooks.update(
-                'qml/Main.qml#_listModel', 'model', ['a', 'b', 'c']
-            )
+            app.start('view.qml')
+    
 """
 from .launcher import Application
-from .pycomm import PyHooks, QtHooks, PyHandler
+from .pycomm import PyHandler
 
-__version__ = '0.2.0'
-
-app: Application
-pyhooks: PyHooks
-qthooks: QtHooks
-pyhandler: PyHandler
-
-
-def init_app(entrance, *lib, **kwargs):
-    """ Init app at program starts. """
-    app = Application(entrance, *lib, **kwargs)
-    
-    pyhooks = PyHooks()
-    qthooks = QtHooks(app.engine, pyhooks)
-    pyhandler = PyHandler()
-    
-    app.register_pyobj('PyHooks', pyhooks)
-    app.register_pyobj('QtHooks', qthooks)
-    app.register_pyobj('PyHandler', pyhandler)
-    
-    return app
+app = Application()
+pyhandler = PyHandler()

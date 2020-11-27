@@ -35,3 +35,8 @@ class HooksType:
     UnknownGet = Union[QType.QUrl, QType.QPath, QType.QVal]
     UnknownArg1 = Union[QType.QPath, QType.QUrl, QType.QVal]
     UnknownArg2 = Union[QType.QObj, QType.QVal]
+
+
+class PyHandlerType:
+    Func = Callable
+    FuncName = str
