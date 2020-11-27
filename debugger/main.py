@@ -12,7 +12,7 @@ from os.path import abspath
 def main():
     from lk_qtquick_scaffold import init_app
     print(abspath('HotReloader.qml'))
-    app = init_app(abspath('./debugger/HotReloader.qml'))
+    app = init_app(abspath('./HotReloader.qml'))
     
     # A: not work
     #   app.register_pyobj('QmlEngine', app.engine) 

@@ -41,6 +41,23 @@ class MiddleProc:
     pass
 
 
+class PyComm(QType.QObj):
+    """ Python Communication with Qml Runtime.
+    
+    Usages:
+        See 'docs/PyPyComm 使用示例.md'
+    """
+    
+    def __init__(self, object_name=''):
+        self.object_name = object_name or self.__class__.__name__
+        
+    def register_object(self, object_name: str, qobj: QType.QObj):
+        pass
+    
+    def register_function(self, func):
+        pass
+
+
 # ------------------------------------------------------------------------------
 
 # noinspection PyUnresolvedReferences
@@ -268,8 +285,8 @@ class PyHooks(QType.QObj):
     @Slot(str, QType.QVal)
     @Slot(str, QType.QObj)
     def set(self,
-            unknown1: HooksType.UnknownSet1,
-            unknown2: HooksType.UnknownSet2 = None):
+            unknown1: HooksType.UnknownArg1,
+            unknown2: HooksType.UnknownArg2 = None):
         """ Set one object or set dict of objects.
 
         :param unknown1:
@@ -460,3 +477,7 @@ class PyHandler(QType.QObj):
                 if 'PyHandler.main' in x:
                     relpath = relpath(filepath, base)
                     print(f'{relpath}:{i}', '>>', x)
+
+
+if __name__ == '__main__':
+    comm = PyComm()

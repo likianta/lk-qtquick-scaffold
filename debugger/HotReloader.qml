@@ -12,7 +12,8 @@ import QtQuick.Window 2.15
 Window {
     color: '#f2f2f2'
     visible: true
-    width: 300; height: 120
+    // width: 300; height: 120
+    width: _btn.width; height: _btn.height
     title: "Hot Reloader"
 
     property string p_target: ""
@@ -34,12 +35,12 @@ Window {
         id: _btn
         anchors.centerIn: parent
         text: "Reload"
-        width: 70; height: 20
+        width: 200; height: 80
 
         background: Rectangle {
             border.width: 1; border.color: '#cccccc'
             color: _btn.pressed ? '#4285f4' : 'white'
-            radius: 12
+            // radius: 12
         }
 
         contentItem: Text {

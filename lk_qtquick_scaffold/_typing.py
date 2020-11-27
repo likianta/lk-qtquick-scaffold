@@ -33,5 +33,5 @@ class HooksType:
                    Dict[QType.QUid, QType.QObj],
                    None]
     UnknownGet = Union[QType.QUrl, QType.QPath, QType.QVal]
-    UnknownSet1 = Union[QType.QPath, QType.QUrl, QType.QVal]
-    UnknownSet2 = Union[QType.QObj, QType.QVal]
+    UnknownArg1 = Union[QType.QPath, QType.QUrl, QType.QVal]
+    UnknownArg2 = Union[QType.QObj, QType.QVal]

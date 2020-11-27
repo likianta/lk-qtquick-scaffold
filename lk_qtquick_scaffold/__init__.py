@@ -35,8 +35,6 @@ pyhandler: PyHandler
 
 def init_app(entrance, *lib, **kwargs):
     """ Init app at program starts. """
-    global app, pyhooks, qthooks, pyhandler
-    
     app = Application(entrance, *lib, **kwargs)
     
     pyhooks = PyHooks()
