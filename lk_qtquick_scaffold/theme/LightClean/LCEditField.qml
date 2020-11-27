@@ -10,7 +10,7 @@ Item {
     property alias p_title: _title.p_text
     property alias p_value: _edit.p_text
 
-    signal fn_clicked
+    signal clicked()
 
     // Title field
     LCText {
@@ -26,6 +26,9 @@ Item {
     LCEdit {
         id: _edit
         anchors.right: parent.right
+        Component.onCompleted: {
+            this.clicked.connect(_root.clicked)
+        }
     }
 
     Component.onCompleted: {

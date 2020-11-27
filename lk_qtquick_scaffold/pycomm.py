@@ -59,7 +59,7 @@ class PyHandler(QType.QObj):
         return self.main(func_name, param)
     
     def main(self, method: str, param):
-        lk.loga(method, param, h='parent')
+        lk.loga(method, param)
         if param is None:
             return self.__pymethods_dict.get(
                 method, self._invalid_method

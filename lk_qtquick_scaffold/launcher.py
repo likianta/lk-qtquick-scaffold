@@ -3,11 +3,10 @@
 @Module  : launcher.py
 @Created : 2020-08-30
 @Updated : 2020-11-27
-@Version : 0.2.11
+@Version : 0.2.12
 @Desc    :
 """
 from PySide2.QtCore import QObject
-from PySide2.QtGui import QFont
 from PySide2.QtQml import QQmlApplicationEngine, QQmlContext
 from PySide2.QtWidgets import QApplication
 
@@ -43,7 +42,11 @@ class Application(QApplication):
         """
         super().__init__()
         
-        self.setFont(QFont('Microsoft YaHei'))
+        # Set font to Microsoft Yahei if platform is Windows
+        from platform import system
+        if system() == 'Windows':
+            from PySide2.QtGui import QFont
+            self.setFont(QFont('Microsoft YaHei'))
         self.setOrganizationName(kwargs.get(
             'organization', 'dev.likianta.lk_qtquick_scaffold'))
         #   该步骤是为了避免在 QML 中使用 QtQuick.Dialogs.FileDialog 时, 出现警
@@ -86,8 +89,9 @@ class Application(QApplication):
             qmlfile: 启动时要载入的 .qml 文件. 通常为 '{somedir}/main.qml' 或
                 '{somedir}/view.qml'.
         """
+        from sys import exit
         self.engine.load(qmlfile)
-        self.exec_()
+        exit(self.exec_())
 
 
 if __name__ == '__main__':

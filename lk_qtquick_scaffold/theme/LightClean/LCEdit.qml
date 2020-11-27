@@ -23,11 +23,12 @@ TextField {
     selectedTextColor: LCPalette.TextSelected
     selectionColor: LCPalette.TextSelection
 
-    property bool p_digitOnly: false
+    property bool  p_digitOnly: false
     property alias p_hint: _root.placeholderText
     property alias p_text: _root.text
-
     property alias __active: _root.activeFocus
+
+    signal clicked()
 
     background: LCRectangleBg {
         id: _bg

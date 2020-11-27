@@ -2,7 +2,7 @@
 
 ```python
 # control.py
-from pycomm import PyHandler
+from lk_qtquick_scaffold.pycomm import PyHandler
 
 
 class FileFinder(PyHandler):
@@ -32,7 +32,7 @@ Item {
 
 ```python
 # control.py
-from pycomm import PyHandler
+from lk_qtquick_scaffold.pycomm import PyHandler
 
 
 class FileFinder(PyHandler):

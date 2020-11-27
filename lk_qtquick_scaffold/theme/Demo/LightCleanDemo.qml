@@ -1,6 +1,8 @@
-import QtQuick 2.14
-import QtQuick.Window 2.14
-import "../LightClean"
+import QtQuick 2.15
+import QtQuick.Controls 2.15
+import QtQuick.Window 2.15
+import LightClean 1.0
+import LightClean.LCButtons 1.0
 
 Window {
     color: "#FFFFFF"

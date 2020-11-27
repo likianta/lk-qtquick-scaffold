@@ -31,8 +31,7 @@ Window {
             // See `debugger.main.py:19`
             PyHandler.call('clear_component_cache')
             this.source = p_target  // This will open a new window to show the
-            //  target. (cause the target usually has a root Window widget
-            //  itself)
+            //  target. (Cuz the target usually has a root Window widget itself)
         }
     }
 

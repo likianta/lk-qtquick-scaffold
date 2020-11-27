@@ -19,11 +19,11 @@ def main():
     
     
 def get_target():
-    return 'file:///' + abspath('../tests/qml/view.qml')
+    # return 'file:///' + abspath('../tests/qml/view.qml')
+    from os.path import exists
+    print(exists(abspath('../tests/qml/view.qml')))
+    return abspath('../tests/qml/view.qml')
 
 
 if __name__ == '__main__':
-    # import sys
-    # sys.path.append(abspath('../lk_qtquick_scaffold'))
-    # print(sys.path)
     main()

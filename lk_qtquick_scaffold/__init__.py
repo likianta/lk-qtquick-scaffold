@@ -13,7 +13,7 @@
             |- view.qml
         '''
         # control.py
-        from lk_qtquick_scaffold import init_app
+        from lk_qtquick_scaffold import app
         
         if __name__ == '__main__':
             app.start('view.qml')
