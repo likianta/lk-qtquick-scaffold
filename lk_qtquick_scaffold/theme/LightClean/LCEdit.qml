@@ -7,7 +7,7 @@ import "./LCStyle/palette.js" as LCPalette
 import "./LCStyle/typography.js" as LCTypo
 
 TextField {
-    id: _root
+    id: root
     leftPadding: LCGeometry.HSpacingM; rightPadding: LCGeometry.HSpacingM
     width: LCGeometry.BarWidth; height: LCGeometry.BarHeight
 
@@ -23,38 +23,49 @@ TextField {
 
     property string p_alignment: 'center'
     property bool   p_digitOnly: false
-    property alias  p_hint: _root.placeholderText
-    property alias  p_text: _root.text
-    property alias  __active: _root.activeFocus
+    property alias  p_hint: root.placeholderText
+    property alias  p_text: root.text
 
     signal clicked()
 
     background: LCFieldBg {
-        p_active: __active
+        p_active: root.activeFocus
     }
 
     Component.onCompleted: {
         this.pressed.connect(this.clicked)
     
-        if (p_alignment == 'center') {
-            _root.horizontalAlignment = Text.AlignHCenter
-            _root.verticalAlignment = Text.AlignVCenter
-        } else if (p_alignment == 'hcenter') {
-            _root.horizontalAlignment = Text.AlignHCenter
-        } else if (p_alignment == 'htop') {
-            _root.horizontalAlignment = Text.AlignHCenter
-            _root.verticalAlignment = Text.AlignTop
-        } else if (p_alignment == 'hbottom') {
-            _root.horizontalAlignment = Text.AlignHCenter
-            _root.verticalAlignment = Text.AlignBottom
-        } else if (p_alignment == 'vcenter') {
-            _root.verticalAlignment = Text.AlignVCenter
-        } else if (p_alignment == 'vleft') {
-            _root.horizontalAlignment = Text.AlignLeft
-            _root.verticalAlignment = Text.AlignVCenter
-        } else if (p_alignment == 'vright') {
-            _root.horizontalAlignment = Text.AlignRight
-            _root.verticalAlignment = Text.AlignVCenter
+        switch (p_alignment) {  // modified based on `LCText`
+            case 'center':
+                this.horizontalAlignment = TextInput.AlignHCenter
+                this.verticalAlignment = TextInput.AlignVCenter
+                break
+            case 'hcenter':
+                this.horizontalAlignment = TextInput.AlignHCenter
+                break
+            case 'htop':
+                this.horizontalAlignment = TextInput.AlignHCenter
+                this.verticalAlignment = TextInput.AlignTop
+                break
+            case 'hbottom':
+                this.horizontalAlignment = TextInput.AlignHCenter
+                this.verticalAlignment = TextInput.AlignBottom
+                break
+            case 'vcenter':
+                this.verticalAlignment = TextInput.AlignVCenter
+                break
+            case 'vleft':
+                // fall down
+            case 'lcenter':
+                this.horizontalAlignment = TextInput.AlignLeft
+                this.verticalAlignment = TextInput.AlignVCenter
+                break
+            case 'vright':
+                // fall down
+            case 'rcenter':
+                this.horizontalAlignment = TextInput.AlignRight
+                this.verticalAlignment = TextInput.AlignVCenter
+                break
         }
     }
 }

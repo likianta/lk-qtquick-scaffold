@@ -3,36 +3,48 @@ import "./LCStyle/palette.js" as LCPalette
 import "./LCStyle/typography.js" as LCTypo
 
 Text {
-    id: _root
+    id: root
     color: LCPalette.TextNormal
     font.pixelSize: LCTypo.FontSizeM
 
-    property string p_alignment: "center"  // [center|hcenter|vcenter]
-    property alias  p_bold: _root.font.bold
-    property alias  p_color: _root.color
-    property alias  p_size: _root.font.pixelSize
-    property alias  p_text: _root.text
+    property string p_alignment: "center"  // see `Component.onCompleted`
+    property alias  p_bold: root.font.bold
+    property alias  p_color: root.color
+    property alias  p_size: root.font.pixelSize
+    property alias  p_text: root.text
 
     Component.onCompleted: {
-        if (p_alignment == 'center') {
-            _root.horizontalAlignment = Text.AlignHCenter
-            _root.verticalAlignment = Text.AlignVCenter
-        } else if (p_alignment == 'hcenter') {
-            _root.horizontalAlignment = Text.AlignHCenter
-        } else if (p_alignment == 'htop') {
-            _root.horizontalAlignment = Text.AlignHCenter
-            _root.verticalAlignment = Text.AlignTop
-        } else if (p_alignment == 'hbottom') {
-            _root.horizontalAlignment = Text.AlignHCenter
-            _root.verticalAlignment = Text.AlignBottom
-        } else if (p_alignment == 'vcenter') {
-            _root.verticalAlignment = Text.AlignVCenter
-        } else if (p_alignment == 'vleft') {
-            _root.horizontalAlignment = Text.AlignLeft
-            _root.verticalAlignment = Text.AlignVCenter
-        } else if (p_alignment == 'vright') {
-            _root.horizontalAlignment = Text.AlignRight
-            _root.verticalAlignment = Text.AlignVCenter
+        switch (p_alignment) {
+            case 'center':
+                this.horizontalAlignment = Text.AlignHCenter
+                this.verticalAlignment = Text.AlignVCenter
+                break
+            case 'hcenter':
+                this.horizontalAlignment = Text.AlignHCenter
+                break
+            case 'htop':
+                this.horizontalAlignment = Text.AlignHCenter
+                this.verticalAlignment = Text.AlignTop
+                break
+            case 'hbottom':
+                this.horizontalAlignment = Text.AlignHCenter
+                this.verticalAlignment = Text.AlignBottom
+                break
+            case 'vcenter':
+                this.verticalAlignment = Text.AlignVCenter
+                break
+            case 'vleft':
+                // fall down
+            case 'lcenter':
+                this.horizontalAlignment = Text.AlignLeft
+                this.verticalAlignment = Text.AlignVCenter
+                break
+            case 'vright':
+                // fall down
+            case 'rcenter':
+                this.horizontalAlignment = Text.AlignRight
+                this.verticalAlignment = Text.AlignVCenter
+                break
         }
     }
 }

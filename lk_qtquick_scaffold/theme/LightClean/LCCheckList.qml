@@ -44,8 +44,8 @@ LCListView {
         /*  Inplement Python's `dict.get(key, default)` in Javascript.
 
             References:
-                https://stackoverflow.com/questions/44184794/what-is-the-javascript-equivalent-of-pythons-get-method-for
-                -dictionaries
+                https://stackoverflow.com/questions/44184794/what-is-the
+                -javascript-equivalent-of-pythons-get-method-for-dictionaries
          */
         const result = obj[key]
         if (typeof result !== 'undefined') {

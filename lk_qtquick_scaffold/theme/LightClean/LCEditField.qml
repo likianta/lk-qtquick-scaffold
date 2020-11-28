@@ -1,8 +1,8 @@
 import QtQuick 2.15
-import "./LCStyle/dimension.js" as LCGeometry
+import "./LCStyle/dimension.js" as LCDimension
 
-Item {
-    height: LCGeometry.BarHeight
+LCRow {
+    height: LCDimension.BarHeight
 
     property alias p_digitOnly: _edit.p_digitOnly
     property alias p_hint: _edit.p_hint
@@ -14,23 +14,22 @@ Item {
     // Title field
     LCText {
         id: _title
-        anchors.right: _edit.left
-        anchors.rightMargin: LCGeometry.MarginM
         height: parent.height
-        horizontalAlignment: Text.AlignRight; verticalAlignment: Text.AlignVCenter
-        p_bold: true
+        p_alignment: 'rcenter'
     }
     
     // Editbar
     LCEdit {
         id: _edit
-        anchors.right: parent.right
+        width: parent.width - _title.width
+        p_alignment: 'lcenter'
+
         Component.onCompleted: {
             this.clicked.connect(parent.clicked)
         }
     }
 
-    Component.onCompleted: {
-        this.width = childrenRect.width
-    }
+    // Component.onCompleted: {
+    //     this.width = childrenRect.width
+    // }
 }

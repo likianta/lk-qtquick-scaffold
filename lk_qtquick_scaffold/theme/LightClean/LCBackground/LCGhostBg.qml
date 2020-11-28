@@ -12,18 +12,11 @@ LCRectBg {
 
     states: [
         State {
-            when: !p_active && p_hovered
-            PropertyChanges {
-                target: root
-                p_border.width: 1
-                p_color: LCPalette.TranslucentLH
-            }
-        },
-        State {
             when: p_hovered
             PropertyChanges {
                 target: root
                 p_border.width: 1
+                p_color: LCPalette.TranslucentLH
             }
         }
     ]

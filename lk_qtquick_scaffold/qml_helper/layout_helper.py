@@ -3,14 +3,15 @@
 @FileName : layout_helper.py
 @Version  : 0.2.0
 @Created  : 2020-11-12
-@Updated  : 2020-11-12
-@Desc     : 
+@Updated  : 2020-11-28
+@Desc     :
+    DELETE ME: This module is going to be removed.
 """
 from functools import wraps
 
 from PySide2.QtQml import QQmlProperty
 
-from _typing import *
+from .._typing import *
 
 
 class QObjectDelegator:
@@ -37,7 +38,7 @@ class QObjectDelegator:
         if '_QObjectWrapper__inited' not in self.__dict__:
             raise Exception('QObjectWrapper is not fully initialized!')
         prop = QQmlProperty(self.qobj, item)
-        if isinstance((out := prop.read()), QObj):
+        if isinstance((out := prop.read()), QType.QObj):
             out = QObjectDelegator(out)
         else:
             self._holder[item] = out
@@ -66,9 +67,9 @@ def adapt_types(func):
     def decorated(*args, **kwargs):
         new_args = []
         for i in args:
-            if isinstance(i, QObj):
+            if isinstance(i, QType.QObj):
                 new_args.append(QObjectDelegator(i))
-            elif isinstance(i, QVal):
+            elif isinstance(i, QType.QVal):
                 new_args.append(i.toVariant())
             else:
                 new_args.append(i)

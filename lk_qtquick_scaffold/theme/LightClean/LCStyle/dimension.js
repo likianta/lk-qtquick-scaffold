@@ -3,7 +3,7 @@ const WinHeight = 600
 
 // -----------------------------------------------------------------------------
 
-const BarWidth = 380
+const BarWidth = 300
 const BarHeight = 30
 
 const ButtonWidthM = 80
