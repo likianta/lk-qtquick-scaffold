@@ -1,15 +1,15 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import "./LCBackground"
-import "./LCStyle/dimension.js" as LCGeometry
+import "./LCStyle/dimension.js" as LCDimension
 import "./LCStyle/motion.js" as LCMotion
 import "./LCStyle/palette.js" as LCPalette
 import "./LCStyle/typography.js" as LCTypo
 
 TextField {
     id: root
-    leftPadding: LCGeometry.HSpacingM; rightPadding: LCGeometry.HSpacingM
-    width: LCGeometry.BarWidth; height: LCGeometry.BarHeight
+    leftPadding: LCDimension.HSpacingM; rightPadding: LCDimension.HSpacingM
+    width: LCDimension.BarWidth; height: LCDimension.BarHeight
 
     font.pixelSize: LCTypo.FontSizeM
     placeholderTextColor: LCPalette.TextHint

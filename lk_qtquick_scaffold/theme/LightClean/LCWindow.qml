@@ -4,12 +4,12 @@ import "./LCStyle/dimension.js" as LCDimension
 import "./LCStyle/palette.js" as LCPalette
 
 Window {
-    id: _root
+    id: root
     color: LCPalette.BgWhite
     visible: true
     width: LCDimension.WinWidth; height: LCDimension.WinHeight
 
-    property alias p_color: _root.color
+    property alias p_color: root.color
 
     // Component.onCompleted: {
     //     // TODO: iterate children recursively, set child items which has

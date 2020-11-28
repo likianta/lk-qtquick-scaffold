@@ -1,8 +1,8 @@
 import QtQuick 2.15
-import "./LCStyle/dimension.js" as LCGeometry
+import "./LCStyle/dimension.js" as LCDimension
 
 Row {
-    spacing: LCGeometry.HSpacingM
+    spacing: LCDimension.HSpacingM
 
     property alias p_digitOnly: _edit.p_digitOnly
     property alias p_hint: _edit.p_hint

@@ -1,9 +1,9 @@
 """
 @Author   : likianta (likianta@foxmail.com)
 @FileName : pycomm.py
-@Version  : 0.6.2
+@Version  : 0.6.3
 @Created  : 2020-09-09
-@Updated  : 2020-11-27
+@Updated  : 2020-11-28
 @Desc     : 
 """
 from PySide2.QtCore import QAbstractListModel, QMetaObject, Qt, Slot
@@ -60,20 +60,13 @@ class PyHandler(QType.QObj):
     
     def main(self, method: str, param):
         lk.loga(method, param)
-        if param is None:
-            return self.__pyfunc_dict.get(
-                method, self._invalid_method
-            )()
-        else:
-            # noinspection PyArgumentList
-            return self.__pyfunc_dict.get(
-                method, self._invalid_method
-            )(param)
-
-    # noinspection PyUnusedLocal,PyMethodMayBeStatic
-    def _invalid_method(self, *args, **kwargs):
-        lk.logt("[W0855]", 'The method is invalid', h='grand_parent')
-        return
+        try:
+            if param is None:
+                return self.__pyfunc_dict[method]()
+            else:
+                return self.__pyfunc_dict[method](param)
+        except KeyError:
+            raise Exception('Method is not registered!', method, param)
 
 
 # ------------------------------------------------------------------------------

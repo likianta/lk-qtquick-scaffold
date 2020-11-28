@@ -8,9 +8,9 @@ Row {
     height: LCGeometry.BarHeight
     spacing: LCGeometry.HSpacingM
 
-    property bool p_alignCenter: true
-    property bool p_fillEnd: false
-    property bool p_fillHeight: true
+    property bool  p_alignCenter: true
+    property bool  p_fillEnd: false
+    property bool  p_fillHeight: true
     // property int p_hpadding: 0
     property alias p_margins: _root.anchors.margins
     property alias p_spacing: _root.spacing

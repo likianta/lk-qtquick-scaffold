@@ -6,18 +6,17 @@ LCButton {
     p_text: "Browse"
 
     property alias  p_dialogTitle: _dialog.title
-    property string p_filetype  // e.g. ["Excel file (*.xlsx *.xls)"]
+    property alias  p_filetype: _dialog.nameFilters  // [str, ...]
+    /*      Examples:
+                ["All files (*.*)"]
+                ["Excel file (*.xlsx *.xls)"]
+                ["PDF file (*.pdf)"]
+                ["Plain file (*.txt *.md *.rst *.json *.ini)"]
+                ["Text file (*.txt)"]
+     */
     property string p_path
     property alias  p_selectFolder: _dialog.selectFolder
     property alias  p_selectMultiple: _dialog.selectMultiple
-
-    property var __builtinFiletypes: {
-        "all_files": ["All files (*.*)"],
-        "excel": ["Excel file (*.xlsx *.xls)"],
-        "pdf": ["PDF file (*.pdf)"],
-        "txt": ["Text file (*.txt *.md *.rst *.json *.ini)"],
-        ".txt": ["Text file (*.txt)"],
-    }
 
     onClicked: _dialog.open()
 
@@ -30,20 +29,11 @@ LCButton {
         title: "File dialog"
 
         onAccepted: {
-            // Note that `fileUrl` is typeof Object, not string. We should
-            //  convert it to string first.
-            // Use `fileUrl + ""` to make it string, the value is
-            //  'file:///d:/...', slice out 'file:///' then pass it to `p_path`.
-            p_path = (fileUrl + "").slice(8)
-        }
-    }
-
-    Component.onCompleted: {
-        const filetype = __builtinFiletypes[p_filetype]
-        if (filetype == undefined) {
-            _dialog.nameFilters = p_filetype
-        } else {
-            _dialog.nameFilters = filetype
+            // Note that `this.fileUrl` is typeof Object, not string. We should
+            // convert it to string before we assign it to `p_path`.
+            // Use `fileUrl + ""` to convert it to string, the value is like
+            // 'file:///d:/...', slice out 'file:///' then pass it to `p_path`.
+            p_path = (this.fileUrl + "").slice(8)
         }
     }
 }

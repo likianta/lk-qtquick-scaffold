@@ -14,3 +14,4 @@ current version: 0.1.0
 - [新增] LCOval 组件
 - [修复] LCCheckList 和 LCRadioList
 - [更新] LCText 和 LCEdit p_alignment 属性
+- [变更] pycomm.PyHandler.main() 使用更严格的调用策略

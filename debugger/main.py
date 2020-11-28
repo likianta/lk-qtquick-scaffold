@@ -1,30 +1,39 @@
 """
 @Author  : likianta <likianta@foxmail.com>
-@Module  : debugger.py
+@Module  : main.py
 @Created : 2020-09-20
 @Updated : 2020-11-28
-@Version : 0.2.1
+@Version : 0.2.2
 @Desc    :
 """
-from os.path import abspath
-from lk_qtquick_scaffold import app, pyhandler
+from os.path import abspath, dirname
 
 
-def main():
-    pyhandler.register_pyfunc(app.engine.clearComponentCache,
-                              'clear_component_cache')
-    pyhandler.register_pyfunc(get_target)
-
-    app.start(abspath('./HotReloader.qml'))
+class HotReloader:
     
-    
-def get_target():
-    from platform import system
-    if system() == 'Windows':
-        return 'file:///' + abspath('../tests/qml/view.qml')
-    else:
-        return abspath('../tests/qml/view.qml')
+    def __init__(self, target: str):
+        """
+        Args:
+            target: A .qml file for hot loading.
+        """
+        self.curr_dir = dirname(__file__)
+        self.viewer = abspath(f'{self.curr_dir}/HotReloader.qml')
+        self.target = abspath(target)
+        
+        from platform import system
+        if system() == 'Windows':
+            self.target = 'file:///' + self.target
+            
+    def launch(self):
+        from lk_qtquick_scaffold import app, pyhandler
+        pyhandler.register_pyfunc(app.engine.clearComponentCache,
+                                  'clear_component_cache')
+        pyhandler.register_pyfunc(self.get_target)
+        app.start(self.target)
+        
+    def get_target(self):
+        return self.target
 
 
 if __name__ == '__main__':
-    main()
+    reloader = HotReloader(abspath('../tests/qml/view.qml'))
