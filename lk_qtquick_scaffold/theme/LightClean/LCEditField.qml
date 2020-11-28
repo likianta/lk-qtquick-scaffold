@@ -4,7 +4,6 @@ import "./LCStyle/dimension.js" as LCDimension
 LCRow {
     height: LCDimension.BarHeight
 
-    property alias p_digitOnly: _edit.p_digitOnly  // DELETE ME
     property alias p_hint     : _edit.p_hint
     property alias p_title    : _title.p_text
     property alias p_value    : _edit.p_text

@@ -6,7 +6,6 @@ LCDividerLine       1.0  LCDividerLine.qml
 LCEdit              1.0  LCEdit.qml
 LCEditField         1.0  LCEditField.qml
 LCFileBrowse        1.0  LCFileBrowse.qml
-LCFileBrowseButton  1.0  LCFileBrowseButton.qml
 LCForm              1.0  LCForm.qml
 LCListModel         1.0  LCListModel.qml
 LCListView          1.0  LCListView.qml

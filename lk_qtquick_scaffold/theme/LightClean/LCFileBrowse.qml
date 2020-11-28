@@ -1,44 +1,64 @@
 import QtQuick 2.15
+import QtQuick.Dialogs 1.3
+import "./LCButtons"
 import "./LCStyle/dimension.js" as LCDimension
 
 LCEditField {
-    id: _edit
-    anchors.verticalCenter: parent.verticalCenter
+    id: root
 
-    p_title: "Input"
+    property alias  p_dialogTitle: _dialog.title
+    property alias  p_filetype: _dialog.nameFilters  // [str, ...]
+    /*      Examples:
+                ["All files (*.*)"]
+                ["Excel file (*.xlsx *.xls)"]
+                ["PDF file (*.pdf)"]
+                ["Plain file (*.txt *.md *.rst *.json *.ini)"]
+                ["Text file (*.txt)"]
+     */
+    property string p_path
+    property alias  p_selectFolder: _dialog.selectFolder
+    property alias  p_selectMultiple: _dialog.selectMultiple
+    // inherits:
+    //      p_hint
+    //      p_title
+    //      p_value
 
+    LCButton {
+        id: _browseBtn
+        p_text: "Browse"
 
-    LCFileBrowseButton {
-        id: _browse
-        anchors.verticalCenter: parent.verticalCenter
-    }
-}
+        onClicked: _dialog.open()
 
-Row {
-    spacing: LCDimension.HSpacingM
+        FileDialog {
+            id: _dialog
+            // folder: shortcuts.desktop
+            selectExisting: true
+            selectFolder: false
+            selectMultiple: false
+            title: "File dialog"
 
-    property alias p_hint : _edit.p_hint
-    property alias p_title: _edit.p_title
-    property alias p_value: _edit.p_value
+            onAccepted: {
+                // Note that `this.fileUrl` is typeof Object, not string. We
+                // should convert it to string before we assign it to `p_path`.
+                // Use `fileUrl + ""` to convert it to string, the value is like
+                // 'file:///d:/...', slice out 'file:///' then pass it to
+                // `p_path`.
+                root.p_path = (this.fileUrl + "").slice(8)
+            }
 
-    property alias p_dialogTitle   : _browse.p_dialogTitle
-    property alias p_filetype      : _browse.p_filetype
-    property alias p_path          : _browse.p_path
-    property alias p_selectFolder  : _browse.p_selectFolder
-    property alias p_selectMultiple: _browse.p_selectMultiple
-
-    LCEditField {
-        id: _edit
-        anchors.verticalCenter: parent.verticalCenter
-        p_title: "Input"
-    }
-
-    LCFileBrowseButton {
-        id: _browse
-        anchors.verticalCenter: parent.verticalCenter
+            Component.onCompleted: {
+                root.p_path = root.p_value
+            }
+        }
     }
 
     Component.onCompleted: {
-        p_path = p_value
+        root.children[1].width = root.width -
+                                 root.children[0].width -
+                                 root.children[2].width
+        // console.log('LCFileBrowse.qml:58', root.width,
+        //             root.children[0].width,
+        //             root.children[1].width,
+        //             root.children[2].width,)
     }
 }
