@@ -1,6 +1,8 @@
 const WinWidth = 800
 const WinHeight = 600
 
+// -----------------------------------------------------------------------------
+
 const BarWidth = 380
 const BarHeight = 30
 
@@ -12,7 +14,7 @@ const ButtonCloseHeight = 20
 
 const IndicatorCheckWidth = 14
 const IndicatorCheckHeight = 14
-const IndicatorCheckRadius = 2
+const IndicatorCheckRadius = 3
 const IndicatorRadioWidth = 16
 const IndicatorRadioHeight = 16
 const IndicatorRadioRadius = IndicatorRadioWidth / 2

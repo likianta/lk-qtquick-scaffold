@@ -16,6 +16,7 @@ Rectangle {
     property string p_color0: LCPalette.BgWhite
     property string p_color1: LCPalette.BgWhite
     property alias  p_radius: root.radius
+    property alias  __anim: _colorAnim
 
     states: [
         State {
@@ -29,6 +30,7 @@ Rectangle {
     transitions: [
         Transition {
             ColorAnimation {
+                id: _colorAnim
                 duration: LCMotion.Swift
                 easing.type: Easing.OutQuart
                 properties: "color"

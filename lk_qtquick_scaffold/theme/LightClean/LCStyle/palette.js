@@ -45,4 +45,20 @@ const TextWhite = "#FFFFFF"
 // -----------------------------------------------------------------------------
 // Other
 
-const Transparent = "transparent"
+const Transparent = "#00000000"
+// const Translucent10 = "#10000000"
+// const Translucent20 = "#20000000"
+// const Translucent30 = "#30000000"
+// const Translucent40 = "#40000000"
+// const Translucent50 = "#50000000"
+// const Translucent60 = "#60000000"
+// const Translucent70 = "#70000000"
+// const Translucent80 = "#80000000"
+// const Translucent90 = "#90000000"
+const TranslucentDL = "#30000000"  // Dark Low
+const TranslucentDM = "#50000000"  // Dark Medium
+const TranslucentDH = "#80000000"  // Dark Hight
+const TranslucentLL = "#30FFFFFF"  // Dark Low
+const TranslucentLM = "#50FFFFFF"  // Dark Medium
+const TranslucentLH = "#80FFFFFF"  // Dark Hight
+

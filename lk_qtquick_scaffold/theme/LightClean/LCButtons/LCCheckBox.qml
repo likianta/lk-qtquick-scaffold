@@ -1,53 +1,73 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
+
 import "../"
 import "../LCStyle/dimension.js" as LCDimension
+import "../LCStyle/motion.js" as LCMotion
 import "../LCStyle/palette.js" as LCPalette
 
 CheckBox {
-    id: _root
-    // height: LCDimension.BarHeightS
+    id: root
+    hoverEnabled: true
+    leftPadding: LCDimension.HSpacingM
+    width: LCDimension.ButtonWidthM; height: LCDimension.ButtonHeightS
 
     property alias p_text: _txt.p_text
-    property alias __active: _root.checked
-    
-    // onCheckedChanged: {
-    //     console.log("LCCheckBox", "check changed", __active)
-    // }
-    
+    property alias __active: root.checked
+
     background: LCRectangle {
         id: _bg
-        implicitWidth: LCDimension.ButtonWidthM; implicitHeight: LCDimension.ButtonHeightM
         p_border.width: 0
-        p_color: "transparent"
+        p_color: LCPalette.Transparent
+
+        states: [
+            State {
+                when: !__active && root.hovered
+                PropertyChanges {
+                    target: _bg
+                    p_border.width: 1
+                    p_color: LCPalette.TranslucentLH
+                }
+            },
+            State {
+                when: root.hovered
+                PropertyChanges {
+                    target: _bg
+                    p_border.width: 1
+                }
+            }
+        ]
     }
 
     contentItem: LCText {
         id: _txt
-        anchors.fill: parent
-        anchors.leftMargin: _indicator.width + LCDimension.HSpacingS
+        anchors.left: _indicator.right
+        anchors.leftMargin: LCDimension.HSpacingS
         p_alignment: "vcenter"
-        // p_bold: __active
     }
 
     indicator: LCRectangle {
         id: _indicator
+        anchors.left: parent.left
+        anchors.leftMargin: LCDimension.HSpacingS
         anchors.verticalCenter: parent.verticalCenter
         clip: true
         width: LCDimension.IndicatorCheckWidth; height: LCDimension.IndicatorCheckHeight
 
-        p_border.width: 1; p_border.color: __active ? LCPalette.ButtonChecked : LCPalette.ButtonUnchecked
+        p_border.color: LCPalette.ButtonUnchecked
+        p_border.width: 1
+        p_color: LCPalette.Transparent
         p_radius: LCDimension.IndicatorCheckRadius
 
-        LCRectangleBg {
-            id: _indicator_filler
-            anchors.fill: parent
-            // anchors.margins: 1
-
-            p_active: __active
-            p_border.width: 0
-            p_color0: LCPalette.Transparent; p_color1: LCPalette.ButtonChecked
-            p_radius: parent.radius
-        }
+        states: [
+            State {
+                when: __active
+                PropertyChanges {
+                    target: _indicator
+                    p_border.color: LCPalette.ButtonChecked
+                    p_color: LCPalette.ButtonChecked
+                }
+            }
+        ]
     }
 }

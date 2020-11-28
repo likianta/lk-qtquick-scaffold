@@ -9,10 +9,10 @@ Text {
     font.pixelSize: LCText.FontSizeM
 
     property string p_alignment: "center"  // [center|hcenter|vcenter]
-    property alias p_bold: _root.font.bold
-    property alias p_color: _root.color
-    property alias p_size: _root.font.pixelSize
-    property alias p_text: _root.text
+    property alias  p_bold: _root.font.bold
+    property alias  p_color: _root.color
+    property alias  p_size: _root.font.pixelSize
+    property alias  p_text: _root.text
 
     Component.onCompleted: {
         if (p_alignment == 'center') {
