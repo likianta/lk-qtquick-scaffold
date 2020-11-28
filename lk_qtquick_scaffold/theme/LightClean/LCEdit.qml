@@ -9,20 +9,25 @@ import "./LCStyle/typography.js" as LCTypo
 TextField {
     id: root
     leftPadding: LCDimension.HSpacingM; rightPadding: LCDimension.HSpacingM
-    width: LCDimension.BarWidth; height: LCDimension.BarHeight
-
     font.pixelSize: LCTypo.FontSizeM
     placeholderTextColor: LCPalette.TextHint
-    validator: RegularExpressionValidator {
-        regularExpression: p_digitOnly ? /[0-9]+/ : /.*/
-    }
+    width: LCDimension.BarWidth; height: LCDimension.BarHeight
+
+    /*  Tip: How to use validator in qml?
+            TextField {
+                validator: RegularExpressionValidator {
+                    regularExpression: p_digitOnly ? /[0-9]+/ : /.* /
+                }
+            }
+        Note: This  wont be introduced into LCEdit, but you can do it
+        yourself by following the tips above.
+     */
     
     selectByMouse: true
     selectedTextColor: LCPalette.TextSelected
     selectionColor: LCPalette.TextSelection
 
     property string p_alignment: 'center'
-    property bool   p_digitOnly: false
     property alias  p_hint: root.placeholderText
     property alias  p_text: root.text
 

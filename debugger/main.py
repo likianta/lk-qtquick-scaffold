@@ -2,8 +2,8 @@
 @Author  : likianta <likianta@foxmail.com>
 @Module  : main.py
 @Created : 2020-09-20
-@Updated : 2020-11-28
-@Version : 0.2.2
+@Updated : 2020-11-29
+@Version : 0.2.3
 @Desc    :
 """
 from os.path import abspath, dirname
@@ -29,7 +29,7 @@ class HotReloader:
         pyhandler.register_pyfunc(app.engine.clearComponentCache,
                                   'clear_component_cache')
         pyhandler.register_pyfunc(self.get_target)
-        app.start(self.target)
+        app.start(self.viewer)
         
     def get_target(self):
         return self.target
@@ -37,3 +37,4 @@ class HotReloader:
 
 if __name__ == '__main__':
     reloader = HotReloader(abspath('../tests/qml/view.qml'))
+    reloader.launch()
