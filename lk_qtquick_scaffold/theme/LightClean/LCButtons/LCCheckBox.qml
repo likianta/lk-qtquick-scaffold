@@ -27,7 +27,7 @@ CheckBox {
         anchors.fill: parent
         anchors.leftMargin: _indicator.width + LCDimension.HSpacingS
         p_alignment: "vcenter"
-        p_bold: __active
+        // p_bold: __active
     }
 
     indicator: LCRectangle {

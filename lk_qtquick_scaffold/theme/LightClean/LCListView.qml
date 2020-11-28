@@ -12,7 +12,7 @@ ListView {
 
     property alias p_currentIndex: _root.currentIndex
     property alias p_delegate: _root.delegate
-    property var   p_model: Array()  // [[str|dict], ...]
+    property var   p_model: Array()  // [(str|dict), ...]
     property alias p_spacing: _root.spacing
     property int   r_count: p_model.length
     property alias r_currentItem: _root.currentItem

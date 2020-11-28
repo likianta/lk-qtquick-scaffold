@@ -1,8 +1,9 @@
 import QtQuick 2.15
-import "./LCButtons/LCCheckBox.qml" as LCCheckBox
+import "./LCButtons"
 
 LCListView {
     id: _root
+
     property var p_checks: Object()  // {index: bool, ...}
     property var p_childrenProps: Object()
     // inherits props:
@@ -13,7 +14,7 @@ LCListView {
     //      r_count
     //      r_currentItem
 
-    function clicked(i, item) {}
+    signal clicked(int index, var checkbox)
 
     function getChecked() {  // -> [index, ...]
         let out = []
@@ -35,8 +36,17 @@ LCListView {
         return out
     }
 
+    function getCheckStates() {  // -> {index: bool, ...}
+        return p_checks
+    }
+
     function __get(obj, key, default_val) {
-        // https://stackoverflow.com/questions/44184794/what-is-the-javascript-equivalent-of-pythons-get-method-for-dictionaries
+        /*  Inplement Python's `dict.get(key, default)` in Javascript.
+
+            References:
+                https://stackoverflow.com/questions/44184794/what-is-the
+                -javascript-equivalent-of-pythons-get-method-for-dictionaries
+         */
         const result = obj[key]
         if (typeof result !== 'undefined') {
             return result
@@ -46,18 +56,19 @@ LCListView {
     }
 
     p_delegate: LCCheckBox {
-        id: _item
         p_text: modelData
+
         property int r_index: model.index
+
         onClicked: {
-            _root.p_checks[_item.r_index] = _item.checked
-            _root.clicked(_item.r_index, _item)
+            _root.p_checks[this.r_index] = this.checked
+            _root.clicked(this.r_index, this)
         }
 
         Component.onCompleted: {
-            _item.checked = __get(p_checks, model.index, false)
+            this.checked = __get(p_checks, model.index, false)
             for (let k in p_childrenProps) {
-                _item[k] = p_childrenProps[k]
+                this[k] = p_childrenProps[k]
             }
         }
     }

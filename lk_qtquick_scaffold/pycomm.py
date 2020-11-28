@@ -18,7 +18,7 @@ class PyHandler(QType.QObj):
     Usages:
         See 'docs/PyComm 使用示例.md'
     """
-    __pymethods_dict = {}
+    __pyfunc_dict = {}
     
     def __init__(self, object_name=''):
         super().__init__()
@@ -34,7 +34,7 @@ class PyHandler(QType.QObj):
         """
         name = name or func.__name__
         # lk.loga(name, h='parent')
-        self.__pymethods_dict[name] = func
+        self.__pyfunc_dict[name] = func
 
     @Slot(PyHandlerType.FuncName, result=QType.QVar)
     @Slot(PyHandlerType.FuncName, QType.QVal, result=QType.QVar)
@@ -61,12 +61,12 @@ class PyHandler(QType.QObj):
     def main(self, method: str, param):
         lk.loga(method, param)
         if param is None:
-            return self.__pymethods_dict.get(
+            return self.__pyfunc_dict.get(
                 method, self._invalid_method
             )()
         else:
             # noinspection PyArgumentList
-            return self.__pymethods_dict.get(
+            return self.__pyfunc_dict.get(
                 method, self._invalid_method
             )(param)
 

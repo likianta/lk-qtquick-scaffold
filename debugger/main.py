@@ -2,8 +2,8 @@
 @Author  : likianta <likianta@foxmail.com>
 @Module  : debugger.py
 @Created : 2020-09-20
-@Updated : 2020-11-27
-@Version : 0.2.0
+@Updated : 2020-11-28
+@Version : 0.2.1
 @Desc    :
 """
 from os.path import abspath
@@ -19,10 +19,11 @@ def main():
     
     
 def get_target():
-    # return 'file:///' + abspath('../tests/qml/view.qml')
-    from os.path import exists
-    print(exists(abspath('../tests/qml/view.qml')))
-    return abspath('../tests/qml/view.qml')
+    from platform import system
+    if system() == 'Windows':
+        return 'file:///' + abspath('../tests/qml/view.qml')
+    else:
+        return abspath('../tests/qml/view.qml')
 
 
 if __name__ == '__main__':

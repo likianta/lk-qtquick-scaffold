@@ -12,7 +12,11 @@ Some significant features showed below:
 - A decorator for translating QObject to PyObject, you can use something like `PyObject.border.width` to access the `border.width` property in Python
 - The themes' widgets are finely designed, full filled with animations and easy to use
 
-# Gallery
+# Widgets Demo
+
+![](gallery/widgets_demo/LCButton 2020-11-28 114612.gif)
+
+# Theme Gallery
 
 TODO
 

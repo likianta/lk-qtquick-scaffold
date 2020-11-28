@@ -1,5 +1,6 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
+
 import "../"
 import "../LCStyle/dimension.js" as LCGeometry
 import "../LCStyle/motion.js" as LCMotion
@@ -7,25 +8,20 @@ import "../LCStyle/palette.js" as LCPalette
 import "../LCStyle/typography.js" as LCText
 
 Button {
-    id: _root
-    // height: LCGeometry.ButtonHeightM
-
-    property bool p_autoSize: true
-    property alias p_border: _bg.p_border  // you can set `p_border.width: 0` to
-    //      make button frameless.
-    property alias p_text: _txt.text
-    property alias p_width: _bg.implicitWidth; property alias p_height: _bg.implicitHeight
-    property alias __active: _root.pressed
-
+    id: root
+    width: LCGeometry.ButtonWidthM; height: LCGeometry.ButtonHeightM
+    
+    property bool  p_autoWidth: true
+    property alias p_text: root.text
+    property alias __active: root.pressed
+    
     background: LCRectangleBg {
         id: _bg
-        // Note: If the background item has no explicit size specified, it
-        //      automatically follows the control's size. In most cases, there
-        //      is no need to specify width or height for a background item.
-        implicitWidth: LCGeometry.ButtonWidthM; implicitHeight: LCGeometry.ButtonHeightM
         p_active: __active
-        p_border.width: __active ? 0 : 1
-        p_color0: LCPalette.ButtonNormal; p_color1: LCPalette.ButtonPressed
+        p_border.color: __active ? LCPalette.BorderSink : p_color0
+        p_border.width: 2
+        p_color0: LCPalette.ButtonNormal
+        p_color1: LCPalette.ButtonPressed
     }
 
     contentItem: Item {
@@ -33,35 +29,17 @@ Button {
             id: _txt
             anchors.centerIn: parent
             p_bold: true
-            // p_color: LCPalette.TextNormal
-            p_color: __active ? LCPalette.TextWhite : LCPalette.TextNormal
+            p_color: LCPalette.TextNormal
             p_size: LCText.ButtonTextSize
-
-            // states: [
-            //     State {
-            //         when: __active
-            //         PropertyChanges {
-            //             target: _txt
-            //             p_color: LCPalette.TextWhite
-            //         }
-            //     }
-            // ]
-            // transitions: [
-            //     Transition {
-            //         ColorAnimation {
-            //             duration: LCMotion.Swift
-            //             properties: "p_color"
-            //         }
-            //     }
-            // ]
+            p_text: root.text
         }
     }
 
     Component.onCompleted: {
-        if (p_autoSize) {
-            const preferredWidth = _txt.contentWidth + 20
-            if (preferredWidth > _root.width) {
-                p_width = preferredWidth
+        if (p_autoWidth) {
+            const preferredWidth = _txt.contentWidth + 40
+            if (preferredWidth > root.width) {
+                root.width = preferredWidth
             }
         }
     }

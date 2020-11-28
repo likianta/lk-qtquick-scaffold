@@ -19,8 +19,8 @@ const IndicatorRadioRadius = IndicatorRadioWidth / 2
 
 // -----------------------------------------------------------------------------
 
-const RadiusS = 5
-const RadiusM = 8
+const RadiusS = 4
+const RadiusM = 6
 const RadiusL = 12
 
 // -----------------------------------------------------------------------------
