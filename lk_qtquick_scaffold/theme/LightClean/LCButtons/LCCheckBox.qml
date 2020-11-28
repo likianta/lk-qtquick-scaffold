@@ -41,6 +41,13 @@ CheckBox {
         p_color: LCPalette.Transparent
         p_radius: LCDimension.IndicatorCheckRadius
 
+        Image {
+            anchors.fill: parent
+            anchors.margins: 3
+            source: '../rss/check-white.svg'
+            visible: __active
+        }
+
         states: [
             State {
                 when: __active

@@ -7,7 +7,7 @@ const BarWidth = 380
 const BarHeight = 30
 
 const ButtonWidthM = 80
-const ButtonHeightS = 20
+const ButtonHeightS = 24
 const ButtonHeightM = 30
 const ButtonCloseWidth = 40
 const ButtonCloseHeight = 20

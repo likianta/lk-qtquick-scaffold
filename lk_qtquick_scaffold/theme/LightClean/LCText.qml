@@ -1,12 +1,11 @@
 import QtQuick 2.15
 import "./LCStyle/palette.js" as LCPalette
-import "./LCStyle/typography.js" as LCText
+import "./LCStyle/typography.js" as LCTypo
 
 Text {
     id: _root
     color: LCPalette.TextNormal
-    font.family: LCText.FontFamily
-    font.pixelSize: LCText.FontSizeM
+    font.pixelSize: LCTypo.FontSizeM
 
     property string p_alignment: "center"  // [center|hcenter|vcenter]
     property alias  p_bold: _root.font.bold

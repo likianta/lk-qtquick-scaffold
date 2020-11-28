@@ -11,9 +11,11 @@ RadioButton {
     width: LCDimension.ButtonWidthM; height: LCDimension.ButtonHeightM
     /*
         RadioButton 与 background 的 width, height 区分:
-            在 RadioButton 中设置 width, height, 或者在 background 中设置 implicitWidth, implicitHeight.
+            在 RadioButton 中设置 width, height, 或者在 background 中设置
+            implicitWidth, implicitHeight.
         RadioButton 与 contentItem 的 text 区分:
-            在 RadioButton 中设置 text, 在 contentItem 中关联 RadioButton 的 text.
+            在 RadioButton 中设置 text, 在 contentItem 中关联 RadioButton 的
+            text.
      */
 
     property alias p_text: _root.text

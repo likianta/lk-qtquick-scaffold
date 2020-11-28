@@ -2,6 +2,7 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 
 import "../"
+import "../LCBackground"
 import "../LCStyle/dimension.js" as LCGeometry
 import "../LCStyle/motion.js" as LCMotion
 import "../LCStyle/palette.js" as LCPalette
@@ -15,13 +16,8 @@ Button {
     property alias p_text: root.text
     property alias __active: root.pressed
     
-    background: LCRectangleBg {
-        id: _bg
+    background: LCButtonBg {
         p_active: __active
-        p_border.color: __active ? LCPalette.BorderSink : p_color0
-        p_border.width: 2
-        p_color0: LCPalette.ButtonNormal
-        p_color1: LCPalette.ButtonPressed
     }
 
     contentItem: Item {
