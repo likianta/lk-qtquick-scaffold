@@ -2,7 +2,6 @@ import QtQuick 2.15
 import "./LCStyle/dimension.js" as LCGeometry
 
 Item {
-    id: _root
     height: LCGeometry.BarHeight
 
     property alias p_digitOnly: _edit.p_digitOnly
@@ -27,11 +26,11 @@ Item {
         id: _edit
         anchors.right: parent.right
         Component.onCompleted: {
-            this.clicked.connect(_root.clicked)
+            this.clicked.connect(parent.clicked)
         }
     }
 
     Component.onCompleted: {
-        _root.width = childrenRect.width
+        this.width = childrenRect.width
     }
 }

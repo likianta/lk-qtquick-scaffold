@@ -1,16 +1,15 @@
 import QtQuick 2.15
 import QtQuick.Dialogs 1.3
 import "./LCButtons"
-import "./LCStyle/dimension.js" as LCGeometry
 
 LCButton {
     p_text: "Browse"
 
-    property alias p_dialogTitle: _dialog.title
+    property alias  p_dialogTitle: _dialog.title
     property string p_filetype  // e.g. ["Excel file (*.xlsx *.xls)"]
     property string p_path
-    property alias p_selectFolder: _dialog.selectFolder
-    property alias p_selectMultiple: _dialog.selectMultiple
+    property alias  p_selectFolder: _dialog.selectFolder
+    property alias  p_selectMultiple: _dialog.selectMultiple
 
     property var __builtinFiletypes: {
         "all_files": ["All files (*.*)"],

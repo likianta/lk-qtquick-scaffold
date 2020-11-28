@@ -5,7 +5,7 @@ import "./LCStyle/motion.js" as LCMotion
 import "./LCStyle/palette.js" as LCPalette
 
 Popup {
-    id: _root
+    id: root
     // 在定义时, 写的都是它的末状态. 比如 `anchors.centerIn: Overlay.overlay`.
     anchors.centerIn: Overlay.overlay
     closePolicy: Popup.CloseOnEscape
@@ -13,22 +13,22 @@ Popup {
     width: p_endW; height: p_endH
 
     property bool p_active: false
-    property int p_endW: 380; property int p_endH: 270
-    property int __endX: _root.x; property int __endY: _root.y
-    property int p_startW: 0; property int p_startH: 0
-    property int p_startX: 0; property int p_startY: 0  // FIXME: no effect
+    property int  p_startW: 0;    property int p_startH: 0
+    property int  p_endW: 380;    property int p_endH: 270
+    property int  p_startX: 0;    property int p_startY: 0  // FIXME: no effect
+    property int  __endX: root.x; property int __endY: root.y
 
     onP_activeChanged: {
         if (p_active) {
-            _root.open()
+            root.open()
         } else {
-            _root.close()
+            root.close()
         }
     }
     onOpenedChanged: {
         // to resolve insufficient closing when user pressed escape.
-        if (p_active && !_root.opened) {
-            p_active = _root.opened
+        if (p_active && !root.opened) {
+            p_active = root.opened
         }
     }
 
@@ -58,7 +58,7 @@ Popup {
 
             MouseArea {
                 anchors.fill: parent
-                onClicked: _root.close()
+                onClicked: root.close()
             }
         }
     }

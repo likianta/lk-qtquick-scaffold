@@ -1,0 +1,5 @@
+module LCBackground
+
+LCButtonBg.qml  1.0  LCButtonBg.qml
+LCGhostBg.qml   1.0  LCGhostBg.qml
+LCRectBg.qml    1.0  LCRectBg.qml

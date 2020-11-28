@@ -1,27 +1,41 @@
-import "./LCStyle/palette.js" as LCPalette
+import QtQuick 2.15
 
-LCRectangle {
-    id: _root
-    // when you need to put a field item, just define the property `p_key` & `p_val` in that item. LCForm will iterate
-    //      these properties and post as a whole data.
-
+Item {
+    /*
+        Usages:
+            // view.qml
+            import LightClean 1.0
+            LCForm {
+                LCText {
+                    property string p_key: 'My Text 1'
+                    property alias  p_val: text
+                }
+                LCText {
+                    property string p_key: 'My Text 2'
+                    property alias  p_val: text
+                }
+                Component.onCompleted: {
+                    this.post('Resolve text in Python backend')
+                }
+            }
+     */
     property var p_data: Object()
 
-    // call `fn_collectData(_root)`
-    function fn_collectData(rootItem) {
-        for (let i in rootItem.children) {
-            let child = rootItem.children[i]
+    function collectData(rootItem) {
+        let i, child
+        for (i in rootItem.children) {
+            child = rootItem.children[i]
             if (child.p_key) {
                 p_data[child.p_key] = child.p_val
             } else {
-                fn_collectData(child)  // function will finally return global variant `p_data`, but no need to receive it
-                //      in recursive loops since it is global variant.
+                collectData(child)  // function will finally return global variant `p_data`, but no need to receive 
+                //      it in recursive loops since it is global variant.
             }
         }
         return p_data
     }
 
-    function fn_post(name) {
-        return PyHandler.main(name, fn_collectData(_root))
+    function post(name) {
+        return PyHandler.main(name, collectData(this))
     }
 }

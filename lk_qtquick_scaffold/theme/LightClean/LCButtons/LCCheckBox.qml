@@ -2,6 +2,7 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 
 import "../"
+import "../LCBackground"
 import "../LCStyle/dimension.js" as LCDimension
 import "../LCStyle/motion.js" as LCMotion
 import "../LCStyle/palette.js" as LCPalette
@@ -15,28 +16,9 @@ CheckBox {
     property alias p_text: _txt.p_text
     property alias __active: root.checked
 
-    background: LCRectangle {
-        id: _bg
-        p_border.width: 0
-        p_color: LCPalette.Transparent
-
-        states: [
-            State {
-                when: !__active && root.hovered
-                PropertyChanges {
-                    target: _bg
-                    p_border.width: 1
-                    p_color: LCPalette.TranslucentLH
-                }
-            },
-            State {
-                when: root.hovered
-                PropertyChanges {
-                    target: _bg
-                    p_border.width: 1
-                }
-            }
-        ]
+    background: LCGhostBg {
+        p_active: __active
+        p_hovered: root.hovered
     }
 
     contentItem: LCText {

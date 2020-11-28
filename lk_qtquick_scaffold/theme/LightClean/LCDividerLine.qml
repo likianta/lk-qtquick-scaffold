@@ -3,7 +3,6 @@ import "./LCStyle/palette.js" as LCPalette
 
 Rectangle {
     id: _root
-    // border.width: 1; border.color: LCPalette.BorderNormal
     color: LCPalette.BorderNormal
     width: 1; height: 1
 
@@ -13,12 +12,12 @@ Rectangle {
     Component.onCompleted: {
         switch (p_orientation) {
             case "h":
-                // downside
+                // fall down
             case "horizontal":
                 _root.width = parent.width
                 break
             case "v":
-                // downside
+                // fall down
             case "vertical":
                 _root.height = parent.height
                 break

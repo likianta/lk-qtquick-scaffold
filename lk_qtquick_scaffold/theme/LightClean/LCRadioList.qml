@@ -2,10 +2,10 @@ import QtQuick 2.15
 import "./LCButtons/LCRadioButton.qml" as LCRadioButton
 
 LCListView {
-    id: _root
+    id: root
 
-    property var   p_childrenProps: Object()
-    property int   p_default: -1
+    property var p_childrenProps: Object()
+    property int p_default: -1
     // extend props:
     //      p_currentIndex
     //      p_delegate
@@ -14,7 +14,7 @@ LCListView {
     //      r_count
     //      r_currentItem
 
-    function clicked(i, item) {}
+    signal clicked(int index, var item)
 
     p_delegate: LCRadioButton {
         id: _item
@@ -22,8 +22,8 @@ LCListView {
         property int p_index: model.index
 
         onClicked: {
-            _root.currentIndex = p_index
-            fn_clicked(p_index, _item)
+            root.currentIndex = p_index
+            clicked(p_index, _item)
         }
 
         Component.onCompleted: {
@@ -37,7 +37,7 @@ LCListView {
 
     Component.onCompleted: {
         if (p_default > -1) {
-            _root.currentIndex = p_default
+            root.currentIndex = p_default
         }
     }
 }
