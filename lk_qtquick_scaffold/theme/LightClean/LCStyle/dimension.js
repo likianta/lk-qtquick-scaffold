@@ -17,7 +17,7 @@ const IndicatorCheckHeight = 14
 const IndicatorCheckRadius = 3
 const IndicatorRadioWidth = 16
 const IndicatorRadioHeight = 16
-const IndicatorRadioRadius = IndicatorRadioWidth / 2
+const IndicatorRadioRadius = 8
 
 // -----------------------------------------------------------------------------
 
@@ -30,7 +30,8 @@ const RadiusL = 12
 const Margin = 10
 const MarginM = 10
 
-const SpacingXS = 2
+const SpacingXS = 1
+const SpacingS = 3
 const HSpacingXS = 1
 const HSpacingS = 5
 const HSpacingM = 10

@@ -2,7 +2,7 @@ import QtQuick 2.15
 import "./LCButtons"
 
 LCListView {
-    id: _root
+    id: root
 
     property var p_checks: Object()  // {index: bool, ...}
     property var p_childrenProps: Object()
@@ -56,13 +56,14 @@ LCListView {
     }
 
     p_delegate: LCCheckBox {
+        width: parent.width
         p_text: modelData
 
         property int r_index: model.index
 
         onClicked: {
-            _root.p_checks[this.r_index] = this.checked
-            _root.clicked(this.r_index, this)
+            root.p_checks[this.r_index] = this.checked
+            root.clicked(this.r_index, this)
         }
 
         Component.onCompleted: {
@@ -71,5 +72,12 @@ LCListView {
                 this[k] = p_childrenProps[k]
             }
         }
+    }
+
+    Component.onCompleted: {
+        console.log('LCCheckList.qml:77',
+                    this.width, this.height,
+                    childrenRect.width, childrenRect.height)
+
     }
 }

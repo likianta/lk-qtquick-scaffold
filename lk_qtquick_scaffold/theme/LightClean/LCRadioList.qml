@@ -1,5 +1,5 @@
 import QtQuick 2.15
-import "./LCButtons/LCRadioButton.qml" as LCRadioButton
+import "./LCButtons"
 
 LCListView {
     id: root
@@ -23,7 +23,7 @@ LCListView {
 
         onClicked: {
             root.currentIndex = p_index
-            clicked(p_index, _item)
+            root.clicked(p_index, _item)
         }
 
         Component.onCompleted: {

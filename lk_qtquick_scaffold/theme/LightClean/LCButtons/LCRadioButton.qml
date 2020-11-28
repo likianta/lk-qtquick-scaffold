@@ -2,13 +2,16 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 
 import "../"
+import "../LCBackground"
 import "../LCStyle/dimension.js" as LCDimension
+import "../LCStyle/motion.js" as LCMotion
 import "../LCStyle/palette.js" as LCPalette
 
-
-RadioButton {
-    id: _root
-    width: LCDimension.ButtonWidthM; height: LCDimension.ButtonHeightM
+RadioButton {  // modified based on LCCheckBox
+    id: root
+    hoverEnabled: true
+    leftPadding: LCDimension.HSpacingM
+    width: LCDimension.ButtonWidthM; height: LCDimension.ButtonHeightS
     /*
         RadioButton 与 background 的 width, height 区分:
             在 RadioButton 中设置 width, height, 或者在 background 中设置
@@ -18,37 +21,55 @@ RadioButton {
             text.
      */
 
-    property alias p_text: _root.text
-    property alias r_active: _root.checked
+    property alias p_text: root.text
+    property alias r_active: root.checked
 
-    background: LCRectangle {
-        id: _bgrect
-        color: {
-            if (r_active) {
-                return LCPalette.ButtonPressed
-            } else if (_area.containsMouse) {
-                return LCPalette.ButtonHovered
-            } else {
-                return LCPalette.Transparent
-            }
-        }
-        radius: LCDimension.RadiusS
-
-        MouseArea {
-            id: _area
-            anchors.fill: parent
-            hoverEnabled: true
-            onClicked: {
-                _root.checked = !_root.checked  // r_active changed
-            }
-        }
+    background: LCGhostBg {
+        p_active: r_active
+        p_hovered: root.hovered
     }
 
     contentItem: LCText {
         id: _txt
-        p_color: r_active ? LCPalette.TextWhite : LCPalette.TextNormal
-        p_text: _root.text
+        anchors.left: _outer.right
+        anchors.leftMargin: LCDimension.HSpacingS
+        p_alignment: "vcenter"
+        p_text: root.text
     }
 
-    indicator: Item {}
+    indicator: LCOval {
+        id: _outer
+        anchors.left: parent.left
+        anchors.leftMargin: LCDimension.HSpacingS
+        anchors.verticalCenter: parent.verticalCenter
+        clip: true
+
+        p_border.color: LCPalette.ButtonUnchecked
+        p_border.width: 1
+        p_color: LCPalette.Transparent
+        p_radius: LCDimension.IndicatorRadioRadius
+
+        LCOval {
+            id: _inner
+            anchors.centerIn: parent
+            visible: r_active
+            p_radius: parent.p_radius - LCDimension.SpacingS
+        }
+
+        states: [
+            State {
+                when: r_active
+                PropertyChanges {
+                    target: _inner
+                    p_border.color: LCPalette.ButtonChecked
+                    p_color: LCPalette.ButtonChecked
+                }
+                PropertyChanges {
+                    target: _outer
+                    p_border.color: LCPalette.BorderSink
+                    p_border.width: 2
+                }
+            }
+        ]
+    }
 }

@@ -14,10 +14,10 @@ CheckBox {
     width: LCDimension.ButtonWidthM; height: LCDimension.ButtonHeightS
 
     property alias p_text: _txt.p_text
-    property alias __active: root.checked
+    property alias r_active: root.checked
 
     background: LCGhostBg {
-        p_active: __active
+        p_active: r_active
         p_hovered: root.hovered
     }
 
@@ -43,14 +43,14 @@ CheckBox {
 
         Image {
             anchors.fill: parent
-            anchors.margins: 3
+            anchors.margins: LCDimension.SpacingS
             source: '../rss/check-white.svg'
-            visible: __active
+            visible: r_active
         }
 
         states: [
             State {
-                when: __active
+                when: r_active
                 PropertyChanges {
                     target: _indicator
                     p_border.color: LCPalette.ButtonChecked
