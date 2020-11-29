@@ -1,3 +1,11 @@
+"""
+@Author   : likianta (likianta@foxmail.com)
+@FileName : layout_engine.py
+@Version  : 0.1.0
+@Created  : 2020-11-29
+@Updated  : 2020-11-29
+@Desc     :
+"""
 from .pycomm import adapt_type, PyHandler, QObjectDelegator as Delegator
 
 
@@ -39,3 +47,6 @@ class PyLayoutHelper(PyHandler):
         for i in parent.children():
             i.anchors[alignment] = parent[alignment]
             #   E.g. i.anchors.horizontalCenter = parent.horizontalCenter
+
+
+pylayout_helper = PyLayoutHelper()
