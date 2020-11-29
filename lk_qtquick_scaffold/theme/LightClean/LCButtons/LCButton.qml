@@ -13,13 +13,20 @@ Button {
     width: LCDimension.ButtonWidthM; height: LCDimension.ButtonHeightM
     
     property bool   p_autoWidth: true
+    property alias  p_borderless: _bg.p_borderless
     property string p_color: LCPalette.TextNormal
     property alias  p_text: root.text
     property alias  __active: root.pressed
     property alias  __textComp: _txt  // Access this only for special intent.
     
     background: LCButtonBg {
+        id: _bg
         p_active: __active
+        Component.onCompleted: {
+            if (!p_borderless) {
+
+            }
+        }
     }
 
     contentItem: Item {

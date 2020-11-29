@@ -4,10 +4,12 @@ import "../LCStyle/palette.js" as LCPalette
 
 LCRectBg {
     id: root
-    border.width: 2; border.color: root.color
+    border.color: p_borderless ? root.color : LCPalette.BorderNormal
+    border.width: 1
     color: p_color0
 
     property bool   p_active: false
+    property bool   p_borderless: true
     property string p_color0: LCPalette.ButtonNormal
     property string p_color1: LCPalette.ButtonPressed
     // inherits:
@@ -21,6 +23,7 @@ LCRectBg {
                 target: root
                 color: p_color1
                 border.color: LCPalette.BorderSink
+                border.width: 2
             }
         }
     ]
