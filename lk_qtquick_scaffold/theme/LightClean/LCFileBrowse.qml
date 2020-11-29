@@ -6,6 +6,7 @@ import "./LCStyle/dimension.js" as LCDimension
 LCEditField {
     id: root
 
+    property alias  p_borderless: _browseBtn.p_borderless
     property alias  p_dialogTitle: _dialog.title
     property alias  p_filetype: _dialog.nameFilters  // [str, ...]
     /*      Examples:
