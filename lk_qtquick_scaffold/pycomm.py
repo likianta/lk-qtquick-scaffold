@@ -113,7 +113,6 @@ class QObjectDelegator:
     
     def __init__(self, qobj):
         self.qobj = qobj
-        self._holder = {}
         self.__inited = True
         #   注意, 双下划线开头的 '__inited' 会被特殊处理. 它在 self.__dict__ 中
         #   以 '_QObjectWrapper__inited' 显示, 而非 '__inited'.
@@ -136,28 +135,61 @@ class QObjectDelegator:
     
     def __getattr__(self, item):
         """
+        Examples:
+            # assume `a` is a Rectangle QObject
+            b = QObjectDelegator(a)
+            print(b.width)
+            print(b.border.width)
+        
         References:
             https://stackoverflow.com/questions/54695976/how-can-i-update-a-qml
             -objects-property-from-my-python-file
         """
-        if '_QObjectWrapper__inited' not in self.__dict__:
-            raise Exception('QObjectWrapper is not fully initialized!')
+        if '_QObjectDelegator__inited' not in self.__dict__:
+            raise Exception('QObjectDelegator is not fully initialized!')
         prop = QQmlProperty(self.qobj, item)
-        if isinstance((out := prop.read()), QType.QObj):
-            out = QObjectDelegator(out)
+        data = prop.read()
+        if isinstance(data, QType.QObj):
+            return QObjectDelegator(data)
         else:
-            self._holder[item] = out
-        return out
+            return data
     
     def __setattr__(self, key, value):
-        if '_QObjectWrapper__inited' not in self.__dict__:
+        """
+        Examples:
+            # assume `a` is a Rectangle QObject
+            b = QObjectDelegator(a)
+            b.width = 100
+            b.border.width = 2
+        """
+        if '_QObjectDelegator__inited' not in self.__dict__:
             self.__dict__[key] = value
             return
-        if (x := self._holder.get(key)) is not None:
-            #   这个步骤是为了改善赋值的, 如果前后的值没有变化, 则不更新
-            #   QObject. (PS: 其实作用不是很大, 未来会移除此判断)
-            self._holder.pop(key)
-            if value == x:
-                return  # no modified, do nothing
+        prop = QQmlProperty(self.qobj, key)
+        prop.write(value)
+
+    def __getitem__(self, item):
+        """
+        Examples:
+            # assume `a` is a Rectangle QObject
+            b = QObjectDelegator(a)
+            print(b['width'])
+            print(b['border']['width'])
+        """
+        prop = QQmlProperty(self.qobj, item)
+        data = prop.read()
+        if isinstance(data, QType.QObj):
+            return QObjectDelegator(data)
+        else:
+            return data
+
+    def __setitem__(self, key, value):
+        """
+        Examples:
+            # assume `a` is a Rectangle QObject
+            b = QObjectDelegator(a)
+            b['width'] = 100
+            b['border']['width'] = 2
+        """
         prop = QQmlProperty(self.qobj, key)
         prop.write(value)
