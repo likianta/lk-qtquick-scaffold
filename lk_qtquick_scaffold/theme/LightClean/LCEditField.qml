@@ -1,18 +1,21 @@
 import QtQuick 2.15
 import "./LCStyle/dimension.js" as LCDimension
 
-LCRow {
+Item {
     height: LCDimension.BarHeight
 
-    property alias p_hint     : _edit.p_hint
-    property alias p_title    : _title.p_text
-    property alias p_value    : _edit.p_text
+    property alias p_hint: _edit.p_hint
+    property alias p_title: _title.p_text
+    property alias p_value: _edit.p_text
 
     signal clicked()
 
     // Title field
     LCText {
         id: _title
+        anchors {
+            left: parent.left
+        }
         height: parent.height
         p_alignment: 'rcenter'
     }
@@ -28,7 +31,8 @@ LCRow {
         }
     }
 
-    // Component.onCompleted: {
-    //     this.width = childrenRect.width
-    // }
+    Component.onCompleted: {
+
+        this.width = childrenRect.width
+    }
 }

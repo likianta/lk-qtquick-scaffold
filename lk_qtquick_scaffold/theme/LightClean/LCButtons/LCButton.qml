@@ -3,18 +3,20 @@ import QtQuick.Controls 2.15
 
 import "../"
 import "../LCBackground"
-import "../LCStyle/dimension.js" as LCGeometry
+import "../LCStyle/dimension.js" as LCDimension
 import "../LCStyle/motion.js" as LCMotion
 import "../LCStyle/palette.js" as LCPalette
 import "../LCStyle/typography.js" as LCText
 
 Button {
     id: root
-    width: LCGeometry.ButtonWidthM; height: LCGeometry.ButtonHeightM
+    width: LCDimension.ButtonWidthM; height: LCDimension.ButtonHeightM
     
-    property bool  p_autoWidth: true
-    property alias p_text: root.text
-    property alias __active: root.pressed
+    property bool   p_autoWidth: true
+    property string p_color: LCPalette.TextNormal
+    property alias  p_text: root.text
+    property alias  __active: root.pressed
+    property alias  __textComp: _txt  // Access this only for special intent.
     
     background: LCButtonBg {
         p_active: __active
@@ -25,7 +27,7 @@ Button {
             id: _txt
             anchors.centerIn: parent
             p_bold: true
-            p_color: LCPalette.TextNormal
+            p_color: root.p_color
             p_size: LCText.ButtonTextSize
             p_text: root.text
         }

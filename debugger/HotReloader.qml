@@ -28,7 +28,8 @@ Window {
 
         function reload() {
             source = ""
-            // See `debugger.main.py:19`
+            console.log('------------------- Reload Target -------------------')
+            // See `debugger.main.launch`
             PyHandler.call('clear_component_cache')
             this.source = p_target  // This will open a new window to show the
             //      target. (Cuz the target usually has a root Window widget

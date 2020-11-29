@@ -15,7 +15,7 @@ LCEditField {
                 ["Plain file (*.txt *.md *.rst *.json *.ini)"]
                 ["Text file (*.txt)"]
      */
-    property string p_path
+    property alias  p_path: root.p_value
     property alias  p_selectFolder: _dialog.selectFolder
     property alias  p_selectMultiple: _dialog.selectMultiple
     // inherits:
@@ -44,10 +44,6 @@ LCEditField {
                 // 'file:///d:/...', slice out 'file:///' then pass it to
                 // `p_path`.
                 root.p_path = (this.fileUrl + "").slice(8)
-            }
-
-            Component.onCompleted: {
-                root.p_path = root.p_value
             }
         }
     }

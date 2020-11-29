@@ -1,12 +1,15 @@
 """
 @Author   : likianta (likianta@foxmail.com)
 @FileName : pycomm.py
-@Version  : 0.6.3
+@Version  : 0.7.0
 @Created  : 2020-09-09
-@Updated  : 2020-11-28
+@Updated  : 2020-11-29
 @Desc     : 
 """
-from PySide2.QtCore import QAbstractListModel, QMetaObject, Qt, Slot
+from functools import wraps
+
+from PySide2.QtCore import Slot
+from PySide2.QtQml import QQmlProperty
 from lk_logger import lk
 
 from ._typing import *
@@ -35,7 +38,7 @@ class PyHandler(QType.QObj):
         name = name or func.__name__
         # lk.loga(name, h='parent')
         self.__pyfunc_dict[name] = func
-
+    
     @Slot(PyHandlerType.FuncName, result=QType.QVar)
     @Slot(PyHandlerType.FuncName, QType.QVal, result=QType.QVar)
     def call(self, func_name: PyHandlerType.FuncName, param: QType.QVal = None):
@@ -70,426 +73,91 @@ class PyHandler(QType.QObj):
 
 
 # ------------------------------------------------------------------------------
-# DELETE ALL BELOW
+# Adaptor
 
-# noinspection PyUnresolvedReferences
-class PyHooks(QType.QObj):
-    """ Hookup qml objects, and store the reference in Python dict.
-    
-    The Concept:
-        uid: an uid is unique under the same path. e.g. '_mouse_area'.
-        obj: QObject (qml component object).
-        path: e.g. './ui/SomeFolder/SomeComp.qml'.
-        url: consists of `{path}#{uid}`. e.g. './ui/SomeFolder/SomeComp.qml#
-            _mouse_area'.
+def adapt_type(func):
+    """ 将从 QML 传过来的参数进行类型适配后再交给目标函数.
+
+    References:
+        Decorator: https://www.runoob.com/w3cnote/python-func-decorators.html
+
+    Examples:
+        def foo(qitem, qlist, qstr):
+            print(type(qitem))  # -> QObject (QType.QObj)
+            print(type(qlist))  # -> QJSValue (QType.QVal)
+            print(type(qstr))   # -> Py str
+
+        @adapt_type
+        def bar(qitem, qlist, qstr):
+            print(type(qitem))  # -> QObjectDelegator
+            print(type(qlist))  # -> Py list
+            print(type(qstr))   # -> Py str
     """
     
-    def __init__(self):
-        super().__init__()
-        self._datapot = {}  # type: HooksType.Datapot
-        self._hooks = set()  # type: HooksType.Hooks
-        self._qobj_holder = {}  # type: HooksType.Holder
-        #   {path: {uid: obj}}
-        #   e.g. {'./ui/SomeComp.qml': {'_txt': PySide2.QtCore.QObject}}
-    
-    @Slot(QType.QObj)
-    def scanning_qml_tree(self, root: QType.QObj):
-        """
-        使用方法:
-            示例: 在 QML 根布局中 (通常是 Window), 调用:
-                    Window {
-                        id: _root
-                        ...
-                        Component.onCompleted: {
-                            PyHooks.scanning_qml_tree(_root)
-                        }
-                    }
-                PyHooks 将从根布局出发, 遍历所有子对象, 如果子对象中包含以下属性:
-                    Item {
-                        property var pyhook
-                        ...
-                    }
-                则该对象的 pyhook 会经过解析, 更新到 PyHooks._hooks 字典中.
-            语法格式定义:
-                `property var pyhook` 支持以下格式:
-                    1. property var pyhook: {key: val, ...}
-                        key 可以自定义, 但需保证全局唯一.
-                        val 可以是常见的 js 类型 (基本类型, list, dict), 也可以
-                            是指该组件的某个已存在的属性值, 比如 Button 的 text,
-                            width, height, x, y, background 等, 注意:
-                            1. 当作属性时, 格式为 ':width' (以冒号开头的字符串).
-                            2. 属性 id 不能用作 val, 即 ':id' 会导致程序有报错的
-                                风险.
-                        示例: Button {
-                            property var pyhook: {
-                                'description': 'the main button',
-                                'btn_name': ':text',
-                            }
-                        }
-                    2. property var pyhook: [str key, str prop]
-                        key 可以自定义, 但需保证全局唯一.
-                        prop 指该组件的某个已存在的属性值, 比如 Button 的 text,
-                        width, height, x, y, background 等, 注意 id 不能使用.
-                        示例: Button {property var pyhook: ['event', 'text']}
-                    3. property var pyhook: [[str key, str prop], ...]
-                       示例: Button {
-                            property var pyhook: [
-                                ['btn_width', ':width'],
-                                ['btn_height', ':height'],
-                            ]
-                        }
-        注意:
-            1. 在静态组件中设置 pyhook
-            3. LCWindow 根布局不能设置 pyhook
-            4. Repeater, ListView 等的 children 不能设置 pyhook. 如 children 需
-                要更新 pyhook, 请调用 parent 的 pyhook
-        """
-        self._hooks.clear()
-        
-        def _search_pyhooks(node: QType.QObj):
-            for child_node in node.children():
-                # lk.loga(child_node, child_node.property('pyhook'))
-                if child_node.property('pyhook'):
-                    self._hooks.add(child_node)
-                else:  # None
-                    _search_pyhooks(child_node)
-        
-        _search_pyhooks(root)
-        lk.loga(len(self._hooks))
-    
-    def _unpack_hooks(self):
-        def _unpack_kv():
-            if isinstance(v, str) and v.startswith(':'):
-                # e.g. k = 'btn_name', v = ':text'
-                #   -> yield 'btn_name', item.property('text').toVariant()
-                yield k, item.property(v[1:]).toVariant()
+    @wraps(func)
+    def decor(*args, **kwargs):
+        new_args = []
+        for i in args:
+            if isinstance(i, QType.QObj):
+                new_args.append(QObjectDelegator(i))
+            elif isinstance(i, QType.QVal):
+                new_args.append(i.toVariant())
             else:
-                # e.g. k = 'btn_width', v = 80
-                #   -> yield 'btn_width', 80
-                yield k, v
-        
-        for item in self._hooks:
-            kv = item.property('pyhook').toVariant()
-            """ |dict, list, double_list|
-                dict: {key: val, ...}
-                    key: str
-                    val: |str, int, bool, list, dict, None|
-                        str: 1. str startswith ':' like ':text', it aims to
-                                item's existed property.
-                             2. str not startswith ':', it just a plain string.
-                list: [key, val]
-                double_list: [[key1, val1], [key2, val2], ...]
-            """
-            if isinstance(kv, dict):
-                for k, v in kv.items():
-                    yield from _unpack_kv()
-            else:
-                if isinstance(kv[0], str):
-                    k, v = kv
-                    yield from _unpack_kv()
-                else:
-                    for (k, v) in kv:
-                        yield from _unpack_kv()
+                new_args.append(i)
+        return func(*new_args, **kwargs)
     
-    def get_qparams(self) -> dict:
-        return {k: v for k, v in self._unpack_hooks()}
-    
-    @Slot(str, QType.QVal, str)
-    @Slot(str, QType.QVal)
-    def set_value(self, key: str, val: QType.QVal, source=''):
-        """
-        Usecase (in .qml file):
-            // === view.qml ===
-            Item {
-                id: _item
-                Component.onCompleted: {
-                    // a.
-                    PyHooks.set_value("week", "Wednesday", "view.qml#_item")
-                    // b.
-                    PyHooks.set_value("week", "Wednesday")
-                }
-            }
-        
-        :param key:
-        :param val:
-        :param source:
-        :return:
-        """
-        self._datapot[key] = (val.toVariant(), source)
-    
-    @Slot(str, result=QType.QVar)
-    def get_value(self, key: str) -> Any:
-        """
-        Usecase (in .qml file):
-            Item {
-                Component.onCompleted: {
-                    let data = PyHooks.get_value("week")  # -> "Wednesday"
-                }
-            }
-        
-        :param key:
-        :return:
-        """
-        return self._datapot.get(key, [None, ''])[0]
-    
-    # --------------------------------------------------------------------------
-    
-    @Slot()
-    @Slot(str)
-    @Slot(str, str)
-    def debug(self, source='', view='_qobj_holder'):
-        lk.loga(source, view)
-        lk.init_count()
-        if view == '_qobj_holder':
-            if self._qobj_holder:
-                for path, val in self._qobj_holder.items():
-                    for uid, obj in val.items():
-                        lk.logax(path, uid, obj)
-            else:
-                lk.loga(self._qobj_holder)
-        elif view == '_datapot':
-            for k, v in self._datapot.items():
-                lk.logax(k, v)
-    
-    @staticmethod
-    def _qjsval_2_pylist(qids):  # DELETE
-        """
-        调用方可能有以下两种传递方式:
-            // === SomeComp.qml ===
-            import QtQuick 2.15
-            Rectangle {
-                Component.onCompleted: {
-                    // 方式 1: 请求一个字符串.
-                    var hooks1 = PyHooks.get_hooks("ABC")
-                    # -> {ABC: Object}
-                    // 方式 2: 请求一个字符串列表.
-                    var hooks2 = PyHooks.get_hooks(["ABC", "DEF"])
-                    # -> {ABC: Object1, DEF: Object2}
-                }
-            }
-        :param qids:
-        :return:
-        """
-        qids = qids.toVariant()  # type: list
-        # qids.toVariant() 可能是一个列表 (方式 2), 也可能是一个字符串 (方式 1),
-        #   我们得把后者转换成单元素的列表/元组.
-        if isinstance(qids, str):
-            # noinspection PyTypeChecker
-            qids = (qids,)
-        # lk.loga(qids)
-        return qids
-    
-    # --------------------------------------------------------------------------
-    
-    @Slot(str, QType.QObj)
-    def set_one(self, url: str, obj: QType.QObj):
-        path, uid = url.rsplit('#', 1)
-        node = self._qobj_holder.setdefault(path, {})
-        node[uid] = obj
-    
-    @Slot(str, QType.QVal)
-    def set_dict(self, path: str, uid2obj: QType.QVal):
-        node = self._qobj_holder.setdefault(path, {})
-        uid2obj = uid2obj.toVariant()  # type: dict
-        node.update(uid2obj)
-    
-    @Slot(QType.QVal)
-    @Slot(str, QType.QVal)
-    @Slot(str, QType.QObj)
-    def set(self,
-            unknown1: HooksType.UnknownArg1,
-            unknown2: HooksType.UnknownArg2 = None):
-        """ Set one object or set dict of objects.
+    return decor
 
-        :param unknown1:
-            QPath, QUrl: depends on obj (if obj is QObj, unknown is url, if obj
-                is dict of objects, unknown is path).
-            QVal: {url: obj} (in this case obj param must be None).
-        :param unknown2
-            QObj: one object. -> obj
-            QVal: one dict of objects. -> {uid: obj}
+
+class QObjectDelegator:
+    
+    def __init__(self, qobj):
+        self.qobj = qobj
+        self._holder = {}
+        self.__inited = True
+        #   注意, 双下划线开头的 '__inited' 会被特殊处理. 它在 self.__dict__ 中
+        #   以 '_QObjectWrapper__inited' 显示, 而非 '__inited'.
+    
+    def children(self):
         """
-        if isinstance(unknown1, str):
-            if isinstance(unknown2, QType.QObj):  # set one.
-                url, obj = unknown1, unknown2
-                self.set_one(url, obj)
-            else:  # set dict. the unknown2 is `uid2obj` (dict).
-                path, uid2obj = unknown1, unknown2
-                # noinspection PyTypeChecker
-                self.set_dict(path, uid2obj)
+        Notes:
+            在 QML 中调用 item.children 和在 Python 中调用 item.children() 返回的结果
+            是不同的! 前者返回的是正常的 children 列表, 后者返回的列表中会多出一个未知的
+            child (暂不清楚原因), 而且该 child 的位置是任意的. 该 child 的特征是: 它的所
+            有属性的值都是 None (正常的 child 的属性值可以是 str, bool, etc. 但不会是
+            None), 凭此特征来识别并从 Python children 列表中剔除它.
+        """
+        out = []
+        for child in self.children():
+            if child.property('enabled') is not None:
+                out.append(QObjectDelegator(child))
+        assert len(out) == len(self.children()) - 1
+        return out  # type: List[QObjectDelegator]
+    
+    def __getattr__(self, item):
+        """
+        References:
+            https://stackoverflow.com/questions/54695976/how-can-i-update-a-qml
+            -objects-property-from-my-python-file
+        """
+        if '_QObjectWrapper__inited' not in self.__dict__:
+            raise Exception('QObjectWrapper is not fully initialized!')
+        prop = QQmlProperty(self.qobj, item)
+        if isinstance((out := prop.read()), QType.QObj):
+            out = QObjectDelegator(out)
         else:
-            assert unknown2 is None
-            urls2obj = unknown1.toVariant()  # type: dict
-            for url, unknown2 in urls2obj.items():
-                self.set_one(url, unknown2)
+            self._holder[item] = out
+        return out
     
-    # --------------------------------------------------------------------------
-    
-    # noinspection PyTypeChecker
-    @Slot(str, result=QType.QObj)
-    def get_one(self, url: QType.QUrl) -> Union[QType.QObj, None]:
-        path, uid = url.rsplit('#', 1)
-        try:
-            return self._qobj_holder[path][uid]
-        except KeyError as e:
-            lk.logt('[W2116]', 'Cannot find key', e)
-            return None
-    
-    @Slot(str, result=QType.QVar)
-    def get_list(self, path) -> List[QType.QObj]:
-        """
-        NOTE: This method is not often to use.
-        :param path:
-        :return:
-        """
-        return list(self._qobj_holder[path].values())
-    
-    @Slot(str, result=QType.QVar)
-    def get_dict(self, path) -> Dict[QType.QUid, QType.QObj]:
-        return self._qobj_holder[path]
-    
-    @Slot(str, result=QType.QVar)
-    @Slot(QType.QVal, result=QType.QVar)
-    def get(self, unknown: HooksType.UnknownGet) -> HooksType.GetRet:
-        """
-        Usecase:
-            PyHooks.get("./ui/SomeComp.qml") -> {'_txt': obj, ...}
-            PyHooks.get("./ui/SomeComp.qml#_txt") -> obj
-            PyHooks.get([
-                "./ui/SomeComp.qml#_txt",
-                "./ui/AnotherComp.qml#_txt",
-            ]) -> [obj1, obj2]
-
-        :param unknown:
-            a. str path -> return {uid: obj, ...} (uid from same path)
-            b. str url -> return single obj
-            c. list urls -> return [obj, ...] (obj from different paths)
-        :return:
-        """
-        if isinstance(unknown, str):
-            if '#' in unknown:
-                url = unknown
-                return self.get_one(url)
-            else:
-                path = unknown
-                return self.get_dict(path)
-        else:
-            urls = unknown.toVariant()  # type: list
-            return list(map(self.get_one, urls))
-
-
-class QtHooks(QType.QObj):  # DELETE
-    
-    def __init__(self, engine, pyhooks: PyHooks):
-        super().__init__()
-        self._engine = engine
-        self._pyhooks = pyhooks
-    
-    def get(self, uid: QType.QUid):
-        return self._pyhooks.get(uid)
-    
-    find = get
-    
-    def update(self, uid: QType.QUid, prop: str, value):
-        qobj = self.get(uid)  # type: QType.QObj
-        qobj.setProperty(prop, value)
-    
-    # noinspection PyTypeChecker
-    def update_list_model(self, uid: QType.QUid, *values: dict, clear=False,
-                          birdge_data='py_newData', bridge_method='pyAppend'):
-        qobj = self.get(uid)  # type: QAbstractListModel
-        if clear:
-            QMetaObject.invokeMethod(qobj, 'clear', Qt.AutoConnection)
-        for v in values:
-            qobj.setProperty(birdge_data, v)
-            QMetaObject.invokeMethod(qobj, bridge_method, Qt.AutoConnection)
-    
-    # noinspection PyTypeChecker
-    def invoke_qml(self, uid: QType.QUid, method: str):
-        """ Invoke QML method.
-        仅支持调用无参方法.
-        """
-        qobj = self.get(uid)
-        QMetaObject.invokeMethod(qobj, method, Qt.AutoConnection)
-    
-    # --------------------------------------------------------------------------
-    
-    __msg_box = {}
-    
-    @Slot(QType.QUid)
-    @Slot(QType.QUid, str)
-    def put_in_msg(self, uid, msg=''):
-        self.__msg_box[uid] = msg
-        return uid, msg
-    
-    # TODO
-    # def recv(self, *uids, timeout=None):
-    #     # from asyncio import sleep, get_event_loop, wait
-    #     def listen(_uids):
-    #         lk.logax(_uids)
-    #
-    #         elapsed_time = 0.0
-    #
-    #         # while True:
-    #         for uid in _uids:
-    #             if uid in self.__msg_box:
-    #                 self.__msg_box.clear()
-    #                 return uid, self.__msg_box[uid]
-    #
-    #         elapsed_time += 0.5
-    #         if timeout is not None and elapsed_time > timeout:
-    #             self.__msg_box.clear()
-    #             return '', ''
-    #
-    #         self.__msg_box.clear()
-    #         return '', ''
-
-
-class PyHandlerOld(QType.QObj):
-    
-    def __init__(self):
-        super().__init__()
-        self.__pymethods_dict = {}
-    
-    @Slot(str, QType.QVal, result=QType.QVar)
-    @Slot(str, result=QType.QVar)
-    def main(self, method: str, params: QType.QVal = None):
-        try:
-            if params is None:
-                return self.__pymethods_dict.get(
-                    method, self._invalid_method)()
-            else:
-                # noinspection PyArgumentList
-                return self.__pymethods_dict.get(
-                    method, self._invalid_method)(params.toVariant())
-        except Exception as e:
-            raise Exception('PyHandler executing error', e)
-    
-    def register_pymethod(self, func: staticmethod):
-        """
-        https://medium.com/%40mgarod/dynamically-add-a-method-to-a-class-in
-            -python-c49204b85bd6+&cd=3&hl=zh-CN&ct=clnk&gl=sg
-        """
-        lk.loga(func.__name__, h='parent')
-        self.__pymethods_dict[func.__name__] = func  # A
-        # setattr(self, func.__name__, func)  # B
-    
-    def _invalid_method(self, *args):
-        return
-    
-    @staticmethod
-    def find_pyhandler_related_methods(qmldir: str, base: str):
-        from lk_utils.filesniff import findall_files, relpath
-        from lk_utils.read_and_write import read_file_by_line
-        
-        for filepath in findall_files(qmldir, suffix='.qml'):
-            for i, x in enumerate(read_file_by_line(filepath, 1)):
-                if (x := x.strip()).startswith('//'):
-                    continue
-                if 'PyHandler.main' in x:
-                    relpath = relpath(filepath, base)
-                    print(f'{relpath}:{i}', '>>', x)
-
-
-if __name__ == '__main__':
-    handle = PyHandler()
+    def __setattr__(self, key, value):
+        if '_QObjectWrapper__inited' not in self.__dict__:
+            self.__dict__[key] = value
+            return
+        if (x := self._holder.get(key)) is not None:
+            #   这个步骤是为了改善赋值的, 如果前后的值没有变化, 则不更新
+            #   QObject. (PS: 其实作用不是很大, 未来会移除此判断)
+            self._holder.pop(key)
+            if value == x:
+                return  # no modified, do nothing
+        prop = QQmlProperty(self.qobj, key)
+        prop.write(value)
