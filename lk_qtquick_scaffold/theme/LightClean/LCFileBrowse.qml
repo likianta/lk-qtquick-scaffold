@@ -49,12 +49,11 @@ LCEditField {
     }
 
     Component.onCompleted: {
+        // Make the TextField (children[1])'s width adaptive.
         root.children[1].width = root.width -
+                                 root.padding * 2 -
+                                 root.spacing * 2 -
                                  root.children[0].width -
                                  root.children[2].width
-        // console.log('LCFileBrowse.qml:58', root.width,
-        //             root.children[0].width,
-        //             root.children[1].width,
-        //             root.children[2].width,)
     }
 }
