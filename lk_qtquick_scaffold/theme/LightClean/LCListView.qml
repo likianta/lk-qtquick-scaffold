@@ -8,7 +8,7 @@ ListView {
     implicitHeight: LCDimension.FlowHeight
 
     // stop bouncing from scrolling to the start/end.
-    boundsBehavior: Flickable.DragOverBounds
+    boundsBehavior: __scrollable ? Flickable.DragOverBounds : Flickable.StopAtBounds
     clip: true
     // control mouse wheel velocity a little faster than default
     maximumFlickVelocity: 2300
@@ -22,11 +22,12 @@ ListView {
     property alias p_spacing: root.spacing
     property int   r_count: p_model.length
     property alias r_currentItem: root.currentItem
-    // property int   r_length: p_model.length
+    property bool  __scrollable: root.contentWidth > root.width
 
     // show scroll bar
     // https://stackoverflow.com/questions/45650226/qml-attach-scrollbar-to-listview/45651291
     ScrollBar.vertical: ScrollBar {
         id: _scroll
+        interactive: __scrollable
     }
 }

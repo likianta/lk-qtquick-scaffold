@@ -7,6 +7,7 @@ current version: 0.1.1
 - [变更] 组件使用 implitcitWidth/Height
 - [新增] PyHandler.register() 装饰器
 - [更新] LCCheckList 和 LCRadioList 修改代理组件属性的新方案
+- [优化] LCListView 仅在内容超出容器时可滑动
 
 ### 0.1.0 | 2020-11-28
 

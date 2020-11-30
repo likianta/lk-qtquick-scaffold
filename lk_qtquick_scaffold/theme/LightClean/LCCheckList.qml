@@ -74,8 +74,8 @@ LCListView {
         }
 
         Component.onCompleted: {
-            console.log('[LCCheckList:73]', 'delegate item created',
-                        root.objectName, r_index)
+            // console.log('[LCCheckList:73]', 'delegate item created',
+            //             root.objectName, r_index)
             this.checked = _get(p_checks, model.index, false)
             modifyDelegateItem(this.r_index, this, root)
             /*  异常说明
