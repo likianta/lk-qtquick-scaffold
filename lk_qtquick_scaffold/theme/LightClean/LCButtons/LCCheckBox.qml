@@ -11,6 +11,8 @@ CheckBox {
     id: root
     implicitWidth: LCDimension.ButtonWidthM
     implicitHeight: LCDimension.ButtonHeightS
+    // implicitWidth: root.contentWidth
+    // implicitHeight: root.contentHeight
     hoverEnabled: true
     leftPadding: LCDimension.HSpacingM
 
@@ -18,6 +20,8 @@ CheckBox {
     property alias r_active: root.checked
 
     background: LCGhostBg {
+        // implicitWidth: LCDimension.ButtonWidthM
+        // implicitHeight: LCDimension.ButtonHeightS
         p_active: r_active
         p_hovered: root.hovered
     }

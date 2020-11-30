@@ -9,17 +9,10 @@ import "../LCStyle/palette.js" as LCPalette
 
 RadioButton {  // modified based on LCCheckBox
     id: root
+    implicitWidth: LCDimension.ButtonWidthM
+    implicitHeight: LCDimension.ButtonHeightS
     hoverEnabled: true
     leftPadding: LCDimension.HSpacingM
-    width: LCDimension.ButtonWidthM; height: LCDimension.ButtonHeightS
-    /*
-        RadioButton 与 background 的 width, height 区分:
-            在 RadioButton 中设置 width, height, 或者在 background 中设置
-            implicitWidth, implicitHeight.
-        RadioButton 与 contentItem 的 text 区分:
-            在 RadioButton 中设置 text, 在 contentItem 中关联 RadioButton 的
-            text.
-     */
 
     property alias p_text: root.text
     property alias r_active: root.checked

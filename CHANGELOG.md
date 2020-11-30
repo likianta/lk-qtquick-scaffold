@@ -8,6 +8,7 @@ current version: 0.1.1
 - [新增] PyHandler.register() 装饰器
 - [更新] LCCheckList 和 LCRadioList 修改代理组件属性的新方案
 - [优化] LCListView 仅在内容超出容器时可滑动
+- [变更] debugger 模块移到主项目内
 
 ### 0.1.0 | 2020-11-28
 

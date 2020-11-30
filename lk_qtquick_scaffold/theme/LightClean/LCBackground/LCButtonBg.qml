@@ -9,7 +9,7 @@ LCRectBg {
     color: p_color0
 
     property bool   p_active: false
-    property bool   p_borderless: true
+    property bool   p_borderless: false
     property string p_color0: LCPalette.ButtonNormal
     property string p_color1: LCPalette.ButtonPressed
     // inherits:

@@ -5,6 +5,10 @@
 @Updated : 2020-11-29
 @Version : 0.2.3
 @Desc    :
+    Usage:
+        from lk_qtquick_scaffold.debugger import HotReloader
+        reloader = HotReloader('./my_view.qml')
+        reloader.launch()
 """
 from os.path import abspath, dirname
 
@@ -36,5 +40,5 @@ class HotReloader:
 
 
 if __name__ == '__main__':
-    reloader = HotReloader(abspath('../tests/qml/view.qml'))
+    reloader = HotReloader(abspath('../../tests/qml/view.qml'))
     reloader.launch()
