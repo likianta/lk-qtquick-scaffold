@@ -4,8 +4,8 @@ import "../LCStyle/palette.js" as LCPalette
 
 LCRectBg {
     id: root
-    border.color: p_borderless ? root.color : LCPalette.BorderNormal
     border.width: 1
+    border.color: p_borderless ? root.color : LCPalette.BorderNormal
     color: p_color0
 
     property bool   p_active: false
@@ -21,12 +21,13 @@ LCRectBg {
             when: p_active
             PropertyChanges {
                 target: root
-                color: p_color1
-                border.color: LCPalette.BorderSink
                 border.width: 2
+                border.color: LCPalette.BorderSink
+                color: p_color1
             }
         }
     ]
+
     transitions: [
         Transition {
             ColorAnimation {

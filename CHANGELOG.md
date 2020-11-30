@@ -1,6 +1,10 @@
-current version: 0.1.0
+current version: 0.1.1
 
 --------------------------------------------------------------------------------
+
+### 0.1.1 | 2020-11-30
+
+- [变更] 组件使用 implitcitWidth/Height
 
 ### 0.1.0 | 2020-11-28
 
@@ -15,3 +19,9 @@ current version: 0.1.0
 - [修复] LCCheckList 和 LCRadioList
 - [更新] LCText 和 LCEdit p_alignment 属性
 - [变更] pycomm.PyHandler.main() 使用更严格的调用策略
+- [优化] HotReloader 后端改造为类形式
+- [修复] LCFileBrowse 组件
+- [移除] LCFileBrowseButton 组件
+- [新增] 按钮的 borderless 属性
+- [新增] layout_helper.js
+- [更新] 强化 LCRow, LCColumn 属性

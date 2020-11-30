@@ -25,9 +25,35 @@ class PyHandler(QType.QObj):
     
     def __init__(self, object_name=''):
         super().__init__()
+        self._init_pyfunc_dict()
+        
         from . import app
         self.object_name = object_name or self.__class__.__name__
         app.register_pyobj(self, self.object_name)
+    
+    def register(self, name=''):
+        """ A decorator version of `self.register_pyfunc`
+        
+        Examples:
+            from lk_qtquick_scaffold import pyhandler
+            
+            @pyhandler.register
+            def myfunc():
+                pass
+                
+            # It equals to: pyhandler.register_pyfunc(myfunc)
+        """
+        
+        def decor0(func):
+            self.register_pyfunc(func, name)
+            
+            @wraps(func)
+            def decor1(*args, **kwargs):
+                return func(*args, **kwargs)
+            
+            return decor1
+        
+        return decor0
     
     def register_pyfunc(self, func: PyHandlerType.Func, name=''):
         """
@@ -62,7 +88,7 @@ class PyHandler(QType.QObj):
         return self.main(func_name, param)
     
     def main(self, method: str, param):
-        lk.loga(method, param)
+        lk.loga(method, param, h='parent')
         try:
             if param is None:
                 return self.__pyfunc_dict[method]()
@@ -167,7 +193,7 @@ class QObjectDelegator:
             return
         prop = QQmlProperty(self.qobj, key)
         prop.write(value)
-
+    
     def __getitem__(self, item):
         """
         Examples:
@@ -182,7 +208,7 @@ class QObjectDelegator:
             return QObjectDelegator(data)
         else:
             return data
-
+    
     def __setitem__(self, key, value):
         """
         Examples:

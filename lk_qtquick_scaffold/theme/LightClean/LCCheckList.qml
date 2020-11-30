@@ -10,6 +10,7 @@ LCListView {
     //      p_currentIndex
     //      p_delegate
     //      p_model
+    //      p_scrollWidth
     //      p_spacing
     //      r_count
     //      r_currentItem
@@ -56,7 +57,8 @@ LCListView {
     }
 
     p_delegate: LCCheckBox {
-        width: parent.width
+        width: parent.width - root.p_scrollWidth
+        //      -10 是照顾到滑动条的宽度.
         p_text: modelData
 
         property int r_index: model.index
@@ -71,13 +73,12 @@ LCListView {
             for (let k in p_childrenProps) {
                 this[k] = p_childrenProps[k]
             }
+            // console.log('[LCCheckList:78]', this.width, this.height,
+            //             this.childrenRect.width, this.childrenRect.height)
         }
     }
 
-    Component.onCompleted: {
-        console.log('LCCheckList.qml:77',
-                    this.width, this.height,
-                    childrenRect.width, childrenRect.height)
-
-    }
+    // Component.onCompleted: {
+    //     console.log('[LCCheckList:84]', this.spacing, this.p_scrollWidth)
+    // }
 }

@@ -2,7 +2,8 @@ import QtQuick 2.15
 import "./LCStyle/dimension.js" as LCDimension
 
 LCRow {
-    height: LCDimension.BarHeight
+    implicitWidth: LCDimension.BarWidth
+    implicitHeight: LCDimension.BarHeight
 
     property alias p_hint: _edit.p_hint
     property alias p_title: _title.p_text
@@ -26,9 +27,5 @@ LCRow {
         Component.onCompleted: {
             this.clicked.connect(parent.clicked)
         }
-    }
-
-    Component.onCompleted: {
-        this.width = childrenRect.width
     }
 }

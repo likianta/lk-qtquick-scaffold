@@ -20,8 +20,8 @@ LCRectBg {
             when: p_active
             PropertyChanges {
                 target: root
-                color: p_color1
                 border.width: 0
+                color: p_color1
             }
         }
     ]

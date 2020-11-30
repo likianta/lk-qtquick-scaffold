@@ -4,13 +4,16 @@ import "../../qml_helper/layout_helper.js" as LCLayout
 
 Row {
     id: root
-    width: LCDimension.BarWidth; height: LCDimension.BarHeight
+    // implicitWidth: LCDimension.BarWidth
+    // implicitHeight: LCDimension.BarHeight
+    width: LCDimension.BarWidth
+    height: LCDimension.BarHeight
     padding: LCDimension.Padding
     spacing: LCDimension.HSpacingM
 
     property bool  p_alignCenter: true
     property bool  p_autoWidth: true
-    property bool  p_fillHeight: true
+    property bool  p_fillHeight: false
     property alias p_padding: root.padding
     property alias p_spacing: root.spacing
 

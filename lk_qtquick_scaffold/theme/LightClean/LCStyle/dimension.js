@@ -5,6 +5,8 @@ const WinHeight = 600
 
 const BarWidth = 300
 const BarHeight = 30
+const FlowWidth = 200
+const FlowHeight = 400
 
 const ButtonWidthM = 80
 const ButtonHeightS = 24

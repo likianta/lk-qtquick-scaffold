@@ -10,7 +10,8 @@ import "../LCStyle/typography.js" as LCText
 
 Button {
     id: root
-    width: LCDimension.ButtonWidthM; height: LCDimension.ButtonHeightM
+    implicitWidth: LCDimension.ButtonWidthM
+    implicitHeight: LCDimension.ButtonHeightM
     
     property bool   p_autoWidth: true
     property alias  p_borderless: _bg.p_borderless
@@ -22,11 +23,6 @@ Button {
     background: LCButtonBg {
         id: _bg
         p_active: __active
-        Component.onCompleted: {
-            if (!p_borderless) {
-
-            }
-        }
     }
 
     contentItem: Item {
@@ -43,7 +39,7 @@ Button {
     Component.onCompleted: {
         if (p_autoWidth) {
             const preferredWidth = _txt.contentWidth + 40
-            if (preferredWidth > root.width) {
+            if (preferredWidth > root.implicitWidth) {
                 root.width = preferredWidth
             }
         }

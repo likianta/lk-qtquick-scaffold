@@ -14,7 +14,7 @@ Some significant features showed below:
 
 # Widgets Demo
 
-![](gallery/widgets_demo/LCButton 2020-11-28 114612.gif)
+![](gallery/widgets_demo/LCButton_20201128_114612.gif)
 
 # Theme Gallery
 

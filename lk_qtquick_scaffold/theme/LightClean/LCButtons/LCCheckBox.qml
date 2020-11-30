@@ -9,11 +9,12 @@ import "../LCStyle/palette.js" as LCPalette
 
 CheckBox {
     id: root
+    implicitWidth: LCDimension.ButtonWidthM
+    implicitHeight: LCDimension.ButtonHeightS
     hoverEnabled: true
     leftPadding: LCDimension.HSpacingM
-    width: LCDimension.ButtonWidthM; height: LCDimension.ButtonHeightS
 
-    property alias p_text: _txt.p_text
+    property alias p_text: root.text
     property alias r_active: root.checked
 
     background: LCGhostBg {
@@ -26,6 +27,7 @@ CheckBox {
         anchors.left: _indicator.right
         anchors.leftMargin: LCDimension.HSpacingS
         p_alignment: "vcenter"
+        p_text: root.text
     }
 
     indicator: LCRectangle {
@@ -33,11 +35,12 @@ CheckBox {
         anchors.left: parent.left
         anchors.leftMargin: LCDimension.HSpacingS
         anchors.verticalCenter: parent.verticalCenter
+        implicitWidth: LCDimension.IndicatorCheckWidth
+        implicitHeight: LCDimension.IndicatorCheckHeight
         clip: true
-        width: LCDimension.IndicatorCheckWidth; height: LCDimension.IndicatorCheckHeight
 
-        p_border.color: LCPalette.ButtonUnchecked
         p_border.width: 1
+        p_border.color: LCPalette.ButtonUnchecked
         p_color: LCPalette.Transparent
         p_radius: LCDimension.IndicatorCheckRadius
 
