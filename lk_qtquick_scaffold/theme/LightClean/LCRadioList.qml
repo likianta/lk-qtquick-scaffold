@@ -4,34 +4,35 @@ import "./LCButtons"
 LCListView {
     id: root
 
-    property var p_childrenProps: Object()
     property int p_default: -1
     // extend props:
     //      p_currentIndex
     //      p_delegate
     //      p_model
+    //      p_scrollWidth
     //      p_spacing
     //      r_count
     //      r_currentItem
 
     signal clicked(int index, var item)
 
+    function modifyDelegateItem(index, item, parent_) {
+        // See `LCCheckList.modifyDelegateItem`
+    }
+
     p_delegate: LCRadioButton {
         id: _item
         p_text: modelData
-        property int p_index: model.index
+        property int r_index: model.index
 
         onClicked: {
-            root.currentIndex = p_index
-            root.clicked(p_index, _item)
+            root.currentIndex = r_index
+            root.clicked(r_index, _item)
         }
 
         Component.onCompleted: {
-            _item.checked = (p_default == p_index)
-
-            for (let k in p_childrenProps) {
-                _item[k] = p_childrenProps[k]
-            }
+            _item.checked = (p_default == r_index)
+            modifyDelegateItem(this.r_index, this, root)
         }
     }
 

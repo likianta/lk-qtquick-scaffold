@@ -25,23 +25,38 @@ class PyHandler(QType.QObj):
     
     def __init__(self, object_name=''):
         super().__init__()
-        self._init_pyfunc_dict()
-        
         from . import app
         self.object_name = object_name or self.__class__.__name__
         app.register_pyobj(self, self.object_name)
     
-    def register(self, name=''):
-        """ A decorator version of `self.register_pyfunc`
-        
+    def decoreg(self, name=''):
+        """ Decorator of Register. It's a decorator version of
+            `self.register_pyfunc`.
+
         Examples:
             from lk_qtquick_scaffold import pyhandler
-            
-            @pyhandler.register
-            def myfunc():
+            @pyhandler.decoreg
+            def aaa():
                 pass
                 
-            # It equals to: pyhandler.register_pyfunc(myfunc)
+        Warnings:
+            You cannot use it in classmethod, the following example is wrong:
+                from lk_qtquick_scaffold import pyhandler
+                class AAA:
+                    @pyhandler.decoreg
+                    def aaa(self):
+                        pass
+            It because, the `self` param in `AAA.aaa` is not instantiated when
+            we register the classmethod to PyHandler's inner dict.
+            You should correct it like this:
+                from lk_qtquick_scaffold import pyhandler
+                class AAA:
+                    def __init__(self):
+                        pyhandler.register_pyfunc(self.aaa)
+                    def aaa(self):
+                        pass
+            Note that `self.aaa` is a instantiated method, while `AAA.aaa` is a
+            class method, they are different.
         """
         
         def decor0(func):
@@ -62,7 +77,7 @@ class PyHandler(QType.QObj):
             -python-c49204b85bd6+&cd=3&hl=zh-CN&ct=clnk&gl=sg
         """
         name = name or func.__name__
-        # lk.loga(name, h='parent')
+        lk.loga('Register function', name, h='parent')
         self.__pyfunc_dict[name] = func
     
     @Slot(PyHandlerType.FuncName, result=QType.QVar)

@@ -22,6 +22,7 @@ ListView {
     property alias p_spacing: root.spacing
     property int   r_count: p_model.length
     property alias r_currentItem: root.currentItem
+    // property int   r_length: p_model.length
 
     // show scroll bar
     // https://stackoverflow.com/questions/45650226/qml-attach-scrollbar-to-listview/45651291
