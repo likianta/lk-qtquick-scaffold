@@ -2,8 +2,11 @@ import QtQuick 2.15
 import "./LCStyle/dimension.js" as LCDimension
 
 LCRow {
-    implicitWidth: LCDimension.BarWidth
-    implicitHeight: LCDimension.BarHeight
+    id: root
+    width: LCDimension.BarWidth
+    height: LCDimension.BarHeight
+    p_autoWidth: true
+    p_fillHeight: true
 
     property alias p_hint: _edit.p_hint
     property alias p_title: _title.p_text
@@ -14,14 +17,13 @@ LCRow {
     // Title field
     LCText {
         id: _title
-        height: parent.height
         p_alignment: 'rcenter'
     }
     
     // Editbar
     LCEdit {
         id: _edit
-        width: parent.width - _title.width
+        width: 0
         p_alignment: 'lcenter'
 
         Component.onCompleted: {

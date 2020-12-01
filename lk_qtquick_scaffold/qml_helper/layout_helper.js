@@ -47,6 +47,8 @@ function easyAlign(item, alignment) {
 
 
 function autoWidth(parent) {
+    // 宽度为 0 的组件, 采用自适应宽度; 宽度为 0 < w < 1 的组件, 采用百分比计算;
+    // 宽度为 w > 1 的组件, 采用像素.
     let i, child
     let remainingWidth = parent.width -
         parent.p_spacing * (parent.children.length - 1)
@@ -64,15 +66,18 @@ function autoWidth(parent) {
         remainingWidth -= child.width
     }
 
-    const eachRemainingChildWidth = remainingWidth / (remainingChildren.length)
-    for (i in remainingChildren) {
-        child = remainingChildren[i]
-        child.width = eachRemainingChildWidth
+    if (remainingWidth > 0) {
+        const eachRemainingChildWidth = remainingWidth / remainingChildren.length
+        for (i in remainingChildren) {
+            child = remainingChildren[i]
+            child.width = eachRemainingChildWidth
+        }
     }
 }
 
 
 function autoHeight(parent) {
+    // See also `autoWidth`
     let i, child
     let remainingHeight = parent.height -
         parent.p_spacing * (parent.children.length - 1)
@@ -90,9 +95,11 @@ function autoHeight(parent) {
         remainingHeight -= child.height
     }
 
-    const eachRemainingChildHeight = remainingHeight / (remainingChildren.length)
-    for (i in remainingChildren) {
-        child = remainingChildren[i]
-        child.height = eachRemainingChildHeight
+    if (remainingHeight > 0) {
+        const eachRemainingChildHeight = remainingHeight / remainingChildren.length
+        for (i in remainingChildren) {
+            child = remainingChildren[i]
+            child.height = eachRemainingChildHeight
+        }
     }
 }

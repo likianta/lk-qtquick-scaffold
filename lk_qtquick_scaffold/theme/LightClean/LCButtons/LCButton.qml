@@ -4,9 +4,7 @@ import QtQuick.Controls 2.15
 import "../"
 import "../LCBackground"
 import "../LCStyle/dimension.js" as LCDimension
-import "../LCStyle/motion.js" as LCMotion
-import "../LCStyle/palette.js" as LCPalette
-import "../LCStyle/typography.js" as LCText
+import "../LCStyle/typography.js" as LCTypo
 
 Button {
     id: root
@@ -15,8 +13,8 @@ Button {
     
     property bool   p_autoWidth: true
     property alias  p_borderless: _bg.p_borderless
-    property string p_color: LCPalette.TextNormal
     property alias  p_text: root.text
+    property alias  p_textColor: _txt.p_color
     property alias  __active: root.pressed
     property alias  __textComp: _txt  // Access this only for special intent.
     
@@ -30,8 +28,7 @@ Button {
             id: _txt
             anchors.centerIn: parent
             p_bold: true
-            p_color: root.p_color
-            p_size: LCText.ButtonTextSize
+            p_size: LCTypo.ButtonTextSize
             p_text: root.text
         }
     }
