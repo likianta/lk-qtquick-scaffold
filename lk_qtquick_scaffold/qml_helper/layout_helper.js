@@ -46,7 +46,23 @@ function easyAlign(item, alignment) {
 }
 
 
-function autoWidth(parent) {
+function calcSpan(item1, item2) {
+    // 计算从 item1 的左边到 item2 的右边的距离
+    return (item2.x + item.width - item1.x)
+}
+
+
+function wrapWidth(root, itemType) {  // TODO
+    switch (itemType) {
+        case 'Button':
+            root.width = root.leftInset + root.rightInset +
+                root.implicitContentWidth + implicitIndicatorWidth
+
+    }
+}
+
+
+function autoWidth(parent) {  // DEL
     // 宽度为 0 的组件, 采用自适应宽度; 宽度为 0 < w < 1 的组件, 采用百分比计算;
     // 宽度为 w > 1 的组件, 采用像素.
     let i, child
@@ -76,11 +92,12 @@ function autoWidth(parent) {
 }
 
 
-function autoHeight(parent) {
+function autoHeight(parent) {  // DEL
     // See also `autoWidth`
     let i, child
     let remainingHeight = parent.height -
-        parent.p_spacing * (parent.children.length - 1)
+        (parent.topPadding + parent.bottomPadding) -
+        (parent.p_spacing * (parent.children.length - 1))
     let remainingChildren = Array()
 
     for (i in parent.children) {

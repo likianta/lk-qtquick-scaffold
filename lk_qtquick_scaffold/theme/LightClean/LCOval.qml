@@ -4,10 +4,12 @@ import "./LCStyle/palette.js" as LCPalette
 
 Rectangle {
     id: root
-    border.width: 0; border.color: LCPalette.BorderNormal
+    implicitWidth: radius * 2
+    implicitHeight: radius * 2
+    border.width: 0
+    border.color: LCPalette.BorderNormal
     color: LCPalette.BgWhite
     radius: LCGeometry.RadiusS
-    width: radius * 2; height: radius * 2
 
     property alias p_border: root.border
     property alias p_color: root.color

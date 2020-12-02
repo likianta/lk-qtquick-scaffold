@@ -4,20 +4,21 @@ import QtQuick.Controls 2.15
 import "../"
 import "../LCBackground"
 import "../LCStyle/dimension.js" as LCDimension
-import "../LCStyle/motion.js" as LCMotion
 import "../LCStyle/palette.js" as LCPalette
 
 RadioButton {  // modified based on LCCheckBox
     id: root
-    implicitWidth: LCDimension.ButtonWidthM
+    // implicitWidth: see `Component.onCompleted`
     implicitHeight: LCDimension.ButtonHeightS
     hoverEnabled: true
     leftPadding: LCDimension.HSpacingM
+    rightPadding: LCDimension.HSpacingS
 
     property alias p_text: root.text
     property alias r_active: root.checked
 
     background: LCGhostBg {
+        id: _bg
         p_active: r_active
         p_hovered: root.hovered
     }
@@ -37,8 +38,8 @@ RadioButton {  // modified based on LCCheckBox
         anchors.verticalCenter: parent.verticalCenter
         clip: true
 
-        p_border.color: LCPalette.ButtonUnchecked
         p_border.width: 1
+        p_border.color: LCPalette.ButtonUnchecked
         p_color: LCPalette.Transparent
         p_radius: LCDimension.IndicatorRadioRadius
 
@@ -64,5 +65,10 @@ RadioButton {  // modified based on LCCheckBox
                 }
             }
         ]
+    }
+
+    Component.onCompleted: {
+        root.implicitWidth = root.leftPadding + root.rightPadding +
+            (_txt.x + _txt.implicitWidth - _outer.x)
     }
 }

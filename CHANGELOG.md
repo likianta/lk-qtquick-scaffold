@@ -2,14 +2,6 @@ current version: 0.1.1
 
 --------------------------------------------------------------------------------
 
-### 0.1.1 | 2020-11-30
-
-- [变更] 组件使用 implitcitWidth/Height
-- [新增] PyHandler.decoreg() 装饰器
-- [更新] LCCheckList 和 LCRadioList 修改代理组件属性的新方案
-- [优化] LCListView 仅在内容超出容器时可滑动
-- [变更] debugger 模块移到主项目内
-
 ### 0.1.0 | 2020-11-28
 
 - [更新] 完善 HotReloader
@@ -29,3 +21,13 @@ current version: 0.1.1
 - [新增] 按钮的 borderless 属性
 - [新增] layout_helper.js
 - [更新] 强化 LCRow, LCColumn 属性
+- [变更] 组件使用 implitcitWidth/Height
+- [新增] PyHandler.decoreg() 装饰器
+- [更新] LCCheckList 和 LCRadioList 修改代理组件属性的新方案
+- [优化] LCListView 仅在内容超出容器时可滑动
+- [变更] debugger 模块移到主项目内
+- [新增] LCCheckBg 组件
+- [移除] LCEdit 和 LCEditField 组件
+- [新增] LCTextField 组件
+- [更新] 保持 LCRow, LCColumn 的属性动态更新
+- [修复] LCRow, LCColumn 的 fillRest 及相关属性

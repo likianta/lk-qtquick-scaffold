@@ -36,9 +36,9 @@ const BorderSink = ThemeRegularBlue2
 // -----------------------------------------------------------------------------
 // Text
 
-const TextHint = "#CCCCCC"
+const TextHint = "#cccccc"
 const TextHighlight = ThemeRegularBlue1
-const TextNormal = "#383838"
+const TextNormal = "#1d1d1d"
 const TextSelected = "#ffffff"
 const TextSelection = ThemeDeepBlue
 const TextWhite = "#ffffff"

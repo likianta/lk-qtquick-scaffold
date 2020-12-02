@@ -9,20 +9,17 @@ import "../LCStyle/palette.js" as LCPalette
 
 CheckBox {
     id: root
-    implicitWidth: LCDimension.ButtonWidthM
+    // implicitWidth: LCDimension.ButtonWidthM
     implicitHeight: LCDimension.ButtonHeightS
-    // implicitWidth: root.contentWidth
-    // implicitHeight: root.contentHeight
     hoverEnabled: true
     leftPadding: LCDimension.HSpacingM
+    rightPadding: LCDimension.HSpacingS
 
     property alias p_text: root.text
-    property alias r_active: root.checked
+    property alias p_active: root.checked
 
     background: LCGhostBg {
-        // implicitWidth: LCDimension.ButtonWidthM
-        // implicitHeight: LCDimension.ButtonHeightS
-        p_active: r_active
+        p_active: root.p_active
         p_hovered: root.hovered
     }
 
@@ -34,36 +31,24 @@ CheckBox {
         p_text: root.text
     }
 
-    indicator: LCRectangle {
+    indicator: LCCheckBg {
         id: _indicator
         anchors.left: parent.left
         anchors.leftMargin: LCDimension.HSpacingS
         anchors.verticalCenter: parent.verticalCenter
-        implicitWidth: LCDimension.IndicatorCheckWidth
-        implicitHeight: LCDimension.IndicatorCheckHeight
-        clip: true
 
-        p_border.width: 1
-        p_border.color: LCPalette.ButtonUnchecked
-        p_color: LCPalette.Transparent
-        p_radius: LCDimension.IndicatorCheckRadius
+        p_active: root.p_active
 
         Image {
             anchors.fill: parent
             anchors.margins: LCDimension.SpacingS
             source: '../rss/check-white.svg'
-            visible: r_active
+            visible: parent.p_active
         }
+    }
 
-        states: [
-            State {
-                when: r_active
-                PropertyChanges {
-                    target: _indicator
-                    p_border.color: LCPalette.ButtonChecked
-                    p_color: LCPalette.ButtonChecked
-                }
-            }
-        ]
+    Component.onCompleted: {
+        root.implicitWidth = root.leftPadding + root.rightPadding +
+            (_txt.x + _txt.implicitWidth - _indicator.x)
     }
 }

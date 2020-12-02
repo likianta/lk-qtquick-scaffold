@@ -3,8 +3,6 @@ module LightClean
 LCCheckList         1.0  LCCheckList.qml
 LCColumn            1.0  LCColumn.qml
 LCDividerLine       1.0  LCDividerLine.qml
-LCEdit              1.0  LCEdit.qml
-LCEditField         1.0  LCEditField.qml
 LCFileBrowse        1.0  LCFileBrowse.qml
 LCForm              1.0  LCForm.qml
 LCListModel         1.0  LCListModel.qml
@@ -16,6 +14,7 @@ LCRectangle         1.0  LCRectangle.qml
 LCRow               1.0  LCRow.qml
 LCTable             1.0  LCTable.qml
 LCText              1.0  LCText.qml
+LCTextField         1.0  LCTextField.qml
 LCWindow            1.0  LCWindow.qml
 
 LCButtons.LCBaseButton       1.0  LCButtons/LCBaseButton.qml

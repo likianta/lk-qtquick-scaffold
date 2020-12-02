@@ -23,14 +23,12 @@ Button {
         p_active: __active
     }
 
-    contentItem: Item {
-        LCText {
-            id: _txt
-            anchors.centerIn: parent
-            p_bold: true
-            p_size: LCTypo.ButtonTextSize
-            p_text: root.text
-        }
+    contentItem: LCText {
+        id: _txt
+        // anchors.centerIn: parent
+        p_bold: true
+        p_size: LCTypo.ButtonTextSize
+        p_text: root.text
     }
 
     Component.onCompleted: {
