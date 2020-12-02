@@ -2,8 +2,8 @@
 @Author  : likianta <likianta@foxmail.com>
 @Module  : launcher.py
 @Created : 2020-08-30
-@Updated : 2020-11-27
-@Version : 0.2.12
+@Updated : 2020-12-03
+@Version : 0.2.13
 @Desc    :
 """
 from PySide2.QtCore import QObject
@@ -89,9 +89,10 @@ class Application(QApplication):
             qmlfile: 启动时要载入的 .qml 文件. 通常为 '{somedir}/main.qml' 或
                 '{somedir}/view.qml'.
         """
-        from sys import exit
         self.engine.load(qmlfile)
-        exit(self.exec_())
+        self.exec_()
+        #   Note: 不要用 sys.exit(self.exec_()), 这会导致 pycomm.PyHandler 先一步被
+        #   释放, 导致 QML 报 'cannot call from null' 的错误.
 
 
 if __name__ == '__main__':

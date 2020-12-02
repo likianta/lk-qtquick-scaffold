@@ -21,6 +21,7 @@ LCTextField {
     property alias  p_selectFolder: _dialog.selectFolder
     property alias  p_selectMultiple: _dialog.selectMultiple
     // inherits:
+    //      p_alignment
     //      p_hint
     //      p_title
     //      p_value
@@ -54,7 +55,15 @@ LCTextField {
                     like 'file:///d:/...', slice out 'file:///' then pass it to
                     `p_path`.
                  */
-                root.p_path = (this.fileUrl + "").slice(8)
+                let path = this.fileUrl + ""
+                if (path.length < 8) {
+                    root.p_path = path  // usually this means the `path` is an
+                    //  empty string (it happended maybe because user stayed
+                    //  long time at dialog pane, i'm not much sure about this).
+                } else {
+                    root.p_path = path.slice(8)
+                    //  e.g. 'file:///D:/A/B/C.txt' -> 'D:/A/B/C.txt'
+                }
             }
         }
     }

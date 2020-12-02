@@ -7,13 +7,14 @@ LCRectBg {
     border.width: 1
     border.color: p_borderless ? root.color : LCPalette.BorderNormal
     color: p_color0
+    p_borderless: false
 
     property bool   p_active: false
-    property bool   p_borderless: false
     property string p_color0: LCPalette.ButtonNormal
     property string p_color1: LCPalette.ButtonPressed
     // inherits:
     //      property alias p_border
+    //      property alias p_borderless
     //      property alias p_radius
 
     states: [

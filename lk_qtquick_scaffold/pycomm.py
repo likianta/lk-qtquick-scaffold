@@ -103,7 +103,7 @@ class PyHandler(QType.QObj):
         return self.main(func_name, param)
     
     def main(self, method: str, param):
-        lk.loga(method, param, h='parent')
+        # lk.loga(method, param, h='parent')
         try:
             if param is None:
                 return self.__pyfunc_dict[method]()

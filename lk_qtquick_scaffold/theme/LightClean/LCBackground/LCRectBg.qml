@@ -7,12 +7,13 @@ Rectangle {
     implicitWidth: LCDimension.BarWidth
     implicitHeight: LCDimension.BarHeight
 
-    border.width: 0
+    border.width: p_borderless ? 0 : 1
     border.color: LCPalette.BorderNormal
     color: LCPalette.BgWhite
     radius: LCDimension.RadiusM
 
     property alias p_border: root.border
+    property bool  p_borderless: true
     property alias p_color: root.color
     property alias p_radius: root.radius
 }

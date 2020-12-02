@@ -7,6 +7,7 @@ LCRectBg {
     id: root
     border.width: 1
     color: p_color0
+    p_borderless: false
 
     property bool   p_active: false
     property string p_color0: LCPalette.EditbarNormal
@@ -20,7 +21,6 @@ LCRectBg {
             when: p_active
             PropertyChanges {
                 target: root
-                border.width: 0
                 color: p_color1
             }
         }
