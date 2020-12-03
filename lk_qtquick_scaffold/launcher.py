@@ -123,8 +123,13 @@ class Application(QApplication):
         """
         self.engine.load(qmlfile)
         self.exec_()
-        #   Note: 不要用 sys.exit(self.exec_()), 这会导致 pycomm.PyHandler 先一步被
-        #   释放, 导致 QML 报 'cannot call from null' 的错误.
+        #   Note: 不要用 sys.exit(self.exec_()), 这会导致 pycomm.PyHandler 先一
+        #   步被释放, 导致 QML 在结束时刻误触 PyHandler.call 时会报出 'cannot
+        #   call from null' 的错误.
+    
+    # open = run = launch = start
+    #   https://ux.stackexchange.com/questions/106001/do-we-open-or-launch-or
+    #   -startapps+&cd=1&hl=zh-CN&ct=clnk&gl=sg
 
 
 if __name__ == '__main__':
