@@ -8,7 +8,7 @@ Column {
     spacing: LCDimension.VSpacingM
 
     property bool  p_alignCenter: false
-    property bool  p_enableFillRest: false  // See `LCRow.p_autoWidth`
+    property bool  p_enableFillRest: false  // See `LCRow.p_enableFillRest`
     property bool  p_fillWidth: false
     property alias p_padding: root.padding
     property alias p_spacing: root.spacing

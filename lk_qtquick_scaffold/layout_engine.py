@@ -5,6 +5,7 @@
 @Created  : 2020-11-29
 @Updated  : 2020-11-29
 @Desc     :
+    DELETE ME: This module is no longer used, will be removed in next version.
 """
 from .pycomm import adapt_type, PyHandler, QObjectDelegator as Delegator
 

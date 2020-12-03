@@ -22,7 +22,9 @@ LCListView {
 
     p_delegate: LCRadioButton {
         id: _item
+        width: root.r_preferredWidth
         p_text: modelData
+
         property int r_index: model.index
 
         onClicked: {

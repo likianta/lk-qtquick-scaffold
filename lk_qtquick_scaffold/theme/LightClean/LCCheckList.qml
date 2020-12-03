@@ -62,8 +62,7 @@ LCListView {
     }
 
     p_delegate: LCCheckBox {
-        width: root.width - root.p_scrollWidth
-        //      -10 是照顾到滑动条的宽度.
+        width: root.r_preferredWidth
         p_text: modelData
 
         property int r_index: model.index

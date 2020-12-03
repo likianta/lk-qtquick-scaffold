@@ -22,6 +22,7 @@ ListView {
     property alias p_spacing: root.spacing
     property int   r_count: p_model.length
     property alias r_currentItem: root.currentItem
+    property real  r_preferredWidth: root.width - _scroll.width
     property bool  __scrollable: root.contentWidth > root.width
 
     // show scroll bar
