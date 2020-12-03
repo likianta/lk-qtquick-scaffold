@@ -5,6 +5,7 @@ current version: 0.1.1
 ### 0.1.1 | 2020-12-03
 
 - [新增] logger.js
+- [更新] app 在实例化时注册 LKDebugger 和 LKHelper 模块
 
 ### 0.1.0 | 2020-11-28
 

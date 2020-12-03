@@ -1,6 +1,3 @@
-// Warning: This module is going to be removed, pls use 'lk_qtquick_scaffold/qml
-// _helper/LKHelper/layout_helper.js' instead.
-
 function easyAlign(item, alignment) {
     /*  Text.Align*
      *       Text.AlignLeft: 1

@@ -8,18 +8,22 @@ function log(...content) {
      *
      *  Usage in Qml:
      *      // view.qml
-     *      import '~/logger.js' as Logger
+     *      import LKDebugger 1.0  // Now you can use 'Logger' component
      *      Item {
      *          Component.onCompleted: {
      *              Logger.log()
      *              Logger.log('Hello')
-     *              Logger.log('Hello', true)  // The arguments length is mutable
+     *              Logger.log('Hello', true)  // Accept mutable length of ars
      *              //  show out:
      *              //      [view.qml:4]
      *              //      [view.qml:5], [Hello]
      *              //      [view.qml:6], [Hello,true]
      *          }
      *      }
+     *
+     *  Notes:
+     *      1. 该模块仅在通过 HotReloader 启动时有效 (否则会报 '模块不存在' 错
+     *         误), 详见 `lk_qtquick_scaffold/debugger/main.py` 的用法注释
      */
 
     const err = new Error()
