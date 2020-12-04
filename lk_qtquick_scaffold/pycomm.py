@@ -1,11 +1,12 @@
 """
 @Author   : likianta (likianta@foxmail.com)
 @FileName : pycomm.py
-@Version  : 0.7.0
+@Version  : 0.7.1
 @Created  : 2020-09-09
-@Updated  : 2020-11-29
+@Updated  : 2020-12-04
 @Desc     : 
 """
+from collections import defaultdict
 from functools import wraps
 
 from PySide2.QtCore import Slot
@@ -21,7 +22,8 @@ class PyHandler(QType.QObj):
     Usages:
         See 'docs/PyComm 使用示例.md'
     """
-    __pyfunc_dict = {}
+    __pyfunc_holder = {}
+    __pyclass_holder = defaultdict(lambda: defaultdict())
     
     def __init__(self, object_name=''):
         super().__init__()
@@ -29,21 +31,59 @@ class PyHandler(QType.QObj):
         self.object_name = object_name or self.__class__.__name__
         app.register_pyobj(self, self.object_name)
     
-    def decoreg(self, name=''):
-        """ Decorator of Register. It's a decorator version of
-            `self.register_pyfunc`.
-
+    # --------------------------------------------------------------------------
+    
+    def register(self, name='', instance=False):
+        """ Decorator of register, made for easily registering functions to
+            PyHandler.
+        
+        Args:
+            name: function's name, usually just leave it blank so PyHandler uses
+                `function.__name__` as its name, otherwise you can pass in a
+                custom name as an alias, it likes:
+                    from lk_qtquick_scaffold import pyhandler
+                    @pyhandler(name='doSomthingLater')
+                               ^--------------------^
+                               # If you like using camelCase laterly in Qml.
+                    def do_something_later():
+                        pass
+            instance: When you decorate a instance's method, pass it True.
+                Examples:
+                    from lk_qtquick_scaffold import pyhandler
+                    class AAA:
+                        @pyhandler.register(instance=True)
+                                            ^-----------^
+                        def aaa(self, n=10):
+                                ^--^
+                                # (1/2) Notice there is a `self`, we should
+                                # pass `instance=True` to decorator.
+                            print(self.m + n)
+                            
+                        def __init__(self):
+                            self.m = 12
+                            pyhandler.register_pyinst(self)
+                            # (2/2) And we must register the 'self' instance to
+                            # pyhandler once the instance is initialized.
+        
         Examples:
             from lk_qtquick_scaffold import pyhandler
-            @pyhandler.decoreg
-            def aaa():
+            
+            @pyhandler.register()
+            def bbb():
                 pass
+            
+            class AAA:
+                def __init__(self):
+                    pyhandler.register_pyinst(self)
+                @pyhandler.register(instance=True)
+                def aaa(self):
+                    pass
                 
         Warnings:
             You cannot use it in classmethod, the following example is wrong:
                 from lk_qtquick_scaffold import pyhandler
                 class AAA:
-                    @pyhandler.decoreg
+                    @pyhandler.register()
                     def aaa(self):
                         pass
             It because, the `self` param in `AAA.aaa` is not instantiated when
@@ -60,7 +100,10 @@ class PyHandler(QType.QObj):
         """
         
         def decor0(func):
-            self.register_pyfunc(func, name)
+            if instance:
+                self.register_pyclass(func, name)
+            else:
+                self.register_pyfunc(func, name)
             
             @wraps(func)
             def decor1(*args, **kwargs):
@@ -78,7 +121,20 @@ class PyHandler(QType.QObj):
         """
         name = name or func.__name__
         lk.loga('Register function', name, h='parent')
-        self.__pyfunc_dict[name] = func
+        self.__pyfunc_holder[name] = func
+    
+    def register_pyclass(self, method: PyHandlerType.Method, name=''):
+        class_name = method.__class__.__name__
+        method_name = method.__name__
+        self.__pyclass_holder[class_name][method_name] = name or method_name
+    
+    def register_pyinst(self, instance):
+        class_name = instance.__class__.__name__
+        for method_name, method_alias in self.__pyclass_holder[class_name].items():
+            method = getattr(instance, method_name)
+            self.register_pyfunc(method, method_alias)
+    
+    # --------------------------------------------------------------------------
     
     @Slot(PyHandlerType.FuncName, result=QType.QVar)
     @Slot(PyHandlerType.FuncName, QType.QVal, result=QType.QVar)
@@ -106,9 +162,9 @@ class PyHandler(QType.QObj):
         # lk.loga(method, param, h='parent')
         try:
             if param is None:
-                return self.__pyfunc_dict[method]()
+                return self.__pyfunc_holder[method]()
             else:
-                return self.__pyfunc_dict[method](param)
+                return self.__pyfunc_holder[method](param)
         except KeyError:
             raise Exception('Method is not registered!', method, param)
 

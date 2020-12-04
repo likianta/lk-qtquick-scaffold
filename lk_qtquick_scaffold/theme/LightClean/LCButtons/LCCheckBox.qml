@@ -31,7 +31,7 @@ CheckBox {
         p_text: root.text
     }
 
-    indicator: LCCheckBg {
+    indicator: LCCheckBoxIndicatorBg {
         id: _indicator
         anchors.left: parent.left
         anchors.leftMargin: LCDimension.HSpacingS

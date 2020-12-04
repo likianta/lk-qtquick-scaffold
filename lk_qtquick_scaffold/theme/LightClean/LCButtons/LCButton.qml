@@ -4,6 +4,7 @@ import QtQuick.Controls 2.15
 import "../"
 import "../LCBackground"
 import "../LCStyle/dimension.js" as LCDimension
+import "../LCStyle/palette.js" as LCPalette
 import "../LCStyle/typography.js" as LCTypo
 
 Button {
@@ -13,6 +14,7 @@ Button {
     
     property bool   p_autoWidth: true
     property alias  p_borderless: _bg.p_borderless
+    property alias  p_enabled: root.enabled
     property alias  p_text: root.text
     property alias  p_textColor: _txt.p_color
     property alias  __active: root.pressed
@@ -29,6 +31,14 @@ Button {
         p_bold: true
         p_size: LCTypo.ButtonTextSize
         p_text: root.text
+
+        states: State {
+            when: !root.p_enabled
+            PropertyChanges {
+                target: _txt
+                p_color: LCPalette.TextDisabled
+            }
+        }
     }
 
     Component.onCompleted: {

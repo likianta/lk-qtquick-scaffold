@@ -14,6 +14,8 @@ const ButtonHeightM = 30
 const ButtonCloseWidth = 40
 const ButtonCloseHeight = 20
 
+const IconWidth = 20
+const IconHeight = 20
 const IndicatorCheckWidth = 14
 const IndicatorCheckHeight = 14
 const IndicatorCheckRadius = 3

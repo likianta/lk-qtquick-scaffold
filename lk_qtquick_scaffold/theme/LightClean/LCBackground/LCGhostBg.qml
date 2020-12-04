@@ -7,7 +7,8 @@ LCRectBg {
     p_color: LCPalette.Transparent
 
     property bool p_active: false
-    property bool p_hovered: false  // 您需要设置父对象 (比如常见的 Button) 的 hoverEnabled 属性为 true
+    property bool p_hovered: false  // 您需要设置父对象 (比如常见的 Button) 的
+    //  hoverEnabled 属性为 true
 
     states: [
         State {

@@ -36,6 +36,7 @@ const BorderSink = ThemeRegularBlue2
 // -----------------------------------------------------------------------------
 // Text
 
+const TextDisabled = '#cccccc'
 const TextHint = "#cccccc"
 const TextHighlight = ThemeRegularBlue1
 const TextNormal = "#1d1d1d"

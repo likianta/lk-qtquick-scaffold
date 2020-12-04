@@ -1,4 +1,3 @@
-// The checkbox/radio button's indicator background
 import QtQuick 2.15
 import "../LCStyle/dimension.js" as LCDimension
 import "../LCStyle/motion.js" as LCMotion

@@ -40,3 +40,6 @@ class HooksType:
 class PyHandlerType:
     Func = Callable
     FuncName = str
+    
+    Method = Callable
+    MethodName = str
