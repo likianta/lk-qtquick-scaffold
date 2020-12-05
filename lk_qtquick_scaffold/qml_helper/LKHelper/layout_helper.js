@@ -52,13 +52,71 @@ function calcSpan(item1, item2) {
 }
 
 
-function wrapWidth(root, itemType) {  // TODO
-    switch (itemType) {
-        case 'Button':
-            root.width = root.leftInset + root.rightInset +
-                root.implicitContentWidth + implicitIndicatorWidth
+function calcRelPos(source, target) {
+    /*  Calculate relative position | 计算从 source 组件相对于 target 组件的 x 和 y.
 
+        Args:
+            source: (QObject)
+            target: (null|QObject)
+                null: 表示这是一个根布局
+                QObject: 表示这是一个非根布局 (但必须是 source 的父级对象)
+
+        Returns:
+            {'x': int x, 'y': int y}
+
+        实现思路:
+            由于默认情况下, 我们只能获得 source 相对于它的直接父对象的 x 和 y. 所以我们采用
+            向上递归的方式, 获取所有层级的父对象相对于其祖父对象的 x 和 y, 并加起来, 直到遇到
+            祖父对象匹配到 target 为止.
+            如何识别祖父对象匹配到了 target? 目前我们用的方法是判断 objectName 是否符合.
+            为了保证此方法正确, 请按照下列 '注意事项' 进行.
+
+        注意事项:
+            1. target 必须有 objectName, 且 objectName 必须是有效且唯一的
+            2. target 必须是 source 的父组件 (可以是任意的父级, 最高到根布局)
+
+        其他说明事项:
+            在大多数情况下, 您不需要使用本方法. 只需要使用 Item.mapToItem 即可.
+            如下所示:
+                Item {
+                    id: target
+                    Item {
+                        Item {
+                            id: source
+                            Component.onCompleted: {
+                                let coord1 = source.mapToItem(target, 0, 0)
+                                let coord2 = LayoutHelper.calcRelPos(source, target)
+                                // -> coord1.x, coord1.y 与 coord2.x, coord2.y
+                                //    结果是相同的!
+                            }
+                        }
+                    }
+                }
+     */
+
+    const targetName = (target === null) ? '__root__' : target.objectName
+    if (!targetName) {
+        throw 'You must define a objectName to the `target` param!'
     }
+    // else {
+    //     console.log('[layout_helper.js:99]',
+    //                 'The target name is: ' + targetName)
+    // }
+
+    function recur(node, targetName, holdx, holdy) {
+        if (node === null || node.objectName == targetName) {
+            return {
+                'x': holdx,
+                'y': holdy,
+            }
+        } else {
+            holdx += node.x
+            holdy += node.y
+            return recur(node.parent, targetName, holdx, holdy)
+        }
+    }
+
+    return recur(source, targetName, 0, 0)
 }
 
 

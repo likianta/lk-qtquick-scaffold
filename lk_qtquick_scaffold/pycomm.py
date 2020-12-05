@@ -1,7 +1,7 @@
 """
 @Author   : likianta (likianta@foxmail.com)
 @FileName : pycomm.py
-@Version  : 0.7.1
+@Version  : 0.7.2
 @Created  : 2020-09-09
 @Updated  : 2020-12-04
 @Desc     : 
@@ -78,25 +78,6 @@ class PyHandler(QType.QObj):
                 @pyhandler.register(instance=True)
                 def aaa(self):
                     pass
-                
-        Warnings:
-            You cannot use it in classmethod, the following example is wrong:
-                from lk_qtquick_scaffold import pyhandler
-                class AAA:
-                    @pyhandler.register()
-                    def aaa(self):
-                        pass
-            It because, the `self` param in `AAA.aaa` is not instantiated when
-            we register the classmethod to PyHandler's inner dict.
-            You should correct it like this:
-                from lk_qtquick_scaffold import pyhandler
-                class AAA:
-                    def __init__(self):
-                        pyhandler.register_pyfunc(self.aaa)
-                    def aaa(self):
-                        pass
-            Note that `self.aaa` is a instantiated method, while `AAA.aaa` is a
-            class method, they are different.
         """
         
         def decor0(func):
@@ -114,7 +95,8 @@ class PyHandler(QType.QObj):
         return decor0
     
     def register_pyfunc(self, func: PyHandlerType.Func, name=''):
-        """
+        """ Register Python functions.
+        
         References:
             https://medium.com/%40mgarod/dynamically-add-a-method-to-a-class-in\
             -python-c49204b85bd6+&cd=3&hl=zh-CN&ct=clnk&gl=sg
@@ -122,13 +104,16 @@ class PyHandler(QType.QObj):
         name = name or func.__name__
         lk.loga('Register function', name, h='parent')
         self.__pyfunc_holder[name] = func
-    
+
+    # noinspection PyUnresolvedReferences
     def register_pyclass(self, method: PyHandlerType.Method, name=''):
+        """ Register Python class methods. """
         class_name = method.__class__.__name__
         method_name = method.__name__
         self.__pyclass_holder[class_name][method_name] = name or method_name
     
     def register_pyinst(self, instance):
+        """ Register instance. """
         class_name = instance.__class__.__name__
         for method_name, method_alias in self.__pyclass_holder[class_name].items():
             method = getattr(instance, method_name)
@@ -156,17 +141,13 @@ class PyHandler(QType.QObj):
         """
         if param is not None:
             param = param.toVariant()
-        return self.main(func_name, param)
-    
-    def main(self, method: str, param):
-        # lk.loga(method, param, h='parent')
         try:
             if param is None:
-                return self.__pyfunc_holder[method]()
+                return self.__pyfunc_holder[func_name]()
             else:
-                return self.__pyfunc_holder[method](param)
+                return self.__pyfunc_holder[func_name](param)
         except KeyError:
-            raise Exception('Method is not registered!', method, param)
+            raise Exception('Method is not registered!', func_name, param)
 
 
 # ------------------------------------------------------------------------------

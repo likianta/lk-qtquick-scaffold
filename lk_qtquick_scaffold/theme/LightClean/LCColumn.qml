@@ -4,7 +4,6 @@ import "../../qml_helper/layout_helper.js" as LCLayout
 
 Column {
     id: root
-    implicitHeight: root.contentHeight
     padding: LCDimension.Padding
     spacing: LCDimension.VSpacingM
 
