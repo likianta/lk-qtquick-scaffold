@@ -81,14 +81,12 @@ function calcRelPos(source, target) {
                 Item {
                     id: target
                     Item {
-                        Item {
-                            id: source
-                            Component.onCompleted: {
-                                let coord1 = source.mapToItem(target, 0, 0)
-                                let coord2 = LayoutHelper.calcRelPos(source, target)
-                                // -> coord1.x, coord1.y 与 coord2.x, coord2.y
-                                //    结果是相同的!
-                            }
+                        id: source
+                        Component.onCompleted: {
+                            let coord1 = source.mapToItem(target, 0, 0)
+                            let coord2 = LayoutHelper.calcRelPos(source, target)
+                            // -> coord1.x, coord1.y 与 coord2.x, coord2.y 结果是
+                            //    相同的!
                         }
                     }
                 }
@@ -96,10 +94,10 @@ function calcRelPos(source, target) {
 
     const targetName = (target === null) ? '__root__' : target.objectName
     if (!targetName) {
-        throw 'You must define a objectName to the `target` param!'
+        throw 'You must define a objectName to the `target` object!'
     }
     // else {
-    //     console.log('[layout_helper.js:99]',
+    //     console.log('[layout_helper.js:100]',
     //                 'The target name is: ' + targetName)
     // }
 

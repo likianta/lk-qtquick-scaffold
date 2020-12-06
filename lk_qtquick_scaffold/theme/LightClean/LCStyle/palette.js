@@ -39,6 +39,7 @@ const BorderSink = ThemeRegularBlue2
 const TextDisabled = '#cccccc'
 const TextHint = "#cccccc"
 const TextHighlight = ThemeRegularBlue1
+const TextLink = ThemeDeepBlue
 const TextNormal = "#1d1d1d"
 const TextSelected = "#ffffff"
 const TextSelection = ThemeDeepBlue

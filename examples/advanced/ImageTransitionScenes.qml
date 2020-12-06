@@ -1,7 +1,6 @@
 import QtQuick 2.15
 import QtGraphicalEffects 1.15
 import LKDebugger 1.0
-import LKHelper  1.0
 import LightClean 1.0
 import LightClean.LCButtons 1.0
 
@@ -16,12 +15,10 @@ LCWindow {
 
     LCColumn {
         id: _container
-        objectName: 'view#_container'
         anchors {
             fill: parent
             margins: 20
         }
-        clip: true
 
         LCRow {
             width: parent.width
@@ -32,7 +29,6 @@ LCWindow {
 
             LCRectangle {
                 id: _profile
-                objectName: 'view#_profile'
                 width: parent.r_fillRest * 0.5
                 p_color: 'transparent'
 
@@ -56,7 +52,6 @@ LCWindow {
 
             Loader {
                 id: _miniCard
-                objectName: 'view#_miniCard'
                 width: parent.r_fillRest * 0.5
                 // sourceComponent: _imgCard
 
@@ -125,7 +120,6 @@ LCWindow {
                         PropertyChanges {
                             target: _img
                             y: _imgFrame.y - p_floatingOffset
-                            // height: _imgFrame.heigth + 20
                         }
                     }
                 ]
@@ -136,13 +130,6 @@ LCWindow {
                             duration: 1000
                             easing.type: Easing.OutQuart
                             properties: "y"
-                        }
-                    },
-                    Transition {
-                        AnchorAnimation {
-                            duration: 3000
-                            easing.type: Easing.OutQuart
-                            // properties: "width,height,x,y"
                         }
                     }
                 ]
@@ -164,7 +151,6 @@ LCWindow {
 
     Loader {
         id: _fullCard
-        // anchors.fill: parent
         x: __initX
         y: __initY
         z: 1

@@ -15,6 +15,7 @@ LCRow               1.0  LCRow.qml
 LCTable             1.0  LCTable.qml
 LCText              1.0  LCText.qml
 LCTextField         1.0  LCTextField.qml
+LCTextLink          1.0  LCTextLink.qml
 LCWindow            1.0  LCWindow.qml
 
 LCButtons.LCBaseButton       1.0  LCButtons/LCBaseButton.qml
