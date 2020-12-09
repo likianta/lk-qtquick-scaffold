@@ -47,7 +47,7 @@ class PyHandler(QType.QObj):
                                # If you like using camelCase laterly in Qml.
                     def do_something_later():
                         pass
-            instance: When you decorate a instance's method, pass it True.
+            instance (bool): When you decorate a instance's method, pass it True.
                 Examples:
                     from lk_qtquick_scaffold import pyhandler
                     class AAA:

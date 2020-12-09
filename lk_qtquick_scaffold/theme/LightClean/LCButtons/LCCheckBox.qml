@@ -28,6 +28,7 @@ CheckBox {
         anchors.left: _indicator.right
         anchors.leftMargin: LCDimension.HSpacingS
         p_alignment: "vcenter"
+        p_color: root.enabled ? LCPalette.TextNormal : LCPalette.TextDisabled
         p_text: root.text
     }
 
