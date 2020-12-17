@@ -45,6 +45,11 @@ function easyAlign(item, alignment) {
     }
 }
 
+function weakCenter(item, parent) {
+    item.x = parent.x + parent.width / 2 - item.width / 2
+    item.y = parent.y + parent.height / 2 - item.height / 2
+}
+
 
 function calcSpan(item1, item2) {
     // 计算从 item1 的左边到 item2 的右边的距离

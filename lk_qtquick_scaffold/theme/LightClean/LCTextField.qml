@@ -12,7 +12,9 @@ Item {
     implicitWidth: LCDimension.BarWidth
     implicitHeight: LCDimension.BarHeight
 
+    property alias p_active: _field.activeFocus
     property alias p_alignment: _field.p_alignment
+    property alias p_field: _field
     property alias p_hint: _field.placeholderText
     property alias p_title: _title.p_text
     property alias p_value: _field.text
@@ -36,8 +38,9 @@ Item {
             right: parent.right
             verticalCenter: parent.verticalCenter
         }
-        leftPadding: LCDimension.HSpacingM
-        rightPadding: LCDimension.HSpacingM
+        height: parent.height
+        leftPadding: LCDimension.HSpacingM; rightPadding: LCDimension.HSpacingM
+        topPadding: 0; bottomPadding: 0
 
         font.pixelSize: LCTypo.FontSizeM
         placeholderTextColor: LCPalette.TextHint
@@ -45,23 +48,14 @@ Item {
         selectedTextColor: LCPalette.TextSelected
         selectionColor: LCPalette.TextSelection
 
-        /*  Tip: How to use `validator` property?
-                TextField {
-                    validator: RegularExpressionValidator {
-                        regularExpression: p_digitOnly ? /[0-9]+/ : /.* /
-                    }
-                }
-            Note: This  wont be introduced into LCEdit, but you can do it
-            yourself by following the tips above.
-         */
-
-        property string p_alignment: 'center'  // see `LCLayout.easyAlign`
+        property string p_alignment: 'lcenter'
 
         background: LCFieldBg {
-            p_active: _field.activeFocus
+            p_active: root.p_active
         }
 
         Component.onCompleted: {
+            this.cursorPosition = 0
             this.pressed.connect(root.clicked)
             LCLayout.easyAlign(this, p_alignment)
         }

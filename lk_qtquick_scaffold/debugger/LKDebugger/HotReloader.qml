@@ -4,11 +4,7 @@ import QtQuick.Window 2.15
 
 /* 
     References:
-        https://qml.guide/live-reloading-hot-reloading-qml/+&cd=1&hl=zh-CN&ct
-        =clnk&gl=sg
-        https://stackoverflow.com/questions/58716153/how-to-force-loader-to
-        -reload-reset-or-delete-the-cache-of-preloaded-qml-page
-        (↑ This seems not work.)
+        https://qml.guide/live-reloading-hot-reloading-qml/+&cd=1&hl=zh-CN&ct=clnk&gl=sg
  */
 
 Window {
@@ -46,7 +42,6 @@ Window {
 
         background: Rectangle {
             id: _rect
-            // border.width: 1; border.color: '#cccccc'
             color: {
                 if (_btn.pressed) {
                     return '#4285f4'
@@ -56,7 +51,6 @@ Window {
                     return '#f2f2f2'
                 }
             }
-            // radius: 12
         }
 
         contentItem: Text {
@@ -68,4 +62,21 @@ Window {
 
         onClicked: _loader.reload()
     }
+
+    // Rectangle {
+    //     id: _tip
+    //     // anchors.verticalCenter: parent.verticalCenter
+    //     // anchors.rightMargin: 20
+    //     anchors.right: parent.right
+    //     anchors.bottom: parent.bottom
+    //     anchors.margins: 6
+    //     width: 12; height: 12; radius: 6
+    //     color: '#38de8d'
+    //
+    //     MouseArea {
+    //         id: _area
+    //         anchors.fill: parent
+    //         hoverEnabled: true
+    //     }
+    // }
 }

@@ -14,12 +14,12 @@ RadioButton {  // modified based on LCCheckBox
     leftPadding: LCDimension.HSpacingM
     rightPadding: LCDimension.HSpacingS
 
+    property alias p_checked: root.checked
     property alias p_text: root.text
-    property alias r_active: root.checked
 
     background: LCGhostBg {
         id: _bg
-        p_active: r_active
+        p_active: p_checked
         p_hovered: root.hovered
     }
 
@@ -46,13 +46,13 @@ RadioButton {  // modified based on LCCheckBox
         LCOval {
             id: _inner
             anchors.centerIn: parent
-            visible: r_active
+            visible: p_checked
             p_radius: parent.p_radius - LCDimension.SpacingS
         }
 
         states: [
             State {
-                when: r_active
+                when: p_checked
                 PropertyChanges {
                     target: _inner
                     p_border.color: LCPalette.ButtonChecked
@@ -68,7 +68,7 @@ RadioButton {  // modified based on LCCheckBox
     }
 
     Component.onCompleted: {
-        root.implicitWidth = root.leftPadding + root.rightPadding +
+        root.implicitWidth = (root.leftPadding + root.rightPadding) +
             (_txt.x + _txt.implicitWidth - _outer.x)
     }
 }

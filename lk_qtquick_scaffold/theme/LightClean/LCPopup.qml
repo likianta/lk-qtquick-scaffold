@@ -1,63 +1,59 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
-import "./LCStyle/dimension.js" as LCGeometry
+import LKHelper 1.0
+import "./LCBackground"
+import "./LCStyle/dimension.js" as LCDimension
 import "./LCStyle/motion.js" as LCMotion
 import "./LCStyle/palette.js" as LCPalette
 
 Popup {
     id: root
-    // 在定义时, 写的都是它的末状态. 比如 `anchors.centerIn: Overlay.overlay`.
-    anchors.centerIn: Overlay.overlay
-    closePolicy: Popup.CloseOnEscape
-    modal: true  // Forbit user's click event outside the popup window.
-    width: p_endW; height: p_endH
+    width: p_w1; height: p_h1
+    x: p_x1; y: p_y1
+    closePolicy: Popup.CloseOnEscape  // Allow press esc to close popup
+    modal: true  // Forbid user's click event outside the popup window.
 
-    property bool p_active: false
-    property int  p_startW: 0;    property int p_startH: 0
-    property int  p_endW: 380;    property int p_endH: 270
-    property int  p_startX: 0;    property int p_startY: 0  // FIXME: no effect
-    property int  __endX: root.x; property int __endY: root.y
+    property alias p_delegate: root.contentItem
+    property int   p_duration0: LCMotion.Soft
+    property int   p_duration1: LCMotion.Swift  // LCMotion.Swift
+    property alias p_modal: root.modal
 
-    onP_activeChanged: {
-        if (p_active) {
-            root.open()
-        } else {
-            root.close()
-        }
-    }
-    onOpenedChanged: {
-        // to resolve insufficient closing when user pressed escape.
-        if (p_active && !root.opened) {
-            p_active = root.opened
-        }
-    }
+    property real p_w0: 0;         property real p_w1: 380
+    property real p_h0: 0;         property real p_h1: 270
+    property real p_x0: 0;         property real p_x1: r_cx
+    property real p_y0: 0;         property real p_y1: r_cy
+    property real p_opacity0: 0.0; property real p_opacity1: 1.0
+    property real r_cx: 0;         property real r_cy: 0
 
-    background: Rectangle {
+    background: LCRectBg {
         id: _bg
-        border.color: LCPalette.BorderNormal
-        border.width: 1
         clip: true
-        color: LCPalette.BgWhite
-        radius: LCGeometry.RadiusM
+        p_borderless: false
+        // p_color: LCPalette.ThemeLightBlue
     }
 
     contentItem: Item {
+        implicitWidth: 200; implicitHeight: 200
+        // color: 'yellow'
+
         Item {  // close button
             id: _close
             anchors.right: parent.right
             anchors.top: parent.top
-            width: LCGeometry.ButtonCloseWidth; height: LCGeometry.ButtonCloseHeight
+            width: LCDimension.ButtonCloseWidth
+            height: LCDimension.ButtonCloseHeight
             z: 1
 
             LCText {
                 anchors.centerIn: parent
-                p_color: LCPalette.ThemeLightBlue
-                p_size: 12
+                p_color: LCPalette.ThemeBlue
+                p_size: 11
                 p_text: "Done"
             }
 
             MouseArea {
                 anchors.fill: parent
+                cursorShape: Qt.PointingHandCursor
                 onClicked: root.close()
             }
         }
@@ -69,55 +65,69 @@ Popup {
         // 快一些, 以避免动画拖沓.
         NumberAnimation {
             property: "opacity"
-            duration: LCMotion.Soon
-            from: 0.0; to: 1.0
+            duration: p_duration0
+            from: p_opacity0; to: p_opacity1
         }
         NumberAnimation {
             property: "width"
-            duration: LCMotion.Soft
-            easing.type: Easing.OutQuart  // slowly goes to the end.
-            from: p_startW; to: p_endW
+            duration: p_duration0
+            easing.type: Easing.OutQuart
+            from: p_w0; to: p_w1
         }
         NumberAnimation {
             property: "height"
-            duration: LCMotion.Soft
-            easing.type: Easing.OutQuart  // slowly goes to the end.
-            from: p_startH; to: p_endH
+            duration: p_duration0
+            easing.type: Easing.OutQuart
+            from: p_h0; to: p_h1
         }
-        // NumberAnimation {
-        //     property: "x"  // set different effects on x and y to make the
-        //     //  routine bacome a curve line.
-        //     duration: LCMotion.Soft
-        //     easing.type: Easing.InOutQuart
-        //     from: p_startX; to: __endX
-        // }
-        // NumberAnimation {
-        //     property: "y"
-        //     duration: LCMotion.Soft
-        //     easing.type: Easing.OutInCubic
-        //     from: p_startY; to: __endY
-        // }
+        NumberAnimation {
+            property: "x"
+            duration: p_duration0
+            easing.type: Easing.OutQuart
+            from: p_x0; to: p_x1
+        }
+        NumberAnimation {
+            property: "y"
+            duration: p_duration0
+            easing.type: Easing.OutQuart
+            from: p_y0; to: p_y1
+        }
     }
 
     exit: Transition {
         NumberAnimation {
             property: "opacity"
-            duration: LCMotion.Swift
-            from: 1.0; to: 0.0
+            duration: p_duration1
+            from: p_opacity1; to: p_opacity0
         }
         NumberAnimation {
             property: "width"
-            duration: LCMotion.Swift
-            from: p_endW; to: p_startW
+            duration: p_duration1
+            from: p_w1; to: p_w0
         }
         NumberAnimation {
             property: "height"
-            duration: LCMotion.Swift
-            from: p_endH; to: p_startH
+            duration: p_duration1
+            from: p_h1; to: p_h0
+        }
+        NumberAnimation {
+            property: "x"
+            duration: p_duration1
+            from: p_x1; to: p_x0
+        }
+        NumberAnimation {
+            property: "y"
+            duration: p_duration1
+            from: p_y1; to: p_y0
         }
     }
 
     Overlay.modal: Rectangle {
         color: "#50000000"
+    }
+
+    Component.onCompleted: {
+        this.r_cx = Overlay.overlay.width / 2 - p_w1 / 2
+        this.r_cy = Overlay.overlay.height / 2 - p_h1 / 2
     }
 }
