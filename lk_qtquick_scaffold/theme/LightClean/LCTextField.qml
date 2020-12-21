@@ -14,6 +14,7 @@ Item {
 
     property alias p_active: _field.activeFocus
     property alias p_alignment: _field.p_alignment
+    property bool  p_bold: false
     property alias p_field: _field
     property alias p_hint: _field.placeholderText
     property alias p_title: _title.p_text
@@ -28,13 +29,15 @@ Item {
             verticalCenter: parent.verticalCenter
         }
         width: _title.implicitWidth
+        rightPadding: _title.text == '' ? 0 : LCDimension.PaddingM
+        p_alignment: 'rcenter'
+        p_bold: parent.p_bold
     }
 
     TextField {
         id: _field
         anchors {
             left: _title.right
-            leftMargin: LCDimension.MarginM
             right: parent.right
             verticalCenter: parent.verticalCenter
         }
@@ -42,6 +45,7 @@ Item {
         leftPadding: LCDimension.HSpacingM; rightPadding: LCDimension.HSpacingM
         topPadding: 0; bottomPadding: 0
 
+        font.bold: parent.p_bold
         font.pixelSize: LCTypo.FontSizeM
         placeholderTextColor: LCPalette.TextHint
         selectByMouse: true

@@ -16,6 +16,7 @@ Window {
     width: _btn.width; height: _btn.height
     x: 1500; y: 400  // Appeared on the desktop left-vcenter.
 
+    property int    p_cnt: 0
     property string p_target: PyHandler.call('get_target')
 
     Loader {
@@ -23,9 +24,12 @@ Window {
         anchors.centerIn: parent
 
         function reload() {
+            p_cnt += 1
+            console.log(
+                `================== Reload Target (${p_cnt}) ==================`
+            )
+
             source = ""
-            console.log('------------------- Reload Target -------------------')
-            // See `debugger.main.launch`
             PyHandler.call('clear_component_cache')
             this.source = p_target  // This will open a new window to show the
             //      target. (Cuz the target usually has a root Window widget
