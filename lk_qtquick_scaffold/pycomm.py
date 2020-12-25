@@ -33,7 +33,7 @@ class PyHandler(QType.QObj):
     
     # --------------------------------------------------------------------------
     
-    def register(self, name='', instance=False):
+    def register(self, name='', instance: bool = False):
         """ Decorator of register, made for easily registering functions to
             PyHandler.
         
@@ -115,7 +115,8 @@ class PyHandler(QType.QObj):
     def register_pyinst(self, instance):
         """ Register instance. """
         class_name = instance.__class__.__name__
-        for method_name, method_alias in self.__pyclass_holder[class_name].items():
+        for method_name, method_alias in \
+                self.__pyclass_holder[class_name].items():
             method = getattr(instance, method_name)
             self.register_pyfunc(method, method_alias)
     
@@ -198,17 +199,19 @@ class QObjectDelegator:
     def children(self):
         """
         Notes:
-            在 QML 中调用 item.children 和在 Python 中调用 item.children() 返回的结果
-            是不同的! 前者返回的是正常的 children 列表, 后者返回的列表中会多出一个未知的
-            child (暂不清楚原因), 而且该 child 的位置是任意的. 该 child 的特征是: 它的所
-            有属性的值都是 None (正常的 child 的属性值可以是 str, bool, etc. 但不会是
-            None), 凭此特征来识别并从 Python children 列表中剔除它.
+            在 QML 中调用 item.children 和在 Python 中调用 item.children() 返回
+            的结果可能是不同的! 前者返回的是正常的 children 列表, 后者返回的列表
+            中有时候会多出一个未知的 child (暂不清楚原因), 而且该 child 的位置是
+            任意的.
+            该 child 的特征是: 它的所有属性的值都是 None (正常的 child 的属性值
+            可以是 str, bool, etc. 但不会是 None), 凭此特征来识别并从 Python
+            children 列表中剔除它.
         """
         out = []
-        for child in self.children():
+        for child in self.qobj.children():
             if child.property('enabled') is not None:
                 out.append(QObjectDelegator(child))
-        assert len(out) == len(self.children()) - 1
+        assert len(self.qobj.children()) - len(out) <= 1
         return out  # type: List[QObjectDelegator]
     
     def __getattr__(self, item):
