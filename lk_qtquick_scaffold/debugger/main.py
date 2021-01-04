@@ -2,8 +2,8 @@
 @Author  : likianta <likianta@foxmail.com>
 @Module  : main.py
 @Created : 2020-09-20
-@Updated : 2020-12-09
-@Version : 0.2.7
+@Updated : 2021-01-04
+@Version : 0.2.8
 @Desc    :
     Usage:
         from lk_qtquick_scaffold.debugger import HotReloader
@@ -11,8 +11,6 @@
         reloader.start()
 """
 from os.path import abspath, dirname, relpath
-
-from lk_qtquick_scaffold import app
 
 
 class HotReloader:
@@ -48,9 +46,9 @@ class HotReloader:
     
     def start(self):
         # register hot reloader runtime functions
-        from lk_qtquick_scaffold import pyhandler
-        pyhandler.register_pyfunc(app.engine.clearComponentCache,
-                                  'clear_component_cache')
+        from lk_qtquick_scaffold import app, pyhandler
+        pyhandler.register_pyfunc(
+            app.engine.clearComponentCache, 'clear_component_cache')
         pyhandler.register_pyfunc(self.get_target)
         
         # start app

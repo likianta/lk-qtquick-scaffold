@@ -1,9 +1,9 @@
 """
 @Author   : likianta (likianta@foxmail.com)
 @FileName : __init__.py
-@Version  : 0.2.2
+@Version  : 0.2.3
 @Created  : 2020-09-15
-@Updated  : 2020-11-27
+@Updated  : 2021-01-04
 @Desc     : 通过导入 lk_qtquick_scaffold, 获得全局变量 app, pyhandler.
     
     Usage:
@@ -21,6 +21,8 @@
 """
 from .launcher import Application
 from .pycomm import PyHandler
+from .debugger import logger
 
+logger.main()
 app = Application()
 pyhandler = PyHandler()

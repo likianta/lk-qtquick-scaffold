@@ -26,7 +26,8 @@ Window {
         function reload() {
             p_cnt += 1
             console.log(
-                `================== Reload Target (${p_cnt}) ==================`
+                `================= Reload Target (${p_cnt}) =================`,
+                'sourcemap=false'
             )
 
             source = ""

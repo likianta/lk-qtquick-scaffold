@@ -1,3 +1,5 @@
+// DELETE ME: This file is going to be removed in 2021-02.
+
 function log(...content) {
     /*
      *  References:

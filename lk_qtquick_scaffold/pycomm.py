@@ -1,9 +1,9 @@
 """
 @Author   : likianta (likianta@foxmail.com)
 @FileName : pycomm.py
-@Version  : 0.7.2
+@Version  : 0.7.3
 @Created  : 2020-09-09
-@Updated  : 2020-12-04
+@Updated  : 2021-01-04
 @Desc     : 
 """
 from collections import defaultdict
@@ -11,7 +11,6 @@ from functools import wraps
 
 from PySide2.QtCore import Slot
 from PySide2.QtQml import QQmlProperty
-from lk_logger import lk
 
 from ._typing import *
 
@@ -102,8 +101,8 @@ class PyHandler(QType.QObj):
             -python-c49204b85bd6+&cd=3&hl=zh-CN&ct=clnk&gl=sg
         """
         name = name or func.__name__
-        lk.loga('Register function', name, h='parent')
         self.__pyfunc_holder[name] = func
+        return name
 
     # noinspection PyUnresolvedReferences
     def register_pyclass(self, method: PyHandlerType.Method, name=''):

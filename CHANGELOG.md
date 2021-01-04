@@ -8,6 +8,8 @@ current version: 0.1.1
 - [更新] app 在实例化时注册 LKDebugger 和 LKHelper 模块
 - [新增] 支持注册实例方法
 - [更新] LCTextField 组件尺寸可调
+- [新增] logger.py
+- [优化] logger.py 显示效果
 
 ### 0.1.0 | 2020-11-28
 
