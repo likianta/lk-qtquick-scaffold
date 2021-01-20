@@ -10,6 +10,7 @@ current version: 0.1.1
 - [更新] LCTextField 组件尺寸可调
 - [新增] logger.py
 - [优化] logger.py 显示效果
+- [优化] PyHandler.call() 报错提示
 
 ### 0.1.0 | 2020-11-28
 

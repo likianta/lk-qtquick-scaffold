@@ -123,12 +123,12 @@ class PyHandler(QType.QObj):
     
     @Slot(PyHandlerType.FuncName, result=QType.QVar)
     @Slot(PyHandlerType.FuncName, QType.QVal, result=QType.QVar)
-    def call(self, func_name: PyHandlerType.FuncName, param: QType.QVal = None):
+    def call(self, func_name, param=None):
         """ Call Python functions in Qml.
         
         Args:
-            func_name
-            param
+            func_name (PyHandlerType.FuncName):
+            param (QType.QVal):
         
         Examples:
             // view.qml
@@ -139,15 +139,10 @@ class PyHandler(QType.QObj):
                 }
             }
         """
-        if param is not None:
-            param = param.toVariant()
-        try:
-            if param is None:
-                return self.__pyfunc_holder[func_name]()
-            else:
-                return self.__pyfunc_holder[func_name](param)
-        except KeyError:
-            raise Exception('Method is not registered!', func_name, param)
+        if param is None:
+            return self.__pyfunc_holder[func_name]()
+        else:
+            return self.__pyfunc_holder[func_name](param.toVariant())
 
 
 # ------------------------------------------------------------------------------
