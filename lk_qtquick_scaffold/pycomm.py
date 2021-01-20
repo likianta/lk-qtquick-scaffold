@@ -49,7 +49,7 @@ class PyRegister:
                 @pyreg.signup  # wrong
                 class AAA:
                     pass
-            3. 实例函数必须为参数 arg0 传入 'self', 否则将出现脱离预期的行为.
+            3. 装饰方法时必须为参数 arg0 传入 'self', 否则将出现脱离预期的行为.
                 class AAA:
                     @pyreg.signup(arg0='self')
                     #             ^---------^
@@ -179,28 +179,34 @@ class PyHandler(QType.QObj, PyRegister):
                 func_name: 类型是 string, 指的是在 Python 端已注册到 PyHandler
                     ._pyfunc_holder 的函数的名字
             PyHandler.call(func_name, args)
-                args: 当表示单参数时, 类型可以是 null, boolean, string, int,
-                    real, Array, Object, QObject; 当表示多参数时, 只能是 Array.
-                    注意: 这里单参数表示为 Array 时可能与多参数的类型混淆,
-                    PyHandler 会自动区分
+                args: args 既可以表示单参数, 也可以表示多参数, 取决于 func 的参
+                    数数量.
+                    假设 func 是单参数:
+                        def aaa(x):
+                            pass
+                    则此时的 args 也表示单参数:
+                        // qml side
+                        PyHandler.call('aaa', 10)
+                        //                    ^x
+                    假设 func 是多参数:
+                        def bbb(x, y, size):
+                            pass
+                    则此时的 args 表示多参数:
+                        PyHandler.call('aaa', [10, 0,  [100,    100    ]])
+                        //                     ^x  ^y  [^width, ^height]
             PyHandler.call(func_name, args, kwargs)
                 kwargs: 类型必须是 Object
                     注意: kwargs 仅做有限程度的支持! 当您传入 kwargs 时, args 必
                         须是多参数形式 (即必须是 Array)
-        注: 一个更简单的理解是, Qml 端调用 PyHandler.call 的标准形式是:
-            PyHandler.call(func_name, [...], {k: v, ...})
-                                      ^---^
-            本方法的优化点在于, 它可以自动判断 `[...]` 究竟是指 "一个值类型为列
-            表的参数", 还是 "多个参数的值组成的列表".
         
         注意事项:
             1. 假设有注册函数:
-                def aaa(x, *args):
-                    pass
-               Qml 端调用 `PyHandler.call('aaa', [1, 2, 3])`, 则认为 `x = 1`,
-               `args = (2, 3)`;
-               Qml 端调用 `PyHandler.call('aaa', [[1, 2, 3]])`, 则认为
-               `x = [1, 2, 3]`, `args = ()`
+                    def aaa(x, *args):  # (这是多参数的情况)
+                        pass
+                Qml 端调用 `PyHandler.call('aaa', [1, 2, 3])`, 则认为 `x = 1`,
+                `args = (2, 3)`;
+                Qml 端调用 `PyHandler.call('aaa', [[1, 2, 3]])`, 则认为
+                `x = [1, 2, 3]`, `args = ()`
         
         Args:
             func_name (PyHandlerType.FuncName):
@@ -274,6 +280,14 @@ def adapt_type(func):
             print(type(qitem))  # -> QObjectDelegator
             print(type(qlist))  # -> Py list
             print(type(qstr))   # -> Py str
+            
+    Notes:
+        当与 PyRegister.signup 一同使用时, adapt_type 在上, PyRegister.signup 在
+        下. 如下所示:
+            @adapt_type
+            @pyreg.signup()
+            def foo(qitem, qlist, qstr):
+                pass
     """
     
     @wraps(func)
