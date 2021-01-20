@@ -87,9 +87,9 @@ class HotReloader:
     def start(self):
         # register hot reloader runtime functions
         from lk_qtquick_scaffold import app, pyhandler
-        pyhandler.register_pyfunc(
-            app.engine.clearComponentCache, 'clear_component_cache')
-        pyhandler.register_pyfunc(self.get_target)
+        pyhandler.register(app.engine.clearComponentCache,
+                           'clear_component_cache')
+        pyhandler.register(self.get_target)
         
         # start app
         app.start(self.loader)

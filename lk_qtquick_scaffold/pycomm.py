@@ -11,6 +11,7 @@ from functools import wraps
 
 from PySide2.QtCore import Slot
 from PySide2.QtQml import QQmlProperty
+from lk_logger import lk
 
 from ._typing import *
 
@@ -18,7 +19,7 @@ from ._typing import *
 class PyRegister:
     _pyclass_holder = defaultdict(lambda: defaultdict())
     _pyfunc_holder = {}
-
+    
     #   {func_name: {func, narg}, ...}
     #       func_name: str. function's name
     #       func: function (or instantiated method)
@@ -61,7 +62,7 @@ class PyRegister:
             nonlocal name, arg0
             
             name = name or func.__name__
-            narg = func.__code__.nlocals
+            narg = func.__code__.co_nlocals
             if arg0: narg -= 1
             
             if arg0 == '':
@@ -95,12 +96,28 @@ class PyRegister:
             #   the `name` equals to `method_name`, or an alias of `method_name`
             method = getattr(inst, method_name)
             self._register(method, name, narg)
-
+    
     register_instance = _register_instance
     
     def _register_method(self, method, name, narg):
-        class_name = method.__class__.__name__
+        class_name = method.__qualname__.split('.')[-2]
+        ''' e.g.
+            class AAA:
+                def mmm(self):
+                    pass
+                    
+                class BBB:
+                    def nnn(self):
+                        pass
+            
+            print(AAA.mmm.__qualname__)  # -> 'AAA.mmm'
+            print(BBB.nnn.__qualname__)  # -> 'AAA.BBB.nnn'
+            
+            don't use `class_name = method.__class__.__name__`, its value is
+            always 'function'.
+        '''
         method_name = method.__name__
+        lk.loga(class_name, method_name)
         self._pyclass_holder[class_name][method_name] = (name, narg)
     
     def register(self, func, name=''):
@@ -126,10 +143,13 @@ class PyRegister:
                         # 'pyregister' registers 'm' to its roster
         """
         name = name or func.__name__
+        # lk.loga(type(func).__name__, h='parent')
         if (t := type(func).__name__) in ('function', 'method'):
-            narg = func.__code__.nlocals
+            narg = func.__code__.co_nlocals
             if t == 'method': narg -= 1
-            self._pyfunc_holder[name] = (func, narg)
+            self._register(func, name, narg)
+        elif t == 'builtin_function_or_method':
+            self._register(func, name, -1)
         else:
             self._register_instance(func)
         return name
@@ -157,7 +177,7 @@ class PyHandler(QType.QObj, PyRegister):
         在 Qml 端, 支持以下三种形式的传参:
             PyHandler.call(func_name)
                 func_name: 类型是 string, 指的是在 Python 端已注册到 PyHandler
-                    .__pyfunc_holder 的函数的名字
+                    ._pyfunc_holder 的函数的名字
             PyHandler.call(func_name, args)
                 args: 当表示单参数时, 类型可以是 null, boolean, string, int,
                     real, Array, Object, QObject; 当表示多参数时, 只能是 Array.
@@ -167,6 +187,12 @@ class PyHandler(QType.QObj, PyRegister):
                 kwargs: 类型必须是 Object
                     注意: kwargs 仅做有限程度的支持! 当您传入 kwargs 时, args 必
                         须是多参数形式 (即必须是 Array)
+        注: 一个更简单的理解是, Qml 端调用 PyHandler.call 的标准形式是:
+            PyHandler.call(func_name, [...], {k: v, ...})
+                                      ^---^
+            本方法的优化点在于, 它可以自动判断 `[...]` 究竟是指 "一个值类型为列
+            表的参数", 还是 "多个参数的值组成的列表".
+        
         注意事项:
             1. 假设有注册函数:
                 def aaa(x, *args):
@@ -209,24 +235,23 @@ class PyHandler(QType.QObj, PyRegister):
                 }
             }
         """
-        func, narg = self.__pyfunc_holder[func_name]  # narg: 'number of args'
+        func, narg = self._pyfunc_holder[func_name]  # narg: 'number of args'
         
         args = [] if args is None else (args.toVariant() or [])
         kwargs = {} if kwargs is None else (kwargs.toVariant() or {})
         
-        if narg == 0:
-            return func()
-        elif kwargs:
+        if kwargs:
             return func(*args, **kwargs)
+        elif narg == 0:
+            return func()
+        elif narg == -1:
+            return func(*args)
         else:
             if isinstance(args, list):
-                is_single_arg = True if narg == 1 else False
-            else:
-                is_single_arg = True
-            if is_single_arg:
-                return func(args)
-            else:
-                return func(*args)
+                if narg > 1:
+                    return func(*args)
+            # this is a feature
+            return func(args)
 
 
 # ------------------------------------------------------------------------------
