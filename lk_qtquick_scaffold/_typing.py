@@ -20,7 +20,7 @@ class QType:
     QObj = _QObject
     
     QVar = 'QVariant'
-    QVal = _QJSValue
+    QVal = _QJSValue  # None, bool, str, int, float, list, dict, QObject
     PyVal = Union[bool, float, int, str, list, dict]
 
 

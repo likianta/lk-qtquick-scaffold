@@ -1,9 +1,9 @@
 """
 @Author   : likianta (likianta@foxmail.com)
 @FileName : pycomm.py
-@Version  : 0.7.3
+@Version  : 0.8.0
 @Created  : 2020-09-09
-@Updated  : 2021-01-04
+@Updated  : 2021-01-20
 @Desc     : 
 """
 from collections import defaultdict
@@ -15,14 +15,132 @@ from PySide2.QtQml import QQmlProperty
 from ._typing import *
 
 
-class PyHandler(QType.QObj):
+class PyRegister:
+    _pyclass_holder = defaultdict(lambda: defaultdict())
+    _pyfunc_holder = {}
+
+    #   {func_name: {func, narg}, ...}
+    #       func_name: str. function's name
+    #       func: function (or instantiated method)
+    #       narg: 'number of arguments', aka arguments count, int.
+    #           see `PyHandler.call`
+    
+    def signup(self, name='', arg0=''):
+        """ Sign up
+
+        Args:
+            name:
+            arg0: ''|'self'|'cls'. 如果方法的第一个参数是 'self' 或 'cls', 请传
+                入 'self'|'cls'. 例如:
+                    class AAA:
+                        @pyreg.signup(arg0='self')
+                        def mmm(self):
+                            pass
+
+        Notes:
+            1. 如果目标方法同时被 staticmethod 装饰, 您需要先写 `@staticmethod`:
+                class AAA:
+                    @pyreg.signup
+                    @staticmethod
+                    def mmm():
+                        pass
+            2. 您不可以用本方法装饰 class. 例如, 下面的做法是错误的:
+                @pyreg.signup  # wrong
+                class AAA:
+                    pass
+            3. 实例函数必须为参数 arg0 传入 'self', 否则将出现脱离预期的行为.
+                class AAA:
+                    @pyreg.signup(arg0='self')
+                    #             ^---------^
+                    def mmm(self):
+                    #       ^--^
+                        pass
+        """
+        
+        def wrap0(func):
+            nonlocal name, arg0
+            
+            name = name or func.__name__
+            narg = func.__code__.nlocals
+            if arg0: narg -= 1
+            
+            if arg0 == '':
+                self._register(func, name, narg)
+            elif arg0 == 'self':
+                self._register_method(func, name, narg)
+            elif arg0 == 'cls':
+                raise Exception('暂不支持注册类对象!')
+            
+            @wraps(func)
+            def wrap1(*args, **kwargs):
+                return func(*args, **kwargs)
+            
+            return wrap1
+        
+        return wrap0
+    
+    def _register(self, func, name: str, narg: int):
+        self._pyfunc_holder[name] = (func, narg)
+    
+    def _register_class(self, cls, name):
+        self._pyclass_holder[name] = cls
+    
+    def _register_function(self, func, name, narg):
+        self._register(name, func, narg)
+    
+    def _register_instance(self, inst):
+        class_name = inst.__class__.__name__
+        for method_name, (name, narg) in \
+                self._pyclass_holder[class_name].items():
+            #   the `name` equals to `method_name`, or an alias of `method_name`
+            method = getattr(inst, method_name)
+            self._register(method, name, narg)
+
+    register_instance = _register_instance
+    
+    def _register_method(self, method, name, narg):
+        class_name = method.__class__.__name__
+        method_name = method.__name__
+        self._pyclass_holder[class_name][method_name] = (name, narg)
+    
+    def register(self, func, name=''):
+        """ 注册.
+
+        References:
+            https://medium.com/%40mgarod/dynamically-add-a-method-to-a-class-in\
+            -python-c49204b85bd6+&cd=3&hl=zh-CN&ct=clnk&gl=sg
+            https://blog.csdn.net/Wu_Victor/article/details/84334814
+
+        关于 "登记" (PyRegister.signup) 和 "注册" (PyRegister.register) 的区别:
+            注: 该解释仅为了便于记忆和使用, 而非公式或通用的准则.
+            "登记" 的主语是 "人", 这里我们把要登记的 function 或 method 作为
+            "人", 因此它被用于装饰器的写法:
+                @pyregister.signup
+                def myfunc():  # 'myfunc' signs itself up to 'pyregister'
+                    pass
+            "注册" 的主体是 "注册处", 这里我们把 PyRegister 作为 "注册处", 因此
+            它被提供于集中的场所进行集体的注册活动:
+                def register_all_methods(*methods):
+                    for m in methods:
+                        pyregister.register(m)
+                        # 'pyregister' registers 'm' to its roster
+        """
+        name = name or func.__name__
+        if (t := type(func).__name__) in ('function', 'method'):
+            narg = func.__code__.nlocals
+            if t == 'method': narg -= 1
+            self._pyfunc_holder[name] = (func, narg)
+        else:
+            self._register_instance(func)
+        return name
+
+
+class PyHandler(QType.QObj, PyRegister):
     """ Python Communication with Qml Runtime.
 
     Usages:
         See 'docs/PyComm 使用示例.md'
     """
-    __pyfunc_holder = {}
-    __pyclass_holder = defaultdict(lambda: defaultdict())
     
     def __init__(self, object_name=''):
         super().__init__()
@@ -30,119 +148,85 @@ class PyHandler(QType.QObj):
         self.object_name = object_name or self.__class__.__name__
         app.register_pyobj(self, self.object_name)
     
-    # --------------------------------------------------------------------------
-    
-    def register(self, name='', instance: bool = False):
-        """ Decorator of register, made for easily registering functions to
-            PyHandler.
-        
-        Args:
-            name: function's name, usually just leave it blank so PyHandler uses
-                `function.__name__` as its name, otherwise you can pass in a
-                custom name as an alias, it likes:
-                    from lk_qtquick_scaffold import pyhandler
-                    @pyhandler(name='doSomthingLater')
-                               ^--------------------^
-                               # If you like using camelCase laterly in Qml.
-                    def do_something_later():
-                        pass
-            instance (bool): When you decorate a instance's method, pass it True.
-                Examples:
-                    from lk_qtquick_scaffold import pyhandler
-                    class AAA:
-                        @pyhandler.register(instance=True)
-                                            ^-----------^
-                        def aaa(self, n=10):
-                                ^--^
-                                # (1/2) Notice there is a `self`, we should
-                                # pass `instance=True` to decorator.
-                            print(self.m + n)
-                            
-                        def __init__(self):
-                            self.m = 12
-                            pyhandler.register_pyinst(self)
-                            # (2/2) And we must register the 'self' instance to
-                            # pyhandler once the instance is initialized.
-        
-        Examples:
-            from lk_qtquick_scaffold import pyhandler
-            
-            @pyhandler.register()
-            def bbb():
-                pass
-            
-            class AAA:
-                def __init__(self):
-                    pyhandler.register_pyinst(self)
-                @pyhandler.register(instance=True)
-                def aaa(self):
-                    pass
-        """
-        
-        def decor0(func):
-            if instance:
-                self.register_pyclass(func, name)
-            else:
-                self.register_pyfunc(func, name)
-            
-            @wraps(func)
-            def decor1(*args, **kwargs):
-                return func(*args, **kwargs)
-            
-            return decor1
-        
-        return decor0
-    
-    def register_pyfunc(self, func: PyHandlerType.Func, name=''):
-        """ Register Python functions.
-        
-        References:
-            https://medium.com/%40mgarod/dynamically-add-a-method-to-a-class-in\
-            -python-c49204b85bd6+&cd=3&hl=zh-CN&ct=clnk&gl=sg
-        """
-        name = name or func.__name__
-        self.__pyfunc_holder[name] = func
-        return name
-
-    # noinspection PyUnresolvedReferences
-    def register_pyclass(self, method: PyHandlerType.Method, name=''):
-        """ Register Python class methods. """
-        class_name = method.__class__.__name__
-        method_name = method.__name__
-        self.__pyclass_holder[class_name][method_name] = name or method_name
-    
-    def register_pyinst(self, instance):
-        """ Register instance. """
-        class_name = instance.__class__.__name__
-        for method_name, method_alias in \
-                self.__pyclass_holder[class_name].items():
-            method = getattr(instance, method_name)
-            self.register_pyfunc(method, method_alias)
-    
-    # --------------------------------------------------------------------------
-    
     @Slot(PyHandlerType.FuncName, result=QType.QVar)
     @Slot(PyHandlerType.FuncName, QType.QVal, result=QType.QVar)
-    def call(self, func_name, param=None):
+    @Slot(PyHandlerType.FuncName, QType.QVal, QType.QVal, result=QType.QVar)
+    def call(self, func_name, args=None, kwargs=None):
         """ Call Python functions in Qml.
+        
+        在 Qml 端, 支持以下三种形式的传参:
+            PyHandler.call(func_name)
+                func_name: 类型是 string, 指的是在 Python 端已注册到 PyHandler
+                    .__pyfunc_holder 的函数的名字
+            PyHandler.call(func_name, args)
+                args: 当表示单参数时, 类型可以是 null, boolean, string, int,
+                    real, Array, Object, QObject; 当表示多参数时, 只能是 Array.
+                    注意: 这里单参数表示为 Array 时可能与多参数的类型混淆,
+                    PyHandler 会自动区分
+            PyHandler.call(func_name, args, kwargs)
+                kwargs: 类型必须是 Object
+                    注意: kwargs 仅做有限程度的支持! 当您传入 kwargs 时, args 必
+                        须是多参数形式 (即必须是 Array)
+        注意事项:
+            1. 假设有注册函数:
+                def aaa(x, *args):
+                    pass
+               Qml 端调用 `PyHandler.call('aaa', [1, 2, 3])`, 则认为 `x = 1`,
+               `args = (2, 3)`;
+               Qml 端调用 `PyHandler.call('aaa', [[1, 2, 3]])`, 则认为
+               `x = [1, 2, 3]`, `args = ()`
         
         Args:
             func_name (PyHandlerType.FuncName):
-            param (QType.QVal):
+            args (QType.QVal):
+            kwargs (QType.QVal):
         
         Examples:
+            # control.py
+            # 假设这些是注册到 pyhandler 的函数
+            def test1():
+                print('this is test1')
+            def test2(x):
+                print(x)
+            def test3(x, y):
+                print(x, y)
+            def test4(x, y, z=0):
+                print(x, y, z)
+            
             // view.qml
             Item {
-                property string directory
                 Component.onCompleted: {
-                    const files = PyHandler.call('get_files', this.directory)
+                    PyHandler.call('test1')  # -> 控制台打印 'this is test1'
+                    PyHandler.call('test2', 12)  #  -> 控制台打印 '12'
+                    PyHandler.call('test3', [12, 14])  #  -> 控制台打印 '12 14'
+                    PyHandler.call('test4', [12, 14], {z: 1})  #  -> 控制台打印
+                    #   '12 14 1'
+                    
+                    # 对于 test4, 您还可以这样做:
+                    PyHandler.call('test4', [12, 14, 1])
+                    PyHandler.call('test4', [], {x: 12, y: 14, z: 1})
+                    PyHandler.call('test4', [12], {y: 14, z: 1})
                 }
             }
         """
-        if param is None:
-            return self.__pyfunc_holder[func_name]()
+        func, narg = self.__pyfunc_holder[func_name]  # narg: 'number of args'
+        
+        args = [] if args is None else (args.toVariant() or [])
+        kwargs = {} if kwargs is None else (kwargs.toVariant() or {})
+        
+        if narg == 0:
+            return func()
+        elif kwargs:
+            return func(*args, **kwargs)
         else:
-            return self.__pyfunc_holder[func_name](param.toVariant())
+            if isinstance(args, list):
+                is_single_arg = True if narg == 1 else False
+            else:
+                is_single_arg = True
+            if is_single_arg:
+                return func(args)
+            else:
+                return func(*args)
 
 
 # ------------------------------------------------------------------------------
