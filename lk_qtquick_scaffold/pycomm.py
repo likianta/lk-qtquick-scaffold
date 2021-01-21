@@ -1,13 +1,14 @@
 """
 @Author   : likianta (likianta@foxmail.com)
 @FileName : pycomm.py
-@Version  : 0.8.0
+@Version  : 0.8.1
 @Created  : 2020-09-09
-@Updated  : 2021-01-20
-@Desc     : 
+@Updated  : 2021-01-21
+@Desc     :
 """
 from collections import defaultdict
 from functools import wraps
+from inspect import signature
 
 from PySide2.QtCore import Slot
 from PySide2.QtQml import QQmlProperty
@@ -19,12 +20,49 @@ from ._typing import *
 class PyRegister:
     _pyclass_holder = defaultdict(lambda: defaultdict())
     _pyfunc_holder = {}
+    ''' {func_name: (func, narg), ...}
+            func_name: str. function's name
+            func: function (or instantiated method)
+            narg: 'number of arguments' (aka arguments count), int.
+                see `self._get_number_of_args`
+    '''
     
-    #   {func_name: {func, narg}, ...}
-    #       func_name: str. function's name
-    #       func: function (or instantiated method)
-    #       narg: 'number of arguments', aka arguments count, int.
-    #           see `PyHandler.call`
+    @staticmethod
+    def _get_number_of_args(func, strip_self=False):
+        """
+        References:
+            https://stackoverflow.com/questions/3517892/python-list-function
+            -argument-names
+        
+        Notes:
+            1. Please do not use `func.__code__.co_argcount|co_posonlyargcount|
+               co_kwonlyargcount|co_nlocals`, none of them supports counting
+               '*args' and '**kwargs'
+            2. 如果是实例方法, 则不会计入 self; 如果是类方法, 则会计入 self. 即:
+                class AAA:
+                    def mmm(self, x):
+                        pass
+                        
+                print(signature(AAA.mmm).parameters)
+                # -> OrderedDict([('self', <Parameter "self">),
+                #                 ('x', <Parameter "x">)])
+                
+                print(signature(AAA().mmm).parameters)
+                # -> OrderedDict([('x', <Parameter "x">)])
+        
+        Returns:
+            int. 当为 -1 时, 表示不特定多个参数 (即存在 *args 或 **kwargs)
+        """
+        params = signature(func).parameters
+        #   e.g. OrderedDict([
+        #       ('x', <Parameter "x">),
+        #       ('args', <Parameter "*args">),
+        #       ('kwargs', <Parameter "**kwargs">)
+        #   ])
+        if any(str(v).startswith('*') for v in params.values()):
+            return -1
+        else:
+            return len(params) if not strip_self else len(params) - 1
     
     def signup(self, name='', arg0=''):
         """ Sign up
@@ -62,8 +100,7 @@ class PyRegister:
             nonlocal name, arg0
             
             name = name or func.__name__
-            narg = func.__code__.co_nlocals
-            if arg0: narg -= 1
+            narg = self._get_number_of_args(func, strip_self=bool(arg0))
             
             if arg0 == '':
                 self._register(func, name, narg)
@@ -122,6 +159,10 @@ class PyRegister:
     
     def register(self, func, name=''):
         """ 注册.
+        
+        Args:
+            func: 类实例|方法|函数
+            name: 自定义的名字, 如果为空, 则使用 func.__name__
 
         References:
             https://medium.com/%40mgarod/dynamically-add-a-method-to-a-class-in\
@@ -143,13 +184,11 @@ class PyRegister:
                         # 'pyregister' registers 'm' to its roster
         """
         name = name or func.__name__
-        # lk.loga(type(func).__name__, h='parent')
         if (t := type(func).__name__) in ('function', 'method'):
-            narg = func.__code__.co_nlocals
-            if t == 'method': narg -= 1
+            narg = self._get_number_of_args(func)
             self._register(func, name, narg)
         elif t == 'builtin_function_or_method':
-            self._register(func, name, -1)
+            self._register(func, name, -1)  # -1 表示参数数量未知
         else:
             self._register_instance(func)
         return name
@@ -250,7 +289,7 @@ class PyHandler(QType.QObj, PyRegister):
             return func(*args, **kwargs)
         elif narg == 0:
             return func()
-        elif narg == -1:
+        elif narg == -1:  # see `PyRegister._get_number_of_args:returns`
             return func(*args)
         else:
             if isinstance(args, list):
