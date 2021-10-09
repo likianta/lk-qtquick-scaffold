@@ -1,8 +1,7 @@
-import QtQuick 2.15
-import QtGraphicalEffects 1.15
-import LKDebugger 1.0
-import LightClean 1.0
-import LightClean.LCButtons 1.0
+import QtQuick
+// import QtGraphicalEffects5Compat
+import LightClean
+import LightClean.LCButtons
 
 LCWindow {
     id: root
@@ -86,13 +85,13 @@ LCWindow {
             p_color: '#234471'
 
             layer.enabled: true  // true|false
-            layer.effect: OpacityMask {
-                maskSource: Rectangle {
-                    width: _imgFrame.width
-                    height: _imgFrame.height
-                    radius: _imgFrame.radius
-                }
-            }
+            // layer.effect: OpacityMask {
+            //     maskSource: Rectangle {
+            //         width: _imgFrame.width
+            //         height: _imgFrame.height
+            //         radius: _imgFrame.radius
+            //     }
+            // }
 
             Image {
                 id: _img
@@ -168,7 +167,7 @@ LCWindow {
             const coord = _miniCard.mapToItem(null, 0, 0)
             _fullCard.__initX = coord.x
             _fullCard.__initY = coord.y
-            Logger.log(coord.x, coord.y)
+            console.log(coord.x, coord.y)
         }
 
         function expand() {
@@ -208,6 +207,6 @@ LCWindow {
     }
 
     Component.onCompleted: {
-        this.p_imgFile = './assets/test_img.jpg'
+        this.p_imgFile = './test_img.jpg'
     }
 }

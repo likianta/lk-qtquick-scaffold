@@ -1,4 +1,5 @@
 import QtQuick 2.15
+import lk_qtquick_scaffold.qmlside.layout_helper
 import "./LCStyle/dimension.js" as LCDimension
 import "../../qml_helper/layout_helper.js" as LCLayout
 
