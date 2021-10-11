@@ -5,8 +5,8 @@ from PySide6.QtQml import QQmlApplicationEngine
 from PySide6.QtQml import QQmlContext
 from PySide6.QtWidgets import QApplication
 
-from .path_model import theme_dir
-from .typehint import TPath
+from lk_qtquick_scaffold.path_model import theme_dir
+from lk_qtquick_scaffold.typehint import TPath
 
 
 class _Application(QApplication):
@@ -17,7 +17,7 @@ class _Application(QApplication):
     # qml side from being recycled by python garbage collector incorrectly.
     __pyobj_holder: dict[str, QObject]
     
-    def __init__(self, app_name='Declare PySide Demo', **kwargs):
+    def __init__(self, app_name='LK QtQuick Scaffold App', **kwargs):
         """
         Args:
             app_name: str

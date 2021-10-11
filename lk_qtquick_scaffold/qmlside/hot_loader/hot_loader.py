@@ -80,8 +80,8 @@ class HotLoader:
         
         # register hot reloader runtime functions.
         # see usages in `..LKQmSide.HotLoader`.
-        from ..application import app
-        from ..pyside import pyside
+        from ...pyside import app
+        from ...pyside import pyside
         pyside.register(app.engine.clearComponentCache,
                         '__clear_component_cache')
         pyside.register(self.get_target,

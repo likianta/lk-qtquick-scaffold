@@ -49,7 +49,9 @@ Row {
     }
 
     function _updateFillRest() {
-        root.r_fillRest = root.width - __appliedWidth
+        if (root) {
+            root.r_fillRest = root.width - __appliedWidth
+        }
     }
 
     function _initAppliedWidth() {

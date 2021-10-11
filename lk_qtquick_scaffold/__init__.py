@@ -1,15 +1,17 @@
-from .application import Application
-from .application import app
-from .hot_loader import hot_loader
+from .pyside import Application
+from .pyside import app
 from .pyside import pyside
 from .pyside import reg
+from .qmlside import hot_loader
+from .qmlside import js_eval
 
 
 def _setup():
-    from .qlogger import setup as setup_qlogger
-    setup_qlogger()
-    
+    from .qmlside import LKLayoutHelper
+    from .qmlside import qlogger
+    qlogger.setup()
     app.register_pyobj(pyside, 'pyside')
+    app.register_pyobj(LKLayoutHelper(), 'LKLayoutHelper')
 
 
 _setup()
