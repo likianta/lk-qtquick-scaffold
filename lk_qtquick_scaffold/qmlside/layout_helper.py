@@ -1,6 +1,10 @@
+from typing import *
+
 from PySide6.QtCore import QObject
 from PySide6.QtCore import Slot
+from PySide6.QtQml import QJSValue
 
+from .js_evaluator import eval_js
 from .js_evaluator import js_eval
 
 # orientation
@@ -16,7 +20,56 @@ V_CENTER = 128
 V_BOTTOM = 64
 
 
+class T:  # TypeHint
+    class Anchors(TypedDict):
+        # { 'reclines': tuple[left, top, right, bottom],
+        #   'margins': Union[tuple[left, top, right, bottom], int] }
+        #   note: `reclines = (0, 0, 0, 0)` means anchorin center.
+        reclines: Union[tuple[int, int, int, int], tuple[bool, bool, bool, bool]]
+        margins: Union[int, tuple[int, int, int, int]]
+
+
 class LKLayoutHelper(QObject):
+    
+    @Slot(QObject, QObject, QJSValue)
+    def quick_anchors(self, qobj: QObject, parent: QObject, anchors: T.Anchors):
+        # noinspection PyUnresolvedReferences
+        anchors = anchors.toVariant()
+        
+        match anchors['reclines']:
+            case (0, 0, 0, 0):
+                eval_js('{}.anchors.centerIn = {}', qobj, parent)
+            case (1, 1, 1, 1):
+                eval_js('{}.anchors.fill = {}', qobj, parent)
+            case _:
+                if anchors['reclines'][0]:
+                    eval_js(
+                        '{}.anchors.left = Qt.binding(() => {}.left)',
+                        qobj, parent
+                    )
+                if anchors['reclines'][1]:
+                    eval_js(
+                        '{}.anchors.top = Qt.binding(() => {}.top)',
+                        qobj, parent
+                    )
+                if anchors['reclines'][2]:
+                    eval_js(
+                        '{}.anchors.right = Qt.binding(() => {}.right)',
+                        qobj, parent
+                    )
+                if anchors['reclines'][3]:
+                    eval_js(
+                        '{}.anchors.bottom = Qt.binding(() => {}.bottom)',
+                        qobj, parent
+                    )
+        
+        if isinstance((m := anchors['margins']), int):
+            eval_js('{}.anchors.margins = {}', qobj, m)
+        else:
+            eval_js('{}.anchors.leftMargin = {}', qobj, anchors['margins'][0])
+            eval_js('{}.anchors.topMargin = {}', qobj, anchors['margins'][1])
+            eval_js('{}.anchors.rightMargin = {}', qobj, anchors['margins'][2])
+            eval_js('{}.anchors.bottomMargin = {}', qobj, anchors['margins'][3])
     
     @Slot(QObject, str)
     def quick_align(self, qobj: QObject, alignment: str):
@@ -69,20 +122,20 @@ class LKLayoutHelper(QObject):
             return
         
         if orientation == HORIZONTAL:
-            js_eval.eval_js(
+            eval_js(
                 '{{0}}.anchors.marginLeft = {}'.format(padding),
                 children[0]
             )
-            js_eval.eval_js(
+            eval_js(
                 '{{0}}.anchors.marginRight = {}'.format(padding),
                 children[-1]
             )
         else:
-            js_eval.eval_js(
+            eval_js(
                 '{{0}}.anchors.marginTop = {}'.format(padding),
                 children[0]
             )
-            js_eval.eval_js(
+            eval_js(
                 '{{0}}.anchors.marginBottom = {}'.format(padding),
                 children[-1]
             )
@@ -100,7 +153,7 @@ class LKLayoutHelper(QObject):
         if len(children) > 1:
             for a, b in zip(children[:-1], children[1:]):
                 js_eval.bind_anchors(b, 'anchors.left', a, 'right')
-                js_eval.eval_js('{0}.anchors.leftMargin', spacing)
+                eval_js('{0}.anchors.leftMargin', spacing)
     
     @Slot(QObject, int, int)
     def halign_children(self, parent: QObject, padding: int, spacing: int):
