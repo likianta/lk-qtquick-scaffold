@@ -42,76 +42,82 @@ class Anchors:
                             return 1
                         else:
                             return 0
-
+                    
                     # noinspection PyTypeChecker
                     return tuple(map(_foo, ('j', 'i', 'l', 'k')))
         else:
             return reclines
     
     @Slot(QObject, QObject, QJSValue)
-    def weak_anchors(self, qobj: QObject, parent: QObject, anchors: T.Anchors):
+    def weak_anchors(self, this: QObject, that: QObject, anchors: T.Anchors):
         # noinspection PyUnresolvedReferences
         anchors = anchors.toVariant()
         
         reclines = self._normalize_reclines(anchors['reclines'])
-        x = y = w = h = 0
         is_center_mode = False
         
+        x0 = this.property('x')
+        y0 = this.property('y')
+        w0 = eval_js('{}.childrenRect.width', this)
+        h0 = eval_js('{}.childrenRect.height', this)
+        x1 = that.property('x')
+        y1 = that.property('y')
+        w1 = eval_js('{}.childrenRect.width', that)
+        h1 = eval_js('{}.childrenRect.height', that)
+        
         if all(reclines):
-            x = parent.property('x')
-            y = parent.property('y')
-            w = parent.property('width')
-            h = parent.property('height')
+            x0 = x1
+            y0 = y1
+            w0 = w1
+            h0 = h1
         elif not any(reclines):
             is_center_mode = True
-            x = parent.property('width') / 2 - qobj.property('width') / 2
-            y = parent.property('height') / 2 - qobj.property('height') / 2
-            w = qobj.property('width')
-            h = qobj.property('height')
+            x0 = w1 / 2 - w0 / 2
+            y0 = h1 / 2 - h0 / 2
         else:
             if reclines[0]:
                 if reclines[0] > 0:
-                    x = parent.property('x')
+                    x0 = x1
                 else:
-                    x = parent.property('x') + parent.property('width')
+                    x0 = x1 + w1
             if reclines[1]:
                 if reclines[1] > 0:
-                    y = parent.property('y')
+                    y0 = y1
                 else:
-                    y = parent.property('y') + parent.property('height')
+                    y0 = y1 + h1
             if reclines[2]:
                 if reclines[2] > 0:
-                    w = parent.property('width')
+                    w0 = w1
                 else:
-                    w = parent.property('x') + parent.property('width') - x
+                    w0 = x1 + w1 - x0
             if reclines[3]:
                 if reclines[3] > 0:
-                    h = parent.property('height')
+                    h0 = h1
                 else:
-                    y = parent.property('y') + parent.property('height') - y
+                    y0 = y1 + h1 - y0
         
         if not is_center_mode:
             
             margins = anchors['margins']
             
             if isinstance(margins, int):
-                x += margins
-                y += margins
-                w -= margins
-                h -= margins
+                x0 += margins
+                y0 += margins
+                w0 -= margins
+                h0 -= margins
             else:
-                x += margins[0]
-                y += margins[1]
-                w -= margins[2]
-                h -= margins[3]
+                x0 += margins[0]
+                y0 += margins[1]
+                w0 -= margins[2]
+                h0 -= margins[3]
         
-        qobj.setProperty('x', x)
-        qobj.setProperty('y', y)
-        qobj.setProperty('width', w)
-        qobj.setProperty('height', h)
+        this.setProperty('x', x0)
+        this.setProperty('y', y0)
+        this.setProperty('width', w0)
+        this.setProperty('height', h0)
     
     @Slot(QObject, QObject, QJSValue)
-    def quick_anchors(self, qobj: QObject, parent: QObject, anchors: T.Anchors):
+    def quick_anchors(self, this: QObject, that: QObject, anchors: T.Anchors):
         # noinspection PyUnresolvedReferences
         anchors = anchors.toVariant()
         
@@ -135,61 +141,61 @@ class Anchors:
         reclines = _normalize_reclines(anchors['reclines'])
         
         if all(reclines):
-            eval_js('{}.anchors.fill = {}', qobj, parent)
+            eval_js('{}.anchors.fill = {}', this, that)
         elif not any(reclines):
-            eval_js('{}.anchors.centerIn = {}', qobj, parent)
+            eval_js('{}.anchors.centerIn = {}', this, that)
         else:
             if reclines[0]:
                 if reclines[0] > 0:
                     eval_js(
                         '{}.anchors.left = Qt.binding(() => {}.left)',
-                        qobj, parent
+                        this, that
                     )
                 else:
                     eval_js(
                         '{}.anchors.left = Qt.binding(() => {}.right)',
-                        qobj, parent
+                        this, that
                     )
             if reclines[1]:
                 if reclines[1] > 0:
                     eval_js(
                         '{}.anchors.top = Qt.binding(() => {}.top)',
-                        qobj, parent
+                        this, that
                     )
                 else:
                     eval_js(
                         '{}.anchors.top = Qt.binding(() => {}.bottom)',
-                        qobj, parent
+                        this, that
                     )
             if reclines[2]:
                 if reclines[2] > 0:
                     eval_js(
                         '{}.anchors.right = Qt.binding(() => {}.right)',
-                        qobj, parent
+                        this, that
                     )
                 else:
                     eval_js(
                         '{}.anchors.right = Qt.binding(() => {}.left)',
-                        qobj, parent
+                        this, that
                     )
             if reclines[3]:
                 if reclines[3] > 0:
                     eval_js(
                         '{}.anchors.bottom = Qt.binding(() => {}.bottom)',
-                        qobj, parent
+                        this, that
                     )
                 else:
                     eval_js(
                         '{}.anchors.bottom = Qt.binding(() => {}.top)',
-                        qobj, parent
+                        this, that
                     )
         
         margins = anchors['margins']
         
         if isinstance(margins, int):
-            eval_js('{}.anchors.margins = {}', qobj, margins)
+            eval_js('{}.anchors.margins = {}', this, margins)
         else:
-            eval_js('{}.anchors.leftMargin = {}', qobj, margins[0])
-            eval_js('{}.anchors.topMargin = {}', qobj, margins[1])
-            eval_js('{}.anchors.rightMargin = {}', qobj, margins[2])
-            eval_js('{}.anchors.bottomMargin = {}', qobj, margins[3])
+            eval_js('{}.anchors.leftMargin = {}', this, margins[0])
+            eval_js('{}.anchors.topMargin = {}', this, margins[1])
+            eval_js('{}.anchors.rightMargin = {}', this, margins[2])
+            eval_js('{}.anchors.bottomMargin = {}', this, margins[3])
