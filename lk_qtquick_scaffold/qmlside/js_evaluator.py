@@ -30,9 +30,10 @@ class JsEvaluator:
         ), a_obj, b_obj)
     
     def eval_js(self, code, *args):
+        # preview
         lk.log(code.format(
-            *('<QObject>' if isinstance(x, QObject)
-              else str(x) for x in args)), h='parent'
+            *(f'<QObject#{i}>' if isinstance(x, QObject)
+              else str(x) for i, x in enumerate(args))), h='parent'
         )
         return self.core.eval_js(
             code.format(*(f'args[{i}]' for i in range(len(args)))),

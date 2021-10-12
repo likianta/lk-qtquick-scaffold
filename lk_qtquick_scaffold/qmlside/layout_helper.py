@@ -21,12 +21,26 @@ V_BOTTOM = 64
 
 
 class T:  # TypeHint
+    
     class Anchors(TypedDict):
-        # { 'reclines': tuple[left, top, right, bottom],
-        #   'margins': Union[tuple[left, top, right, bottom], int] }
-        #   note: `reclines = (0, 0, 0, 0)` means anchorin center.
-        reclines: Union[tuple[int, int, int, int], tuple[bool, bool, bool, bool]]
+        reclines: Union[tuple[int, int, int, int],
+                        tuple[bool, bool, bool, bool],
+                        str]
+        #   examples:
+        #       (1, 0, 1, 1): left(on), top(off), right(on), bottom(on).
+        #       (True, False, True, True): the same with `(1, 0, 1, 1)`.
+        #       'ijkl': i=top, k=bottom, j=left, l=right.
+        #   special values:
+        #       (0, 0, 0, 0): center in parent.
+        #       (1, 1, 1, 1): fill parent.
+        #       (False, False, False, False): center in parent.
+        #       (True, True, True, True): fill parent.
+        #       'center': center in parent.
+        #       'fill': fill parent.
         margins: Union[int, tuple[int, int, int, int]]
+        
+    Reclines = Union[tuple[int, int, int, int],
+                     tuple[bool, bool, bool, bool]]
 
 
 class LKLayoutHelper(QObject):
@@ -36,40 +50,62 @@ class LKLayoutHelper(QObject):
         # noinspection PyUnresolvedReferences
         anchors = anchors.toVariant()
         
-        match anchors['reclines']:
-            case (0, 0, 0, 0):
-                eval_js('{}.anchors.centerIn = {}', qobj, parent)
-            case (1, 1, 1, 1):
-                eval_js('{}.anchors.fill = {}', qobj, parent)
-            case _:
-                if anchors['reclines'][0]:
-                    eval_js(
-                        '{}.anchors.left = Qt.binding(() => {}.left)',
-                        qobj, parent
-                    )
-                if anchors['reclines'][1]:
-                    eval_js(
-                        '{}.anchors.top = Qt.binding(() => {}.top)',
-                        qobj, parent
-                    )
-                if anchors['reclines'][2]:
-                    eval_js(
-                        '{}.anchors.right = Qt.binding(() => {}.right)',
-                        qobj, parent
-                    )
-                if anchors['reclines'][3]:
-                    eval_js(
-                        '{}.anchors.bottom = Qt.binding(() => {}.bottom)',
-                        qobj, parent
-                    )
+        def _normalize_reclines(reclines) -> T.Reclines:
+            if isinstance(reclines, str):
+                match reclines:
+                    case 'center':
+                        return 0, 0, 0, 0
+                    case 'fill':
+                        return 1, 1, 1, 1
+                    case _:
+                        return (
+                            'j' in reclines,  # j=left
+                            'i' in reclines,  # i=top
+                            'l' in reclines,  # l=right
+                            'k' in reclines,  # k=bottom
+                        )
+            else:
+                return reclines
         
-        if isinstance((m := anchors['margins']), int):
-            eval_js('{}.anchors.margins = {}', qobj, m)
+        reclines = _normalize_reclines(anchors['reclines'])
+        
+        if all(reclines):
+            eval_js('{}.anchors.fill = {}', qobj, parent)
+        elif not any(reclines):
+            eval_js('{}.anchors.centerIn = {}', qobj, parent)
         else:
-            eval_js('{}.anchors.leftMargin = {}', qobj, anchors['margins'][0])
-            eval_js('{}.anchors.topMargin = {}', qobj, anchors['margins'][1])
-            eval_js('{}.anchors.rightMargin = {}', qobj, anchors['margins'][2])
-            eval_js('{}.anchors.bottomMargin = {}', qobj, anchors['margins'][3])
+            if reclines[0]:
+                eval_js(
+                    '{}.anchors.left = Qt.binding(() => {}.left)',
+                    qobj, parent
+                )
+            if reclines[1]:
+                eval_js(
+                    '{}.anchors.top = Qt.binding(() => {}.top)',
+                    qobj, parent
+                )
+            if reclines[2]:
+                eval_js(
+                    '{}.anchors.right = Qt.binding(() => {}.right)',
+                    qobj, parent
+                )
+            if reclines[3]:
+                eval_js(
+                    '{}.anchors.bottom = Qt.binding(() => {}.bottom)',
+                    qobj, parent
+                )
+
+        # ----------------------------------------------------------------------
+        
+        margins = anchors['margins']
+        
+        if isinstance(margins, int):
+            eval_js('{}.anchors.margins = {}', qobj, margins)
+        else:
+            eval_js('{}.anchors.leftMargin = {}', qobj, margins[0])
+            eval_js('{}.anchors.topMargin = {}', qobj, margins[1])
+            eval_js('{}.anchors.rightMargin = {}', qobj, margins[2])
+            eval_js('{}.anchors.bottomMargin = {}', qobj, margins[3])
     
     @Slot(QObject, str)
     def quick_align(self, qobj: QObject, alignment: str):
@@ -116,7 +152,8 @@ class LKLayoutHelper(QObject):
         qobj.setProperty('verticalAlignment', v)
     
     @staticmethod
-    def _align_children(parent: QObject, padding: int, spacing: int, orientation: int):
+    def _align_children(parent: QObject, padding: int, spacing: int,
+                        orientation: int):
         children = parent.children()
         if len(children) == 0:
             return
