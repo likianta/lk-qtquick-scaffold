@@ -2,48 +2,48 @@
 // Theme Color
 
 const ThemeDeepBlue = "#043243"
-const ThemeBlue = "#00627a"
-const ThemeRegularBlue1 = "#1580ff"
-const ThemeRegularBlue2 = "#2368bd"
-const ThemeLightBlue = "#c9ddf7"
+const ThemeBlue = "#00627A"
+const ThemeRegularBlue1 = "#1580FF"
+const ThemeRegularBlue2 = "#2368BD"
+const ThemeLightBlue = "#C9DDF7"
 
 // -----------------------------------------------------------------------------
 // Background
 
-const BgGray = "#f2f2f2"
-const BgWhite = "#ffffff"
-const EditbarFocus = "#ffffff"
-const EditbarNormal = "#f2f2f2"
-const EditbarActive = "#ffffff"
+const BgGray = "#F2F2F2"
+const BgWhite = "#F6F8FA"  // "#FFFFFF" | "#F6F8FA"
+const EditbarFocus = "#FFFFFF"
+const EditbarNormal = "#F2F2F2"
+const EditbarActive = "#FFFFFF"
 
 // -----------------------------------------------------------------------------
 // Button
 
 const ButtonPrimary = ThemeBlue
-const ButtonNormal = "#ffffff"
+const ButtonNormal = "#FFFFFF"
 const ButtonChecked = ThemeRegularBlue1
-const ButtonUnchecked = "#cccccc"
-const ButtonHovered = "#c7e5ff"
+const ButtonUnchecked = "#CCCCCC"
+const ButtonHovered = "#C7E5FF"
 const ButtonPressed = ThemeLightBlue
 
 // -----------------------------------------------------------------------------
 // Border
 
-const Border = "#cccccc"
-const BorderNormal = "#cccccc"
+const Border = "#CCCCCC"
+const BorderNormal = "#CCCCCC"
 const BorderSink = ThemeRegularBlue2
 
 // -----------------------------------------------------------------------------
 // Text
 
-const TextDisabled = '#cccccc'
-const TextHint = "#cccccc"
+const TextDisabled = '#CCCCCC'
+const TextHint = "#CCCCCC"
 const TextHighlight = ThemeRegularBlue1
 const TextLink = ThemeDeepBlue
-const TextNormal = "#1d1d1d"
-const TextSelected = "#ffffff"
+const TextNormal = "#1D1D1D"
+const TextSelected = "#FFFFFF"
 const TextSelection = ThemeDeepBlue
-const TextWhite = "#ffffff"
+const TextWhite = "#FFFFFF"
 
 // -----------------------------------------------------------------------------
 // Other
@@ -52,6 +52,6 @@ const Transparent = "#00000000"
 const TranslucentDL = "#30000000"  // Dark Low
 const TranslucentDM = "#50000000"  // Dark Medium
 const TranslucentDH = "#80000000"  // Dark Hight
-const TranslucentLL = "#30ffffff"  // Dark Low
-const TranslucentLM = "#50ffffff"  // Dark Medium
-const TranslucentLH = "#80ffffff"  // Dark Hight
+const TranslucentLL = "#30FFFFFF"  // Dark Low
+const TranslucentLM = "#50FFFFFF"  // Dark Medium
+const TranslucentLH = "#80FFFFFF"  // Dark Hight
