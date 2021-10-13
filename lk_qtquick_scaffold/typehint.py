@@ -8,8 +8,6 @@ from PySide6.QtQml import QQmlProperty as _QQmlProperty
 from PySide6.QtQuick import QQuickItem as _QQuickItem
 from lk_lambdex import lambdex as _lambdex
 
-# ------------------------------------------------------------------------------
-
 # see typical usages in `.delegators`
 _TFakeModule = _lambdex('', """
     class FakeModule:
@@ -19,6 +17,14 @@ _TFakeModule = _lambdex('', """
             return None
     return FakeModule()
 """)()
+
+if __name__ == '__main__':
+    class TQObject(_QObject, _QQuickItem):
+        def get_children(self) -> list[_QObject]: pass
+else:
+    TQObject = _TFakeModule
+
+# ------------------------------------------------------------------------------
 
 TPath = Union[_PathLike, str]
 
@@ -44,10 +50,9 @@ TPyFuncHolder = dict[_TRegisteredName, tuple[_TPyFunction, TNArgs]]
 TQVar = 'QVariant'
 TQVal = _QJSValue
 
-TComponent = _QQmlComponent
-TQObject = Union[_QObject, _QQuickItem]
 TProperty = _QQmlProperty
 TPropName: TypeAlias = str
+TComponent = _QQmlComponent
 
 TSender = tuple[TQObject, TPropName]
 TReceptor = tuple[TQObject, TPropName]
