@@ -6,15 +6,18 @@ import QtQuick.Window
 //      https://qml.guide/live-reloading-hot-reloading-qml
 
 Window {
+    x: 1200
+    y: 400  // appeared on the desktop left-vcenter.
+    width: _btn.width
+    height: _btn.height
+
     color: '#f2f2f2'
     flags: Qt.WindowStaysOnTopHint
     title: "Hot Reloader"
     visible: true
-    width: _btn.width; height: _btn.height
-    //  width: 300; height: 120
-    x: 1200; y: 400  // appeared on the desktop left-vcenter.
 
     property int    p_cnt: -1
+    property string p_bg_color: pyside.call('__get_default_bg_color')
     property string p_target: pyside.call('__get_target_to_load')
 
     Loader {
@@ -38,21 +41,47 @@ Window {
     Button {
         id: _btn
         anchors.centerIn: parent
+        width: 200
+        height: 100
         hoverEnabled: true
         text: "Reload"
-        width: 200; height: 100
 
         background: Rectangle {
             id: _rect
-            color: {
-                if (_btn.pressed) {
-                    return '#4285f4'
-                } else if (_btn.hovered) {
-                    return '#ffffff'
-                } else {
-                    return '#f2f2f2'
-                }
-            }
+            color: p_bg_color
+            // opacity: 0.5
+            
+            // states: [
+            //     State {
+            //         when: !_btn.hovered
+            //         PropertyChanges {
+            //             target: _rect
+            //             opacity: 0.7
+            //         }
+            //     },
+            //     State {
+            //         when: _btn.hovered  || _btn.pressed  || _btn.released
+            //         PropertyChanges {
+            //             target: _rect
+            //             opacity: 0.5
+            //         }
+            //     }
+            //     // State {
+            //     //     when: _btn.pressed && _btn.hovered
+            //     //     PropertyChanges {
+            //     //         target: _rect
+            //     //         opacity: 0.5
+            //     //     }
+            //     // }
+            // ]
+            
+            // transitions: Transition {
+            //     NumberAnimation {
+            //         duration: 600
+            //         easing.type: Easing.OutQuart
+            //         properties: 'opacity'
+            //     }
+            // }
         }
 
         contentItem: Text {

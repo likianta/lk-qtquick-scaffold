@@ -69,7 +69,7 @@ class HotLoader:
         
         self.bootloader = new_bootloader
     
-    def start(self, target: TPath):
+    def start(self, target: TPath, bg_color='#F2F2F2'):
         self._check_bootloader_location(target)
         
         # FIXME
@@ -84,6 +84,8 @@ class HotLoader:
         from ...pyside import pyside
         pyside.register(app.engine.clearComponentCache,
                         '__clear_component_cache')
+        pyside.register(lambda: bg_color,
+                        '__get_default_bg_color')
         pyside.register(self.get_target,
                         '__get_target_to_load')
         
