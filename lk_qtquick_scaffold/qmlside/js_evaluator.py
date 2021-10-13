@@ -1,9 +1,8 @@
-from PySide6.QtCore import QObject
 from PySide6.QtQml import QQmlComponent
 from lk_logger import lk
 
-from ..typehint import TJsEvaluatorCore
 from ..path_model import qmlside_dir
+from ..typehint import TJsEvaluatorCore
 
 
 class JsEvaluator:
@@ -11,7 +10,8 @@ class JsEvaluator:
     
     def __init__(self):
         from ..pyside import app
-        component = QQmlComponent(app.engine, f'{qmlside_dir}/view.qml')
+        component = QQmlComponent(
+            app.engine, f'{qmlside_dir}/js_evaluator_controls.qml')
         qobject = component.create()
         self.core = qobject
         
@@ -24,17 +24,17 @@ class JsEvaluator:
         #   .eval_js` here, that problem will be gone.
         lk.log(self.core.eval_js('"JsEvaluator.core is ready to use"', []))
     
-    def bind_anchors(self, a_obj, a_prop, b_obj, b_prop):
+    def quick_bind(self, a_obj, a_prop, b_obj, b_prop):
         self.eval_js('{{0}}.{} = Qt.binding(() => {{1}}.{})'.format(
             a_prop, b_prop
         ), a_obj, b_obj)
     
     def eval_js(self, code, *args):
-        # preview
-        lk.log(code.format(
-            *(f'<QObject#{i}>' if isinstance(x, QObject)
-              else str(x) for i, x in enumerate(args))), h='parent'
-        )
+        # lk.log(code.format(
+        #     *(f'<QObject#{i}>' if isinstance(x, QObject)
+        #       else str(x) for i, x in enumerate(args))), h='parent'
+        # )
+        # lk.logt('[D3345]', code)
         return self.core.eval_js(
             code.format(*(f'args[{i}]' for i in range(len(args)))),
             list(args)
