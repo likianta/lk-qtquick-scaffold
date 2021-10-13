@@ -5,7 +5,6 @@ import "./LCStyle/dimension.js" as LCDimension
 import "./LCStyle/motion.js" as LCMotion
 import "./LCStyle/palette.js" as LCPalette
 import "./LCStyle/typography.js" as LCTypo
-import "../../qml_helper/layout_helper.js" as LCLayout
 
 Item {
     id: root
@@ -61,7 +60,7 @@ Item {
         Component.onCompleted: {
             this.cursorPosition = 0
             this.pressed.connect(root.clicked)
-            LCLayout.easyAlign(this, p_alignment)
+            LKLayoutHelper.quick_align(this, p_alignment)
         }
     }
 }

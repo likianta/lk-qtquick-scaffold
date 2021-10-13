@@ -1,4 +1,4 @@
-import QtQuick 2.15
+import QtQuick
 import "./LCStyle/dimension.js" as LCGeometry
 import "./LCStyle/palette.js" as LCPalette
 
