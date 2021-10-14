@@ -19,10 +19,10 @@ _TFakeModule = _lambdex('', """
 """)()
 
 if __name__ == '__main__':
-    class TQObject(_QObject, _QQuickItem):
+    class _TQObject(_QObject, _QQuickItem):
         def get_children(self) -> list[_QObject]: pass
 else:
-    TQObject = _TFakeModule
+    _TQObject = _TFakeModule
 
 # ------------------------------------------------------------------------------
 
@@ -50,6 +50,7 @@ TPyFuncHolder = dict[_TRegisteredName, tuple[_TPyFunction, TNArgs]]
 TQVar = 'QVariant'
 TQVal = _QJSValue
 
+TQObject = _TQObject
 TProperty = _QQmlProperty
 TPropName = str
 TComponent = _QQmlComponent

@@ -1,18 +1,7 @@
-"""
-Main Fields:
-    Color
-    Control/State
-    Layout
-    Motion
-    Shape
-    Typography
-"""
 import re
 
-from PySide6.QtCore import QObject
-from PySide6.QtCore import Slot
-
-strict_mode = False
+from .base import ResourceManager
+from .base import strict_mode
 
 
 class Patterns:
@@ -28,14 +17,9 @@ class Patterns:
     #   word in name. use `findall` to get all words from name.
 
 
-class ResourceManager(QObject):
-    pass
-
-
-class Color(ResourceManager):
+class ColorResourceManager(ResourceManager):
     
-    @Slot(str, result='string')
-    def get(self, name: str) -> str:
+    def _get(self, name: str, **kwargs) -> str:
         if not hasattr(self, name):
             color = self._main(name)
             setattr(self, name, color)
@@ -60,10 +44,6 @@ class Color(ResourceManager):
                 ):
                     pass
                 else:
-                    return self._get(name) + state
-                
-        return self._get(name)
+                    return self._fetch(name) + state
         
-    def _get(self, name):
-        assert hasattr(self, name)
-        return getattr(self, name)
+        return self._fetch(name)

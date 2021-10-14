@@ -4,10 +4,10 @@ from textwrap import indent
 from PySide6.QtCore import QObject
 from PySide6.QtCore import Slot
 
-from .externals import TQObject
-from .externals import adapt_argtypes
-from .externals import eval_js
-from .externals import js_eval
+from ._ext import TQObject
+from ._ext import adapt_argtypes
+from ._ext import eval_js
+from ._ext import js_eval
 
 HORIZONTAL = 0
 VERTICAL = 1

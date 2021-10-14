@@ -4,7 +4,8 @@ from PySide6.QtCore import QObject
 from PySide6.QtCore import Slot
 from PySide6.QtQml import QJSValue
 
-from .externals import eval_js
+from ._ext import adapt_argtypes
+from ._ext import eval_js
 
 
 class T:  # TypeHint
@@ -48,10 +49,8 @@ class Anchors:
             return reclines
     
     @Slot(QObject, QObject, QJSValue)
+    @adapt_argtypes
     def weak_anchors(self, this: QObject, that: QObject, anchors: T.Anchors):
-        # noinspection PyUnresolvedReferences
-        anchors = anchors.toVariant()
-        
         reclines = self._normalize_reclines(anchors['reclines'])
         is_center_mode = False
         
@@ -116,9 +115,8 @@ class Anchors:
         this.setProperty('height', h0)
     
     @Slot(QObject, QObject, QJSValue)
+    @adapt_argtypes
     def quick_anchors(self, this: QObject, that: QObject, anchors: T.Anchors):
-        # noinspection PyUnresolvedReferences
-        anchors = anchors.toVariant()
         
         reclines = self._normalize_reclines(anchors['reclines'])
         

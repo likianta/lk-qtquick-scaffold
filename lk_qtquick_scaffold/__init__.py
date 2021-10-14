@@ -9,12 +9,22 @@ from .qmlside import js_eval
 
 try:
     def _setup():
-        from .qmlside import LayoutHelper
         from .qmlside import qlogger
         qlogger.setup()
+        
+        from .qmlside import LayoutHelper
         app.register_pyobj(pyside, 'pyside')
         app.register_pyobj(pyside, 'PySide')
         app.register_pyobj(LayoutHelper(), 'LKLayoutHelper')
+        
+        from .qmlside import resource_manager as rm
+        app.register_pyobj(rm.AssetsResourceManager(), 'RMAssets')
+        app.register_pyobj(rm.ColorResourceManager(), 'RMColor')
+        app.register_pyobj(rm.ControlResourceManager(), 'RMControl')
+        app.register_pyobj(rm.LayoutResourceManager(), 'RMLayout')
+        app.register_pyobj(rm.MotionResourceManager(), 'RMMotion')
+        app.register_pyobj(rm.ShapeResourceManager(), 'RMShape')
+        app.register_pyobj(rm.TextResourceManager(), 'RMText')
     
     
     _setup()

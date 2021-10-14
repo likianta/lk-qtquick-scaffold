@@ -1,7 +1,7 @@
 from PySide6.QtCore import QObject
 from PySide6.QtCore import Slot
 
-from .externals import TQObject
+from ._ext import TQObject
 
 H_LEFT = 1
 H_CENTER = 4
