@@ -29,22 +29,21 @@ class Anchors:
     @staticmethod
     def _normalize_reclines(reclines) -> T.Reclines:
         if isinstance(reclines, str):
-            match reclines:
-                case 'center':
-                    return 0, 0, 0, 0
-                case 'fill':
-                    return 1, 1, 1, 1
-                case _:
-                    def _foo(letter) -> int:
-                        if f'-{letter}' in reclines:
-                            return -1
-                        elif letter in reclines:
-                            return 1
-                        else:
-                            return 0
-                    
-                    # noinspection PyTypeChecker
-                    return tuple(map(_foo, ('j', 'i', 'l', 'k')))
+            if reclines == 'center':
+                return 0, 0, 0, 0
+            elif reclines == 'fill':
+                return 1, 1, 1, 1
+            else:
+                def _foo(letter) -> int:
+                    if f'-{letter}' in reclines:
+                        return -1
+                    elif letter in reclines:
+                        return 1
+                    else:
+                        return 0
+                
+                # noinspection PyTypeChecker
+                return tuple(map(_foo, ('j', 'i', 'l', 'k')))
         else:
             return reclines
     
@@ -121,24 +120,7 @@ class Anchors:
         # noinspection PyUnresolvedReferences
         anchors = anchors.toVariant()
         
-        def _normalize_reclines(reclines) -> T.Reclines:
-            if isinstance(reclines, str):
-                match reclines:
-                    case 'center':
-                        return 0, 0, 0, 0
-                    case 'fill':
-                        return 1, 1, 1, 1
-                    case _:
-                        return (
-                            'j' in reclines,  # j=left
-                            'i' in reclines,  # i=top
-                            'l' in reclines,  # l=right
-                            'k' in reclines,  # k=bottom
-                        )
-            else:
-                return reclines
-        
-        reclines = _normalize_reclines(anchors['reclines'])
+        reclines = self._normalize_reclines(anchors['reclines'])
         
         if all(reclines):
             eval_js('{}.anchors.fill = {}', this, that)

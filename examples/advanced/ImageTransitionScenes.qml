@@ -23,12 +23,11 @@ LCWindow {
             width: parent.width
             height: 160
 
-            p_enableFillRest: true
-            p_fillHeight: true
+            p_fill_height: true
 
             LCRectangle {
                 id: _profile
-                width: parent.r_fillRest * 0.5
+                width: 0.5
                 p_color: 'transparent'
 
                 LCColumn {
@@ -51,7 +50,7 @@ LCWindow {
 
             Loader {
                 id: _miniCard
-                width: parent.r_fillRest * 0.5
+                width: 0.5
                 // sourceComponent: _imgCard
 
                 Component.onCompleted: {
@@ -80,7 +79,7 @@ LCWindow {
 
         LCRectangle {
             id: _imgFrame
-            // width: parent.r_fillRest * 0.5
+            // width: 0.5
             // clip: true
             p_color: '#234471'
 

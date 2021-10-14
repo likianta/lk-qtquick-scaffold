@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "lk-qtquick-scaffold"
-version = "1.0.0a0"
+version = "1.0.0"
 description = "A flexible toolset for improving QML coding experience in PySide6 development."
 authors = ["Likianta <likianta@foxmail.com>"]
 license = "MIT"

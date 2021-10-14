@@ -51,7 +51,7 @@ TQVar = 'QVariant'
 TQVal = _QJSValue
 
 TProperty = _QQmlProperty
-TPropName: TypeAlias = str
+TPropName = str
 TComponent = _QQmlComponent
 
 TSender = tuple[TQObject, TPropName]
