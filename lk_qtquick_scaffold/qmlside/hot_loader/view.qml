@@ -6,15 +6,9 @@ import QtQuick.Window
 //      https://qml.guide/live-reloading-hot-reloading-qml
 
 Window {
-    x: 1500
-    y: 400  // appeared on the desktop left-vcenter.
-    width: _btn.width
-    height: _btn.height
-
     color: '#f2f2f2'
     flags: Qt.WindowStaysOnTopHint
     title: "Hot Reloader"
-    visible: true
 
     property int    p_cnt: -1
     property string p_bg_color: pyside.call('__get_default_bg_color')
@@ -112,6 +106,14 @@ Window {
     // }
 
     Component.onCompleted: {
-        console.log('HotLoader started!')
+        this.width = _btn.width
+        this.height = _btn.height
+        // move window to right-center.
+        const scr_width = Screen.desktopAvailableWidth
+        const scr_height = Screen.desktopAvailableHeight
+        this.x = scr_width - 200 - this.width
+        this.y = scr_height / 2 - this.height / 2
+        this.visible = true
+        console.log(`HotLoader started! (position at [${this.x}, ${this.y}])`)
     }
 }

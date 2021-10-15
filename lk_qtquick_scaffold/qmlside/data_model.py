@@ -1,8 +1,8 @@
-from PySide2.QtGui import Qt
 from PySide6.QtCore import QAbstractListModel
 from PySide6.QtCore import QModelIndex
 from PySide6.QtCore import QObject
 from PySide6.QtCore import Slot
+from PySide6.QtGui import Qt
 
 from ._ext import Any
 from ._ext import TQVal
