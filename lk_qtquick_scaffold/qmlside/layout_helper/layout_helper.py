@@ -12,6 +12,8 @@ class LayoutHelper(QObject, Anchors, ContainerAlignment, ContentAlignment):
     
     # noinspection PyTypeChecker
     @Slot(TQVal, result=list)
+    @Slot(TQVal, int, result=list)
+    @Slot(TQVal, int, int, result=list)
     @adapt_argtypes
     def calc_model_size(self, model: list, char_width=10, line_height=20):
         model = tuple(map(str, model))

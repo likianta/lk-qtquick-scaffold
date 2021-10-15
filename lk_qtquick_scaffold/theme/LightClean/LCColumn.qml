@@ -8,7 +8,7 @@ Column {
 
     property bool p_align_center: false
     property bool p_elastic_layout: true
-    property bool p_fill_width: false
+    property bool p_fill_width: true
 
     Component.onCompleted: {
         if (p_align_center) { LKLayoutHelper.valign_center(root) }
