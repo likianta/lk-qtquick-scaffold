@@ -19,12 +19,14 @@ LCTextField         1.0     LCTextField.qml
 LCTextLink          1.0     LCTextLink.qml
 LCWindow            1.0     LCWindow.qml
 
-LCButtons.LCBaseButton       1.0    LCButtons/LCBaseButton.qml
-LCButtons.LCButton           1.0    LCButtons/LCButton.qml
-LCButtons.LCCheckBox         1.0    LCButtons/LCCheckBox.qml
-LCButtons.LCFlatButton       1.0    LCButtons/LCFlatButton.qml
-LCButtons.LCFlatRadioButton  1.0    LCButtons/LCFlatRadioButton.qml
-LCButtons.LCRadioButton      1.0    LCButtons/LCRadioButton.qml
+LCButtons.LCBaseButton          1.0     LCButtons/LCBaseButton.qml
+LCButtons.LCButton              1.0     LCButtons/LCButton.qml
+LCButtons.LCCheckBox            1.0     LCButtons/LCCheckBox.qml
+LCButtons.LCFlatButton          1.0     LCButtons/LCFlatButton.qml
+LCButtons.LCFlatRadioButton     1.0     LCButtons/LCFlatRadioButton.qml
+LCButtons.LCRadioButton         1.0     LCButtons/LCRadioButton.qml
+
+LCComplex.LCSideBar     1.0     LCComplex/LCSideBar.qml
 
 LCStyle.LCGeometry  1.0     LCStyle/dimension.js
 LCStyle.LCMotion    1.0     LCStyle/motion.js

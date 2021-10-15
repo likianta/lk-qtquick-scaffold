@@ -14,7 +14,11 @@ Some significant features showed below:
 
 # Widgets Demo
 
-![](gallery/widgets_demo/LCButton_20201128_114612.gif)
+![](gallery/widgets_demo/viscous-indicator-anim.gif)
+
+![](gallery/widgets_demo/lcbutton.gif)
+
+TODO
 
 # Theme Gallery
 

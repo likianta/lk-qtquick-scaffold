@@ -12,10 +12,13 @@ try:
         from .qmlside import qlogger
         qlogger.setup()
         
-        from .qmlside import LayoutHelper
         app.register_pyobj(pyside, 'pyside')
         app.register_pyobj(pyside, 'PySide')
+        
+        from .qmlside import LayoutHelper
+        from .qmlside import ModelGenerator
         app.register_pyobj(LayoutHelper(), 'LKLayoutHelper')
+        app.register_pyobj(ModelGenerator(), 'LKModelGenerator')
         
         from .qmlside import resource_manager as rm
         app.register_pyobj(rm.AssetsResourceManager(), 'RMAssets')

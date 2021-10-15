@@ -6,7 +6,7 @@ import QtQuick.Window
 //      https://qml.guide/live-reloading-hot-reloading-qml
 
 Window {
-    x: 1200
+    x: 1500
     y: 400  // appeared on the desktop left-vcenter.
     width: _btn.width
     height: _btn.height

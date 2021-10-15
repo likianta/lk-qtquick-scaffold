@@ -1,8 +1,8 @@
 from PySide6.QtQml import QQmlComponent
 from lk_logger import lk
 
-from ..path_model import qmlside_dir
-from ..typehint import TJsEvaluatorCore
+from ._ext import TJsEvaluatorCore
+from ._ext import path_model
 
 
 class JsEvaluator:
@@ -11,7 +11,7 @@ class JsEvaluator:
     def __init__(self):
         from ..pyside import app
         component = QQmlComponent(
-            app.engine, f'{qmlside_dir}/js_evaluator_controls.qml')
+            app.engine, f'{path_model.qmlside_dir}/js_evaluator_controls.qml')
         qobject = component.create()
         self.core = qobject
         
