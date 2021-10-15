@@ -61,6 +61,7 @@ Item {
     ListView {
         id: listview
         anchors.fill: parent
+        boundsBehavior: Flickable.StopAtBounds
         model: LKModelGenerator.create(
             ['m_icon', 'm_title'], root.p_model
         )
