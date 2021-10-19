@@ -105,16 +105,18 @@ ComboBox {
                     p_text: modelData
                 }
 
-                Image {
+                LC.LCOval {
                     anchors.right: parent.right
                     anchors.rightMargin: 4
                     anchors.verticalCenter: parent.verticalCenter
 //                    x: parent.width + 2
 //                    y: parent.height / 2 - 4
-                    width: 4
-                    height: 4
-                    source: RMAssets.get('checkbox-blank-circle-fill.svg')
+//                    width: 4
+//                    height: 4
+//                    source: RMAssets.get('checkbox-blank-circle-fill.svg')
                     visible: index == root.highlightedIndex
+                    p_color: '#000000'
+                    p_radius: 2
                 }
 
                 LC.LCMouseArea {
