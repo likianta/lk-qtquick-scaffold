@@ -4,7 +4,9 @@ import "../" as LC
 
 ComboBox {
     id: root
+    width: root._pop_item_width + icon.width
     height: root._pop_item_height
+    z: root._opened ? 1 : 0
 
     property int    p_font_size: 11
     property alias  p_model: root.model
@@ -34,7 +36,9 @@ ComboBox {
         border.width: 1
         border.color: '#0984d8'
         color: '#ffffff'
-        height: root._opened ? root._pop_item_height * (root.count + 1) + 12 : root._pop_item_height
+        height: root._opened ?
+            root._pop_item_height * (root.count + 1) + 12 :
+            root._pop_item_height
         radius: root.p_radius
 
         Behavior on height {
@@ -89,8 +93,8 @@ ComboBox {
             spacing: 0
 
             delegate: LC.LCRectangle {
-                width: root._pop_item_width + 12
-//                width: pop.width
+//                width: root._pop_item_width + 12
+                width: pop.width - 12
                 height: root._pop_item_height
                 p_color: _area.p_hovered ? '#EEEEEE' : '#FFFFFF'
 
@@ -139,9 +143,5 @@ ComboBox {
         onOpened: {
             root._opened = true
         }
-    }
-
-    Component.onCompleted: {
-        root.width = Qt.binding(() => root._pop_item_width + icon.width)
     }
 }
