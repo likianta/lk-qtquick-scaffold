@@ -37,6 +37,7 @@ Window {
         anchors.centerIn: parent
         width: 160
         height: 60
+        flat: true
         hoverEnabled: true
         text: "Reload"
 

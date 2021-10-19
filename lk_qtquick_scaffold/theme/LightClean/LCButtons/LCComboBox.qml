@@ -4,35 +4,29 @@ import "../" as LC
 
 ComboBox {
     id: root
-//    width: (4 + root._txt_width + 12) + icon.width
-    height: 24
-//    z: 1
+    height: root._pop_item_height
 
+    property int    p_font_size: 11
     property alias  p_model: root.model
     property int    p_radius: 4
-    property int    p_size: 11 // item font size
 
     property int    _anim_duration: 300 // unit: ms
     property bool   _opened: false
-    property int    _pop_width: 0
-    property int    _pop_height: 0
-    property int    _txt_width: txt._content_width
+    property int    _pop_item_width: 0
+    property int    _pop_item_height: 24
 
     onModelChanged: {
         //  measure popup list width and height
-        var res = LKLayoutHelper.calc_model_size(root.p_model, 10, 24)
-        root._pop_width = res[0]
-        root._pop_height = res[1]
-        console.log(res, root._pop_width, root._pop_height)
+        var res = LKLayoutHelper.calc_model_size(root.p_model, 10, 24) // OPTM
+        root._pop_item_width = res[0]
+//        console.log(res, root._pop_width, root._pop_height)
     }
 
     component ItemText: LC.LCText {
         leftPadding: 4
         p_alignment: 'lcenter'
         p_bold: true
-        p_size: root.p_size
-//        p_text: p_value
-//        required property string p_value
+        p_size: root.p_font_size
     }
 
     background: LC.LCRectangle {
@@ -40,7 +34,7 @@ ComboBox {
         border.width: 1
         border.color: '#0984d8'
         color: '#ffffff'
-        height: root._opened ? root._pop_height : root.height
+        height: root._opened ? root._pop_item_height * (root.count + 1) + 12 : root._pop_item_height
         radius: root.p_radius
 
         Behavior on height {
@@ -54,18 +48,6 @@ ComboBox {
     contentItem: ItemText {
         id: txt
         p_text: root.displayText
-        property alias _content_width: txt.contentWidth
-
-//        Behavior on p_color {
-//            ColorAnimation {
-//                duration: 100
-//                property: 'p_color'
-//            }
-//        }
-
-//        Component.onCompleted: {
-//            console.log(this._content_width)
-//        }
     }
 
     indicator: Image {
@@ -87,27 +69,30 @@ ComboBox {
 
     popup: Popup {
         id: pop
-        y: root.height
+//        y: root.height
+//        y: root._pop_item_height
+        y: root.currentIndex == 0 ?
+            root._pop_item_height : root._pop_item_height + 12
+            //  FIXME: don't know why its value changed.
         width: root.width
-        height: root._pop_height
-        clip: true
+        height: root._pop_item_height * root.count
 
         background: Item {}
         contentItem: ListView {
-            height: contentHeight
-//            height: pop.visible ? contentHeight : 0
+            y: 90
+            height: root._pop_item_height
 
-//            clip: true
             currentIndex: root.highlightedIndex
             model: root.model
             opacity: root._opened ? 1 : 0
             reuseItems: true
-            spacing: 4
+            spacing: 0
 
             delegate: LC.LCRectangle {
-                width: root._pop_width + 12
-                height: _txt.height + 2
-                p_color: _area.containsMouse ? '#EEEEEE' : '#FFFFFF'
+                width: root._pop_item_width + 12
+//                width: pop.width
+                height: root._pop_item_height
+                p_color: _area.p_hovered ? '#EEEEEE' : '#FFFFFF'
 
                 ItemText {
                     id: _txt
@@ -129,10 +114,9 @@ ComboBox {
                     visible: index == root.highlightedIndex
                 }
 
-                MouseArea {
+                LC.LCMouseArea {
                     id: _area
-                    anchors.fill: parent
-                    hoverEnabled: true
+                    p_hover_enabled: true
                     onClicked: {
                         root.currentIndex = index
                         pop.close()
@@ -157,19 +141,7 @@ ComboBox {
         }
     }
 
-    Component {
-        id: txtComp
-
-        LC.LCText {
-            id: txt
-            leftPadding: 4
-            p_alignment: 'lcenter'
-            p_bold: true
-            p_size: root.p_size
-        }
-    }
-
     Component.onCompleted: {
-        root.width = Qt.binding(() => root._pop_width + icon.width)
+        root.width = Qt.binding(() => root._pop_item_width + icon.width)
     }
 }

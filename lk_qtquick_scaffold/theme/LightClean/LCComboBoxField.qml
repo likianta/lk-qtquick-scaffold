@@ -1,6 +1,6 @@
 import QtQuick
 import QtQuick.Controls
-import "LCButtons"
+import "LCButtons" as LCB
 
 LCRectangle {
     id: root
@@ -8,7 +8,7 @@ LCRectangle {
     height: 32
     color: '#eeeeee'
 
-    property alias p_field: txt.text
+    property alias p_title: txt.text
     property int   p_index: 0
     property alias p_model: combox.p_model
 
@@ -19,7 +19,7 @@ LCRectangle {
         anchors.verticalCenter: parent.verticalCenter
     }
 
-    LCComboBox {
+    LCB.LCComboBox {
         id: combox
         anchors.right: parent.right
         anchors.rightMargin: 6
