@@ -27,7 +27,6 @@ ComboBox {
     component ItemText: LC.LCText {
         leftPadding: 4
         p_alignment: 'lcenter'
-        p_bold: true
         p_size: root.p_font_size
     }
 
@@ -37,8 +36,8 @@ ComboBox {
         border.color: '#0984d8'
         color: '#ffffff'
         height: root._opened ?
-            root._pop_item_height * (root.count + 1) + 12 :
-            root._pop_item_height
+            root.height + pop.height + 12 :
+            root.height // +12: add some padding space
         radius: root.p_radius
 
         Behavior on height {
@@ -51,6 +50,7 @@ ComboBox {
 
     contentItem: ItemText {
         id: txt
+        p_bold: true
         p_text: root.displayText
     }
 
@@ -113,7 +113,6 @@ ComboBox {
 //                    y: parent.height / 2 - 4
                     width: 4
                     height: 4
-//                    source: RMAssets.get('record-circle-fill.svg')
                     source: RMAssets.get('checkbox-blank-circle-fill.svg')
                     visible: index == root.highlightedIndex
                 }
@@ -137,11 +136,20 @@ ComboBox {
         }
 
         onClosed: {
-            root._opened = false
+            _timer.start()
         }
 
         onOpened: {
             root._opened = true
+        }
+
+        Timer {
+            id: _timer
+            interval: root._anim_duration
+            running: false
+            onTriggered: {
+                root._opened = false
+            }
         }
     }
 }
