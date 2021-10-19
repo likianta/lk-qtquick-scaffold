@@ -35,47 +35,14 @@ Window {
     Button {
         id: _btn
         anchors.centerIn: parent
-        width: 200
-        height: 100
+        width: 160
+        height: 60
         hoverEnabled: true
         text: "Reload"
 
         background: Rectangle {
             id: _rect
             color: p_bg_color
-            // opacity: 0.5
-            
-            // states: [
-            //     State {
-            //         when: !_btn.hovered
-            //         PropertyChanges {
-            //             target: _rect
-            //             opacity: 0.7
-            //         }
-            //     },
-            //     State {
-            //         when: _btn.hovered  || _btn.pressed  || _btn.released
-            //         PropertyChanges {
-            //             target: _rect
-            //             opacity: 0.5
-            //         }
-            //     }
-            //     // State {
-            //     //     when: _btn.pressed && _btn.hovered
-            //     //     PropertyChanges {
-            //     //         target: _rect
-            //     //         opacity: 0.5
-            //     //     }
-            //     // }
-            // ]
-            
-            // transitions: Transition {
-            //     NumberAnimation {
-            //         duration: 600
-            //         easing.type: Easing.OutQuart
-            //         properties: 'opacity'
-            //     }
-            // }
         }
 
         contentItem: Text {
@@ -109,8 +76,8 @@ Window {
         this.width = _btn.width
         this.height = _btn.height
         // move window to right-center.
-        const scr_width = Screen.desktopAvailableWidth
-        const scr_height = Screen.desktopAvailableHeight
+        const scr_width = Screen.width
+        const scr_height = Screen.height
         this.x = scr_width - 200 - this.width
         this.y = scr_height / 2 - this.height / 2
         this.visible = true
