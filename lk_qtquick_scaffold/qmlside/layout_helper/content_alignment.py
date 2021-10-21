@@ -37,7 +37,7 @@ class ContentAlignment:
             }.items():
                 if alignment.startswith(k):
                     final_h = v
-                    alignment = alignment.removeprefix(k)
+                    alignment = alignment.replace(k, '', 1)
                     break
             
             alignment = alignment.lstrip('-')

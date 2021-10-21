@@ -1,5 +1,6 @@
 from PySide6.QtCore import QObject
 from PySide6.QtCore import Slot
+from lk_lambdex import lambdex
 
 from .register import PyRegister
 from ..typehint import *
@@ -33,6 +34,20 @@ class PySide(QObject, PyRegister):
                 return func(*args)
             else:  # this is a feature.
                 return func(args)
+            
+    @Slot(str, result=TQVar)
+    @Slot(str, TQVal, result=TQVar)
+    def eval(self, code, kwargs: dict = None):
+        if kwargs is None:
+            return lambdex('', code)()
+        else:
+            return lambdex(', '.join(kwargs.keys()), code)(*kwargs.values())
+
+    # def _eval(self, code, kwargs: dict):
+    #     if kwargs is None:
+    #         return lambdex('', code)()
+    #     else:
+    #         return lambdex(', '.join(kwargs.keys()), code)(*kwargs.values())
 
 
 pyside = PySide()

@@ -11,7 +11,7 @@ from ._ext import eval_js
 class T:  # TypeHint
     
     class Anchors(TypedDict):
-        reclines: Union[tuple[int, int, int, int], str]
+        reclines: Union[Tuple[int, int, int, int], str]
         #   examples:
         #       (1, 0, 1, 1): left(on), top(off), right(on), bottom(on).
         #       'ijkl': i=top, k=bottom, j=left, l=right.
@@ -20,9 +20,9 @@ class T:  # TypeHint
         #       (1, 1, 1, 1): fill parent.
         #       'center': center in parent.
         #       'fill': fill parent.
-        margins: Union[int, tuple[int, int, int, int]]
+        margins: Union[int, Tuple[int, int, int, int]]
     
-    Reclines = tuple[int, int, int, int]
+    Reclines = Tuple[int, int, int, int]
 
 
 class Anchors:

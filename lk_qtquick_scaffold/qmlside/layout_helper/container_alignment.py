@@ -4,10 +4,7 @@ from textwrap import indent
 from PySide6.QtCore import QObject
 from PySide6.QtCore import Slot
 
-from ._ext import TQObject
-from ._ext import adapt_argtypes
-from ._ext import eval_js
-from ._ext import js_eval
+from ._ext import *
 
 HORIZONTAL = 0
 VERTICAL = 1
@@ -143,8 +140,8 @@ class ContainerAlignment:
             self, parent: TQObject, orientation: int, constraint: bool
     ):
         def _adjust(prop_name, unallocated_space):
-            dynamic_sized_items_a = []  # type: list[tuple[QObject, float]]
-            dynamic_sized_items_b = []  # type: list[tuple[QObject, float]]
+            dynamic_sized_items_a = []  # type: List[Tuple[QObject, float]]
+            dynamic_sized_items_b = []  # type: List[Tuple[QObject, float]]
             
             for i, item in enumerate(children):
                 size = item.property(prop_name)

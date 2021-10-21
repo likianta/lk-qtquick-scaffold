@@ -3,6 +3,8 @@ from functools import wraps
 from PySide6.QtCore import QObject
 from PySide6.QtQml import QJSValue
 
+from ._ext import List
+
 
 def adapt_argtypes(func):
     def _adapt(obj):
@@ -24,7 +26,7 @@ def adapt_argtypes(func):
     return _wrap
 
 
-def _get_children(self: QObject) -> list[QObject]:
+def _get_children(self: QObject) -> List[QObject]:
     """
     Notice:
         Do not use `parent.children()` directly, because there may be one

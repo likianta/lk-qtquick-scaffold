@@ -20,7 +20,7 @@ _TFakeModule = _lambdex('', """
 
 if __name__ == '__main__':
     class _TQObject(_QObject, _QQuickItem):
-        def get_children(self) -> list[_QObject]: pass
+        def get_children(self) -> List[_QObject]: pass
 else:
     _TQObject = _TFakeModule
 
@@ -38,14 +38,14 @@ _TRegisteredName = str  # usually this name is same with `TPyFuncName` or
 #   `TPyMethName`, but you can define it with a custom name (something likes
 #   alias).
 
-TPyClassHolder = dict[
-    TPyClassName, dict[
-        TPyMethName, tuple[_TRegisteredName, TNArgs]
+TPyClassHolder = Dict[
+    TPyClassName, Dict[
+        TPyMethName, Tuple[_TRegisteredName, TNArgs]
     ]
 ]
 
 _TPyFunction = Callable
-TPyFuncHolder = dict[_TRegisteredName, tuple[_TPyFunction, TNArgs]]
+TPyFuncHolder = Dict[_TRegisteredName, Tuple[_TPyFunction, TNArgs]]
 
 TQVar = 'QVariant'
 TQVal = _QJSValue
@@ -55,11 +55,11 @@ TProperty = _QQmlProperty
 TPropName = str
 TComponent = _QQmlComponent
 
-TSender = tuple[TQObject, TPropName]
-TReceptor = tuple[TQObject, TPropName]
+TSender = Tuple[TQObject, TPropName]
+TReceptor = Tuple[TQObject, TPropName]
 
 TQmlFile = Union[_PathLike, str]
-TComponentCache = dict[TQmlFile, TComponent]
+TComponentCache = Dict[TQmlFile, TComponent]
 
 
 class TJsEvaluatorCore:
@@ -78,7 +78,7 @@ class TJsEvaluatorCore:
     def create_object(component: TComponent, container: TQObject) -> TQObject: pass
     
     @staticmethod
-    def eval_js(code: str, args: list[TQObject]): pass
+    def eval_js(code: str, args: List[TQObject]): pass
     
     @staticmethod
     def test() -> str: pass

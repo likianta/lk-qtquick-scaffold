@@ -4,9 +4,7 @@ from PySide6.QtCore import QObject
 from PySide6.QtCore import Slot
 from PySide6.QtGui import Qt
 
-from ._ext import Any
-from ._ext import TQVal
-from ._ext import TQVar
+from ._ext import *
 from .type_adapter import adapt_argtypes
 
 
@@ -17,10 +15,10 @@ class Model(QAbstractListModel):
     https://stackoverflow.com/questions/54687953/declaring-a-qabstractlistmodel
     -as-a-property-in-pyside2
     """
-    role_names: dict[int, bytes]
-    items: list[dict[bytes, Any]]
+    role_names: Dict[int, bytes]
+    items: List[Dict[bytes, Any]]
     
-    def __init__(self, role_names: list[str]):
+    def __init__(self, role_names: List[str]):
         super().__init__()
         self.role_names = {
             i: n.encode(encoding='utf-8')
