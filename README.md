@@ -43,22 +43,22 @@ Row {
     spacing: 4
     
     Rectangle {
-        width: 0.5 // 50% of parent.width
+        width: 0.5 // 50% of parent.width (respect parent.spacing)
         height: parent.height
     }
     
     Rectangle {
-        width: 0.2 // 20% of parent.width
+        width: 0.2 // 20% of parent.width (respect parent.spacing)
         height: parent.height
     }
     
     Rectangle {
-        width: 0 // fill the rest space (30% of parent.width)
+        width: 0 // fill the rest (30% of parent.width) (respect parent.spacing)
         height: parent.height
     }
     
     Component.onCompleted: {
-        LKLayoutHelper.vadjust_children_size(this)
+        LKLayoutHelper.hadjust_children_size(this)
     }
 }
 ```
