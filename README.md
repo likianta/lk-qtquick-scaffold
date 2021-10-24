@@ -3,6 +3,14 @@
 Using Python and Qt QML to build desktop applications from a series of
 predefined tools.
 
+# How to Install
+
+```
+pip install lk-qtquick-scaffold
+```
+
+*Python 3.8 is the minimum required version.*
+
 # Highlights
 
 - A layout engine to extend QML layouts.
