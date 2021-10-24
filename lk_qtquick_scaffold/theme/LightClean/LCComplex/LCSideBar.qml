@@ -138,7 +138,7 @@ Item {
         VirtualPoint {
             id: _virtual_point_m
 
-            p_duration: mini_indicator.p_forward ? 200 : 100
+            p_duration: mini_indicator.p_forward ? 120 : 60
             p_curve: mini_indicator.p_forward ? 0 : Easing.OutQuart
 
             Component.onCompleted: {
@@ -150,7 +150,7 @@ Item {
         VirtualPoint {
             id: _virtual_point_n
 
-            p_duration: mini_indicator.p_forward ? 100 : 200
+            p_duration: mini_indicator.p_forward ? 60 : 120
             p_curve: mini_indicator.p_forward ? Easing.OutQuart : 0
 
             Component.onCompleted: {
