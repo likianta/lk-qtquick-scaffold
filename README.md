@@ -188,6 +188,12 @@ moves when selection changed.
 
 **More screenshots**
 
+![](gallery/widgets_demo/swipe-view.gif)
+
+![](gallery/widgets_demo/breathing-circle-avatar.gif)
+
+![](gallery/widgets_demo/password-eye-open.gif "https://uimovement.com/media/resource_image/image_5213.gif.mp4")
+
 *TODO:AddMoreWidgetsDemo*
 
 # Working in Progress
