@@ -7,31 +7,30 @@ from .qmlside import eval_js
 from .qmlside import hot_loader
 from .qmlside import js_eval
 
-try:
-    def _setup():
-        from .qmlside import qlogger
-        qlogger.setup()
-        
-        app.register_pyobj(pyside, 'pyside')
-        app.register_pyobj(pyside, 'PySide')
-        
-        from .qmlside import LayoutHelper
-        from .qmlside import ModelGenerator
-        app.register_pyobj(LayoutHelper(), 'LKLayoutHelper')
-        app.register_pyobj(ModelGenerator(), 'LKModelGenerator')
-        
-        from .qmlside import resource_manager as rm
-        app.register_pyobj(rm.AssetsResourceManager(), 'RMAssets')
-        app.register_pyobj(rm.ColorResourceManager(), 'RMColor')
-        app.register_pyobj(rm.ControlResourceManager(), 'RMControl')
-        app.register_pyobj(rm.LayoutResourceManager(), 'RMLayout')
-        app.register_pyobj(rm.MotionResourceManager(), 'RMMotion')
-        app.register_pyobj(rm.ShapeResourceManager(), 'RMShape')
-        app.register_pyobj(rm.TextResourceManager(), 'RMText')
-    
-    
-    _setup()
-finally:
-    del _setup
+__version__ = '1.1.1'
 
-__version__ = '1.1.0'
+
+def __setup__():
+    from .qmlside import qlogger
+    qlogger.setup()
+    
+    app.register_pyobj(pyside, 'pyside')
+    app.register_pyobj(pyside, 'PySide')
+    
+    from .qmlside import LayoutHelper
+    from .qmlside import ModelGenerator
+    app.register_pyobj(LayoutHelper(), 'LKLayoutHelper')
+    app.register_pyobj(ModelGenerator(), 'LKModelGenerator')
+    
+    from .qmlside import resource_manager as rm
+    app.register_pyobj(rm.AssetsResourceManager(), 'RMAssets')
+    app.register_pyobj(rm.ColorResourceManager(), 'RMColor')
+    app.register_pyobj(rm.ControlResourceManager(), 'RMControl')
+    app.register_pyobj(rm.LayoutResourceManager(), 'RMLayout')
+    app.register_pyobj(rm.MotionResourceManager(), 'RMMotion')
+    app.register_pyobj(rm.ShapeResourceManager(), 'RMShape')
+    app.register_pyobj(rm.TextResourceManager(), 'RMText')
+
+
+__setup__()
+del __setup__

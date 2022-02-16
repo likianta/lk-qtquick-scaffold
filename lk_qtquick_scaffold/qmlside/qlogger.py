@@ -110,6 +110,9 @@ def _use_relpath(path: str) -> str:
         /myprj/ui/view.qml'
     OUT: 'ui/view.qml' (relative to current working dir)
     """
+    # from lk_logger import lk
+    # lk.logt('[D1031]', path)
+
     if path.startswith('file:///'):
         path = abspath(path[8:])
         #   'file:///c:/program files/programs/python/Python39/lib/site
@@ -123,7 +126,13 @@ def _use_relpath(path: str) -> str:
         #   launch_dir = 'c:/program files/workspace/myprj'
         #   -> 'ui/view.qml' (or maybe 'ui\\view.qml')
         return path.replace('\\', '/')
-        # # return path
+
+    elif path.startswith('file://'):  # macos/linux
+        path = abspath('/' + path[7].upper() + path[8:])
+        #   'file://users/...' -> '/Users/...'
+        if path.split('/', 2)[1] == _dir.split('/', 2)[1]:
+            path = relpath(path, _dir)
+        return path
     
     elif path[1:].startswith(':%5C'):
         return path.replace('%5C', '/')

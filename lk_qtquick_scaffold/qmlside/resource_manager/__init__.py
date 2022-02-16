@@ -2,7 +2,7 @@
 
 # 资源管理器
 
-创建跨主题的, 通用的资源管理. 在 QML 中通过 `RM<ManagerName>.get(<name>)` 获取.
+创建跨主题的, 通用的资源管理. 在 QML 中通过 `R<ManagerName>.get(<name>)` 获取.
 
 # 特性
 
@@ -16,9 +16,9 @@
 import QtQuick
 
 Rectangle {
-    width: RMShape.get('width-m')
-    height: RMShape.get('height-m')
-    color: RMColor.get('theme-accent')
+    width: RShape.get('width-m')
+    height: RShape.get('height-m')
+    color: RColor.get('theme-accent')
 }
 ```
 
