@@ -110,8 +110,7 @@ def _use_relpath(path: str) -> str:
         /myprj/ui/view.qml'
     OUT: 'ui/view.qml' (relative to current working dir)
     """
-    # from lk_logger import lk
-    # lk.logt('[D1031]', path)
+    # print(':v', path)
 
     if path.startswith('file:///'):
         path = abspath(path[8:])

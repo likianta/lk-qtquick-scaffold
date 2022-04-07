@@ -51,13 +51,10 @@ class HotLoader:
             return
         
         # 3
-        from lk_logger import lk
-        lk.logt(
-            '[W2413]',
+        print(
             'The target qml locates in a different driver with `declare_pyside'
             '.qmlside.LKLogger.HotLoader`, we will make a copy of "HotLoader'
-            '.qml" in target directory:\n\t{}'.format(new_bootloader),
-            h='grand_parent'
+            '.qml" in target directory:\n\t{}'.format(new_bootloader), ':v3p2'
         )
         
         new_bootloader_dir = xpath.dirname(new_bootloader)

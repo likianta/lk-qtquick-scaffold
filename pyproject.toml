@@ -2,6 +2,7 @@
 name = "lk-qtquick-scaffold"
 version = "1.1.1"
 description = "A flexible toolset for improving QML coding experience in PySide6 development."
+readme = "README.md"
 authors = ["Likianta <likianta@foxmail.com>"]
 license = "MIT"
 

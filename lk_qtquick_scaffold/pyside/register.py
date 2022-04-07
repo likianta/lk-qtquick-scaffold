@@ -2,8 +2,6 @@ from collections import defaultdict
 from functools import wraps
 from inspect import signature
 
-from lk_logger import lk
-
 from ..typehint import *
 
 
@@ -91,7 +89,7 @@ class PyRegister:
                 is always 'function'.
         '''
         method_name = method.__name__
-        lk.logt('[D2601]', class_name, method_name)
+        print(':v', class_name, method_name)
         if self.strict_mode and \
                 method_name in self._pyclass_holder[class_name]:
             raise Exception('Method already registered', method_name)
