@@ -4,7 +4,7 @@ from textwrap import indent
 from PySide6.QtCore import QObject
 from PySide6.QtCore import Slot
 
-from ._ext import *
+from .__ext__ import *
 
 HORIZONTAL = 0
 VERTICAL = 1
@@ -15,21 +15,96 @@ class ContainerAlignment:
     @Slot(QObject)
     @adapt_argtypes
     def fill_width(self, parent: TQObject):
-        self._fill_size(parent, HORIZONTAL)
+        self._fill_size(parent, orientation=HORIZONTAL)
     
     @Slot(QObject)
     @adapt_argtypes
     def fill_height(self, parent: TQObject):
-        self._fill_size(parent, VERTICAL)
+        self._fill_size(parent, orientation=VERTICAL)
     
     def _fill_size(self, parent: TQObject, orientation: int):
-        paddings = self._get_paddings(parent)
-        if orientation == HORIZONTAL:
-            prop_name = 'width'
-            padding = paddings[0] + paddings[2]
-        else:
-            prop_name = 'height'
-            padding = paddings[1] + paddings[3]
+        
+        def _get_total_spared_size(item, orientation):
+            if orientation == HORIZONTAL:
+                return (
+                    item.property('width')
+                    - item.property('leftPadding')
+                    - item.property('rightPadding')
+                    - item.property('spacing') * (len(item.get_children()) - 1)
+                )
+            else:
+                return (
+                        item.property('height')
+                        - item.property('topPadding')
+                        - item.property('bottomPadding')
+                        - item.property('spacing') * (len(item.get_children()) - 1)
+                )
+                
+        prop_name = 'width' if orientation == HORIZONTAL else 'height'
+        total_spared_size = _get_total_spared_size(parent, orientation)
+        unclaimed_size = total_spared_size
+        item_sizes = {}  # dict[int index, float size]
+        size_undefined_items = []  # list[index]
+
+        for idx, item in enumerate(parent.get_children()):
+            size = item.property(prop_name)
+            if size >= 1:
+                item_sizes[idx] = size
+                unclaimed_size -= size
+            elif 0 < size < 1:
+                ratio = size
+                item_sizes[idx] = size = total_spared_size * ratio
+                unclaimed_size -= size
+            else:
+                size_undefined_items.append(idx)
+                
+        if size_undefined_items:
+            if unclaimed_size > 0:
+                each_size = unclaimed_size / len(size_undefined_items)
+            else:
+                each_size = 0
+            for idx in size_undefined_items:
+                item_sizes[idx] = each_size
+        
+        for idx, item in enumerate(parent.get_children()):
+            item.setProperty(prop_name, item_sizes[idx])
+        
+        # create connections
+        # connections are divided into:
+        #   1. total-spared-size concerned: parent size, padding, spacing
+        #      changed events.
+        #   2. unclaimed-size concerned:
+        
+        
+        spacing = parent.property('spacing')
+        spared_space = parent.property(prop_name) \
+                       - padding \
+                       - spacing * (len(parent.get_children()) - 1)
+        size_undefined_items = []  # list[index]
+        
+        for i, item in enumerate(parent.get_children()):
+            size = item.property(prop_name)
+            if size >= 1:
+                continue
+            elif 0 < size < 1:
+                ratio = size
+                # FIXME: use signal-slot prototypes.
+                js_eval.eval_js_2('''
+                    {{item}}.{prop} = Qt.binding(() => {{{{
+                        const spared_space = {{root}}.{prop}
+                            - {{root}}.{padding_a}
+                            - {{root}}.{padding_b}
+                            - {{root}}.{spacing} * ({{root}}.children.length - 1)
+                        return spared_space * {ratio}
+                    }}}})
+                '''.format(
+                    prop=prop_name, padding_a=padding_a, padding_b=padding_b,
+                    spacing='spacing', ratio=ratio
+                ), {
+                    'item': item, 'root': parent
+                })
+            else:
+                size_undefined_items.append(i)
         
         for item in parent.get_children():
             size = item.property(prop_name)
@@ -42,12 +117,13 @@ class ContainerAlignment:
             else:
                 raise ValueError(size)
             
-            js_eval.quick_bind(
-                item, prop_name,
-                parent, '{} * {} - {}'.format(
-                    prop_name, ratio, padding
-                )
-            )
+            js_eval.eval_js_2('''
+                {{item}}.{prop} = Qt.binding(() => {
+                    return {{parent}}.{prop} * {ratio} - {padding}
+                })
+            '''.format(
+                prop=prop_name, ratio=ratio, padding=padding
+            ), {'item': item, 'parent': parent})
     
     # --------------------------------------------------------------------------
     
@@ -224,11 +300,10 @@ class ContainerAlignment:
     
     @staticmethod
     def _get_paddings(qobj: TQObject):
-        if p := qobj.property('padding'):
-            return p, p, p, p
-        else:
-            padding_l = qobj.property('leftPadding')
-            padding_t = qobj.property('topPadding')
-            padding_r = qobj.property('rightPadding')
-            padding_b = qobj.property('bottomPadding')
-            return padding_l, padding_t, padding_r, padding_b
+        # return: tuple[left, top, right, bottom]
+        return (
+            qobj.property('leftPadding'),
+            qobj.property('topPadding'),
+            qobj.property('rightPadding'),
+            qobj.property('bottomPadding'),
+        )

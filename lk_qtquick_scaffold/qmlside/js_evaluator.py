@@ -1,8 +1,8 @@
 from PySide6.QtQml import QQmlComponent
 from lk_logger import lk
 
-from ._ext import TJsEvaluatorCore
-from ._ext import path_model
+from .__ext__ import TJsEvaluatorCore
+from .__ext__ import path_model
 
 
 class JsEvaluator:
@@ -39,7 +39,18 @@ class JsEvaluator:
             code.format(*(f'args[{i}]' for i in range(len(args)))),
             list(args)
         )
-
+    
+    def eval_js_2(self, code: str, kwargs: dict = None):
+        args = list(kwargs.values())
+        delegated_args = {
+            k: f'args[{i}]'
+            for i, k in enumerate((kwargs or {}).keys())
+        }
+        code = code.format(**delegated_args)
+        # if '\n' in code:
+        #     code = dedent(code)
+        return self.core.eval_js(code, args)
+        
 
 js_eval = JsEvaluator()
-eval_js = js_eval.eval_js
+eval_js = js_eval.eval_js_2  # TODO
