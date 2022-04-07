@@ -3,13 +3,17 @@ from functools import wraps
 from PySide6.QtCore import QObject
 from PySide6.QtQml import QJSValue
 
-from ._ext import List
+from .__ext__ import List
+from .js_evaluator import eval_js
 
 
 def adapt_argtypes(func):
     def _adapt(obj):
         if isinstance(obj, QObject) and not hasattr(obj, 'get_children'):
             setattr(obj, 'get_children', lambda: _get_children(obj))
+            setattr(obj, 'get_child', lambda idx: eval_js('''
+                return {obj}.children[{i}]
+            ''', {'obj': obj, 'i': idx}))
             return obj
         elif isinstance(obj, QJSValue):
             return obj.toVariant()

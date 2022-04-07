@@ -21,6 +21,7 @@ _TFakeModule = _lambdex('', """
 if __name__ == '__main__':
     class _TQObject(_QObject, _QQuickItem):
         def get_children(self) -> List[_QObject]: pass
+        def get_child(self, idx: int) -> _QObject: pass
 else:
     _TQObject = _TFakeModule
 

@@ -1,8 +1,8 @@
 from PySide6.QtCore import QObject
 from PySide6.QtCore import Slot
 
-from ._ext import TQVal
-from ._ext import adapt_argtypes
+from .__ext__ import TQVal
+from .__ext__ import adapt_argtypes
 from .anchors import Anchors
 from .container_alignment import ContainerAlignment
 from .content_alignment import ContentAlignment
