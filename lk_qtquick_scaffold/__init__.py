@@ -2,6 +2,8 @@ from .pyside import Application
 from .pyside import app
 from .pyside import pyside
 from .pyside import reg
+from .pyside import signal
+from .pyside import slot
 from .qmlside import adapt_argtypes
 from .qmlside import eval_js
 from .qmlside import hot_loader
