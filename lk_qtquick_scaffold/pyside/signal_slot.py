@@ -3,18 +3,21 @@ fix typehint of Signal and Slot.
 """
 from typing import Union
 
+from PySide6.QtCore import QObject
 from PySide6.QtCore import Signal
 from PySide6.QtCore import Slot
 from PySide6.QtQml import QJSValue
 
 
 def slot(*argtypes: type, result: Union[str, type, None] = None):
-    if result is not None and result is not str and type(result) is not str:
+    if result not in (None, str) and type(result) is not str:
         result = 'QVariant'
     
     new_argtypes = []
     for t in argtypes:
-        if t not in (bool, float, int, str):
+        if t is object:
+            t = QObject
+        elif t not in (bool, bytes, float, int, str, QObject):
             t = QJSValue
         new_argtypes.append(t)
     argtypes = tuple(new_argtypes)
