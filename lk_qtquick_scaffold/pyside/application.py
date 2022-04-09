@@ -61,6 +61,8 @@ class _Application(QApplication):
         
         self._fine_tune()
         self._register_paths(kwargs.get('theme_dir', theme_dir))
+        
+        self.on_exit = super().aboutToQuit  # noqa
     
     def set_app_name(self, name: str):
         # just made a consistent snake-case function alias for external caller,
