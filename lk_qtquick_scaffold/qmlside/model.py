@@ -2,6 +2,8 @@ from PySide6.QtCore import QAbstractListModel
 from PySide6.QtCore import QModelIndex
 from PySide6.QtGui import Qt
 
+from ..pyside import slot
+
 
 class T:  # 'TypeHint'
     from typing import Any, Dict, List
@@ -34,8 +36,15 @@ class Model(QAbstractListModel):
         }
         self._items = []
     
+    def __len__(self):
+        return len(self._items)
+    
+    def __getitem__(self, index: int):
+        return {k.decode(encoding='utf-8'): v
+                for k, v in self._items[index].items()}
+    
     # -------------------------------------------------------------------------
-    # high-level api
+    # pyside api
     
     def append(self, item: T.Item):
         self.beginInsertRows(
@@ -72,6 +81,13 @@ class Model(QAbstractListModel):
                               for k, v in item.items()})
         self._items = self._items[:index] + temp_list + self._items[index:]
         self.endInsertRows()
+    
+    def update(self, index: int, item: dict) -> dict:
+        self._items[index].update({
+            k.encode(encoding='utf-8'): v for k, v in item.items()
+        })
+        self.dataChanged.emit(index, index)  # noqa
+        return self[index]
     
     def pop(self):
         self.beginRemoveRows(
@@ -110,6 +126,17 @@ class Model(QAbstractListModel):
         self._items.clear()
         self.endRemoveRows()
     
+    # -------------------------------------------------------------------------
+    # qml side api
+    
+    @slot(int, result=dict)
+    def qget(self, index: int):
+        return self[index]
+    
+    @slot(int, dict, result=dict)
+    def qupdate(self, index: int, item: dict) -> dict:
+        return self.update(index, item)
+        
     # -------------------------------------------------------------------------
     # overrides
     
