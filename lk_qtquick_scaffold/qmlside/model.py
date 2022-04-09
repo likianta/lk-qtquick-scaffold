@@ -1,20 +1,18 @@
 from PySide6.QtCore import QAbstractListModel
 from PySide6.QtCore import QModelIndex
-from PySide6.QtGui import Qt
 
 from ..pyside import slot
 
 
 class T:  # 'TypeHint'
-    from typing import Any, Dict, List
+    from typing import Any, Dict, Iterable, List
     
-    Item = dict
-    Items = List[dict]
-    XItems = List[Dict[bytes, Any]]
+    Item = Dict[str, Any]
+    Items = List[Item]
     
-    RoleName = str
-    RoleNames = List[str]
-    XRoleNames = Dict[int, bytes]  # the bytes is converted from RoleName.
+    RoleNames = Iterable[str]
+    Role2Name = Dict[int, str]
+    Name2Role = Dict[str, int]
 
 
 class Model(QAbstractListModel):
@@ -25,23 +23,32 @@ class Model(QAbstractListModel):
         https://stackoverflow.com/questions/54687953/declaring-a
             -qabstractlistmodel-as-a-property-in-pyside2
     """
-    _role_names: T.XRoleNames
-    _items: T.XItems
+    _role_2_name: T.Role2Name
+    _name_2_role: T.Name2Role
+    _items: T.Items
     
     def __init__(self, role_names: T.RoleNames):
         super().__init__()
-        self._role_names = {
-            i: n.encode(encoding='utf-8')
-            for i, n in enumerate(role_names, Qt.UserRole + 1)  # noqa
-        }
+        self._name_2_role = {x: i for i, x in enumerate(role_names)}
+        self._role_2_name = {v: k for k, v in self._name_2_role.items()}
         self._items = []
+    
+    @property
+    def role_names(self):
+        return tuple(self._name_2_role.keys())
+    
+    @property
+    def items(self) -> T.Items:
+        return self._items
     
     def __len__(self):
         return len(self._items)
     
-    def __getitem__(self, index: int):
-        return {k.decode(encoding='utf-8'): v
-                for k, v in self._items[index].items()}
+    def __bool__(self):
+        return bool(self._items)
+    
+    def __getitem__(self, index: int) -> dict:
+        return self._items[index]
     
     # -------------------------------------------------------------------------
     # pyside api
@@ -50,51 +57,29 @@ class Model(QAbstractListModel):
         self.beginInsertRows(
             QModelIndex(), self.rowCount(), self.rowCount()
         )
-        self._items.append({k.encode(encoding='utf-8'): v
-                            for k, v in item.items()})
+        self._items.append(item)
         self.endInsertRows()
     
     def append_many(self, items: T.Items):
         self.beginInsertRows(
             QModelIndex(), self.rowCount(), self.rowCount() + len(items) - 1
         )
-        for item in items:
-            self._items.append({k.encode(encoding='utf-8'): v
-                                for k, v in item.items()})
+        self._items.extend(items)
         self.endInsertRows()
     
     def insert(self, index: int, item: T.Item):
         self.beginInsertRows(
             QModelIndex(), index, index
         )
-        self._items.insert(index, {k.encode(encoding='utf-8'): v
-                                   for k, v in item.items()})
+        self._items.insert(index, item)
         self.endInsertRows()
     
     def insert_many(self, index: int, items: T.Items):
         self.beginInsertRows(
             QModelIndex(), index, index + len(items) - 1
         )
-        temp_list = []
-        for item in items:
-            temp_list.append({k.encode(encoding='utf-8'): v
-                              for k, v in item.items()})
-        self._items = self._items[:index] + temp_list + self._items[index:]
+        self._items[index:index] = items
         self.endInsertRows()
-    
-    def update(self, index: int, item: dict) -> dict:
-        self._items[index].update({
-            k.encode(encoding='utf-8'): v for k, v in item.items()
-        })
-        # emit signal of `self.dataChanged` to notify qml side that some item
-        # has been changed.
-        # `dataChanged.emit` accepts two arguments:
-        #   dataChanged.emit(QModelIndex start, QModelIndex end)
-        # how to create QModelIndex instance: use `self.createIndex(row, col)`.
-        # ref: https://blog.csdn.net/LaoYuanPython/article/details/102011031
-        qindex = self.createIndex(index, 0)
-        self.dataChanged.emit(qindex, qindex)  # noqa
-        return self[index]
     
     def pop(self):
         self.beginRemoveRows(
@@ -133,6 +118,37 @@ class Model(QAbstractListModel):
         self._items.clear()
         self.endRemoveRows()
     
+    def get(self, index: int) -> T.Item:
+        return self._items[index]
+    
+    def get_many(self, start: int, end: int) -> T.Items:
+        return self._items[start:end]
+    
+    def update(self, index: int, item: dict) -> T.Item:
+        self._items[index].update(item)
+        # emit signal of `self.dataChanged` to notify qml side that some item
+        # has been changed.
+        # `dataChanged.emit` accepts two arguments:
+        #   dataChanged.emit(QModelIndex start, QModelIndex end)
+        # how to create QModelIndex instance: use `self.createIndex(row, col)`.
+        # ref: https://blog.csdn.net/LaoYuanPython/article/details/102011031
+        qindex = self.createIndex(index, 0)
+        self.dataChanged.emit(  # noqa
+            qindex, qindex,
+            [self._name_2_role[x] for x in item.keys()]
+        )
+        return self[index]
+    
+    def update_many(self, start: int, end: int, items: T.Items) -> T.Items:
+        self._items[start:end] = items
+        qindex_start = self.createIndex(start, 0)
+        qindex_end = self.createIndex(end, 0)
+        self.dataChanged.emit(qindex_start, qindex_end)  # noqa
+        return self.get_many(start, end)
+    
+    set = update
+    set_many = update_many
+    
     # -------------------------------------------------------------------------
     # qml side api
     
@@ -140,8 +156,12 @@ class Model(QAbstractListModel):
     def qget(self, index: int):
         return self[index]
     
+    # @slot(int, dict, result=dict)
+    # def qset(self, index: int, item: dict):
+    #     return self.set(index, item)
+    
     @slot(int, dict, result=dict)
-    def qupdate(self, index: int, item: dict) -> dict:
+    def qupdate(self, index: int, item: dict):
         return self.update(index, item)
     
     # -------------------------------------------------------------------------
@@ -149,7 +169,7 @@ class Model(QAbstractListModel):
     
     # noinspection PyMethodOverriding
     def data(self, index, role: int):
-        name = self._role_names[role]
+        name = self._role_2_name[role]
         return self._items[index.row()].get(name, '')
     
     # noinspection PyMethodOverriding,PyTypeChecker,PyUnresolvedReferences
@@ -161,6 +181,6 @@ class Model(QAbstractListModel):
     def rowCount(self, parent=QModelIndex()):
         return len(self._items)
     
-    def roleNames(self):
-        # lk.logt('[D5645]', self.role_names)
-        return self._role_names
+    def roleNames(self) -> T.Dict[int, bytes]:
+        # return self._role_2_name
+        return {k: v.encode('utf-8') for k, v in self._role_2_name.items()}
