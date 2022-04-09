@@ -86,7 +86,14 @@ class Model(QAbstractListModel):
         self._items[index].update({
             k.encode(encoding='utf-8'): v for k, v in item.items()
         })
-        self.dataChanged.emit(index, index)  # noqa
+        # emit signal of `self.dataChanged` to notify qml side that some item
+        # has been changed.
+        # `dataChanged.emit` accepts two arguments:
+        #   dataChanged.emit(QModelIndex start, QModelIndex end)
+        # how to create QModelIndex instance: use `self.createIndex(row, col)`.
+        # ref: https://blog.csdn.net/LaoYuanPython/article/details/102011031
+        qindex = self.createIndex(index, 0)
+        self.dataChanged.emit(qindex, qindex)  # noqa
         return self[index]
     
     def pop(self):
@@ -136,7 +143,7 @@ class Model(QAbstractListModel):
     @slot(int, dict, result=dict)
     def qupdate(self, index: int, item: dict) -> dict:
         return self.update(index, item)
-        
+    
     # -------------------------------------------------------------------------
     # overrides
     
