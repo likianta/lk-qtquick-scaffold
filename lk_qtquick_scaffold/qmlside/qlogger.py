@@ -5,6 +5,7 @@ from os.path import relpath
 from PySide6.QtCore import QtCriticalMsg
 from PySide6.QtCore import QtWarningMsg
 from PySide6.QtCore import qInstallMessageHandler
+from lk_logger.general import std_print as print  # FIXME  # noqa
 
 
 def setup():

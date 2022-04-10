@@ -140,9 +140,11 @@ class Model(QAbstractListModel):
         return self[index]
     
     def update_many(self, start: int, end: int, items: T.Items) -> T.Items:
+        assert len(items) == end - start >= 0
+        if end == start: return []
         self._items[start:end] = items
         qindex_start = self.createIndex(start, 0)
-        qindex_end = self.createIndex(end, 0)
+        qindex_end = self.createIndex(end - 1, 0)
         self.dataChanged.emit(qindex_start, qindex_end)  # noqa
         return self.get_many(start, end)
     
@@ -151,6 +153,10 @@ class Model(QAbstractListModel):
     
     # -------------------------------------------------------------------------
     # qml side api
+    
+    @slot(dict)
+    def qappend(self, item: dict):
+        self.append(item)
     
     @slot(int, result=dict)
     def qget(self, index: int):
