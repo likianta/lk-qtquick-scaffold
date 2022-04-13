@@ -122,7 +122,7 @@ def _use_relpath(path: str) -> str:
         #       qtquick_scaffold/debugger/LKDebugger/../../../../../../../../
         #       workspace/myprj/ui/view.qml'
         #   -> 'c:/program files/workspace/myprj/ui/view.qml'
-        path = relpath(path, _dir)
+        path = './' + relpath(path, _dir)
         #   launch_dir = 'c:/program files/workspace/myprj'
         #   -> 'ui/view.qml' (or maybe 'ui\\view.qml')
         return path.replace('\\', '/')
@@ -131,7 +131,7 @@ def _use_relpath(path: str) -> str:
         path = abspath('/' + path[7].upper() + path[8:])
         #   'file://users/...' -> '/Users/...'
         if path.split('/', 2)[1] == _dir.split('/', 2)[1]:
-            path = relpath(path, _dir)
+            path = './' + relpath(path, _dir)
         return path
     
     elif path[1:].startswith(':%5C'):

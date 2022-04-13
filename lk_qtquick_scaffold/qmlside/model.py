@@ -52,33 +52,34 @@ class Model(QAbstractListModel):
     
     # -------------------------------------------------------------------------
     # pyside api
+    # tip: all params which named `item` or `items` accept partial dict.
     
     def append(self, item: T.Item):
         self.beginInsertRows(
             QModelIndex(), self.rowCount(), self.rowCount()
         )
-        self._items.append(item)
+        self._items.append(self._fill_item(item))
         self.endInsertRows()
     
     def append_many(self, items: T.Items):
         self.beginInsertRows(
             QModelIndex(), self.rowCount(), self.rowCount() + len(items) - 1
         )
-        self._items.extend(items)
+        self._items.extend(map(self._fill_item, items))
         self.endInsertRows()
     
     def insert(self, index: int, item: T.Item):
         self.beginInsertRows(
             QModelIndex(), index, index
         )
-        self._items.insert(index, item)
+        self._items.insert(index, self._fill_item(item))
         self.endInsertRows()
     
     def insert_many(self, index: int, items: T.Items):
         self.beginInsertRows(
             QModelIndex(), index, index + len(items) - 1
         )
-        self._items[index:index] = items
+        self._items[index:index] = list(map(self._fill_item, items))
         self.endInsertRows()
     
     def pop(self):
@@ -134,15 +135,15 @@ class Model(QAbstractListModel):
         # ref: https://blog.csdn.net/LaoYuanPython/article/details/102011031
         qindex = self.createIndex(index, 0)
         self.dataChanged.emit(  # noqa
-            qindex, qindex,
-            [self._name_2_role[x] for x in item.keys()]
+            qindex, qindex, [self._name_2_role[x] for x in item.keys()]
         )
         return self[index]
     
     def update_many(self, start: int, end: int, items: T.Items) -> T.Items:
         assert len(items) == end - start >= 0
         if end == start: return []
-        self._items[start:end] = items
+        for old, new in zip(self._items[start:end], items):
+            old.update(new)
         qindex_start = self.createIndex(start, 0)
         qindex_end = self.createIndex(end - 1, 0)
         self.dataChanged.emit(qindex_start, qindex_end)  # noqa
@@ -150,6 +151,14 @@ class Model(QAbstractListModel):
     
     set = update
     set_many = update_many
+    
+    def _fill_item(self, item: dict) -> T.Item:
+        # FIXME: if item inclues invalid keys, this would be not safe.
+        if len(item) != len(self._name_2_role):
+            for k in self._name_2_role:
+                if k not in item:
+                    item[k] = None  # FIXME: alternate: `item[k] = ''`
+        return item
     
     # -------------------------------------------------------------------------
     # qml side api
@@ -160,11 +169,7 @@ class Model(QAbstractListModel):
     
     @slot(int, result=dict)
     def qget(self, index: int):
-        return self[index]
-    
-    # @slot(int, dict, result=dict)
-    # def qset(self, index: int, item: dict):
-    #     return self.set(index, item)
+        return self.get(index)
     
     @slot(int, dict, result=dict)
     def qupdate(self, index: int, item: dict):
