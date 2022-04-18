@@ -10,7 +10,7 @@ from .qmlside import eval_js
 from .qmlside import hot_loader
 from .qmlside import js_eval
 
-__version__ = '1.2.2'
+__version__ = '1.2.3'
 
 
 def __setup__():

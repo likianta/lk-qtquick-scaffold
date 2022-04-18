@@ -125,7 +125,7 @@ class Model(QAbstractListModel):
     def get_many(self, start: int, end: int) -> T.Items:
         return self._items[start:end]
     
-    def update(self, index: int, item: dict) -> T.Item:
+    def update(self, index: int, item: dict) -> None:
         self._items[index].update(item)
         # emit signal of `self.dataChanged` to notify qml side that some item
         # has been changed.
@@ -137,27 +137,23 @@ class Model(QAbstractListModel):
         self.dataChanged.emit(  # noqa
             qindex, qindex, [self._name_2_role[x] for x in item.keys()]
         )
-        return self[index]
     
-    def update_many(self, start: int, end: int, items: T.Items) -> T.Items:
+    def update_many(self, start: int, end: int, items: T.Items) -> None:
         assert len(items) == end - start >= 0
-        if end == start: return []
+        if end == start: return
         for old, new in zip(self._items[start:end], items):
             old.update(new)
         qindex_start = self.createIndex(start, 0)
         qindex_end = self.createIndex(end - 1, 0)
         self.dataChanged.emit(qindex_start, qindex_end)  # noqa
-        return self.get_many(start, end)
     
     set = update
     set_many = update_many
     
     def _fill_item(self, item: dict) -> T.Item:
-        # FIXME: if item inclues invalid keys, this would be not safe.
-        if len(item) != len(self._name_2_role):
-            for k in self._name_2_role:
-                if k not in item:
-                    item[k] = None  # FIXME: alternate: `item[k] = ''`
+        for k in self._name_2_role:
+            if k not in item:
+                item[k] = None  # FIXME: alternate: `item[k] = ''`
         return item
     
     # -------------------------------------------------------------------------
@@ -171,9 +167,9 @@ class Model(QAbstractListModel):
     def qget(self, index: int):
         return self.get(index)
     
-    @slot(int, dict, result=dict)
+    @slot(int, dict)
     def qupdate(self, index: int, item: dict):
-        return self.update(index, item)
+        self.update(index, item)
     
     # -------------------------------------------------------------------------
     # overrides
