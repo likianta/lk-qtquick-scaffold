@@ -1,0 +1,6 @@
+module LKWidgets
+
+LKButton    1.0     LKButton.qml
+LKRadioBox  1.0     LKRadioBox.qml
+LKText      1.0     LKText.qml
+LKWindow    1.0     LKWindow.qml
