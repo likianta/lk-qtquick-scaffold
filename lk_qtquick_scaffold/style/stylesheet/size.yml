@@ -1,8 +1,14 @@
+border_width_m: 1
+border_width_l: 2
+border_width_xl: 3
 
 button_width: 52
 button_height: 24
 
 indicator_radius: 6
+
+padding_s: 2
+padding_m: 4
 
 radius_xs: 2
 radius_s: 4

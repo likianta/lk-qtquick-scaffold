@@ -13,11 +13,15 @@ Rectangle {
 
     property bool hovered: _area.containsMouse
     property bool checked: false
+    signal clicked()
 
-    MouseArea {
+    LKMouseArea {
         id: _area
         anchors.fill: parent
-        hoverEnabled: true
+        onClicked: {
+            root.checked = true
+            root.clicked()
+        }
     }
 
     Behavior on border.width {

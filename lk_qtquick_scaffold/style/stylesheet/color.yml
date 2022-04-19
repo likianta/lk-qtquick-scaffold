@@ -5,6 +5,8 @@ red: 'red'
 white: 'white'
 yellow: 'yellow'
 
+theme_blue_3: '#C5D8F9'
+theme_blue_7: '#427ECC'
 theme_blue_9: '#2839FF'
 theme_gray_5: '#DBDBF7'
 theme_gray_7: '#F5F7FD'
@@ -13,7 +15,11 @@ theme_gray_9: '#F2F2F2'
 general_active: '$theme_blue_9'
 general_inactive: '$theme_gray_5'
 
-border_active: '$general_active'
+border_active: '$theme_blue_7'
+border_default: '$theme_gray_5'
 border_inactive: '$general_inactive'
+
+button_default: '$white'
+button_pressed: '$theme_blue_3'
 
 frame_bg_default: '$theme_gray_5'

@@ -93,5 +93,4 @@ class Color(Base):
         if name.startswith('theme_') and name.endswith('_0'):
             yield name[6:-2]
         elif not name.startswith('comp_bg_') and name.endswith('_default'):
-            assert name.count('_') == 2
-            yield name.split('_')[1]
+            yield name.split('_')[-2]
