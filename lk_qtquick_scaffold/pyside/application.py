@@ -14,7 +14,7 @@ class T:
     Path = Union[PathLike, str]
 
 
-class _Application(QApplication):
+class Application(QApplication):
     engine: QQmlApplicationEngine
     root: QQmlContext
     
@@ -149,29 +149,4 @@ class _Application(QApplication):
     #   -startapps+&cd=1&hl=zh-CN&ct=clnk&gl=sg
 
 
-class Application:
-    # _appcore: _Application
-    
-    def __init__(self, app_name='', **kwargs):
-        if app_name:
-            app.setApplicationName(app_name)
-        if x := kwargs.get('organization'):
-            app.setOrganizationName(x)
-        if x := kwargs.get('theme_dir'):
-            app.add_import_entrance(x)
-    
-    def __enter__(self):
-        return self
-    
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        pass
-        # from declare_foundation.context_manager import this
-        # lk.logt('[D1432]', this)
-        # self.start(this.represents.qmlfile)
-    
-    @staticmethod
-    def start(qmlfile: T.Path):
-        app.start(qmlfile)
-
-
-app = _Application()
+app = Application()
