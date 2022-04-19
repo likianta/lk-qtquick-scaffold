@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 try:
     import lk_logger
     lk_logger.setup(quiet=True)

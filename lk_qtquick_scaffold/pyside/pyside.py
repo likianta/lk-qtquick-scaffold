@@ -10,7 +10,7 @@ class PySide(QObject, PyRegister):
     @slot(str, result=object)
     @slot(str, list, result=object)
     @slot(str, list, dict, result=object)
-    def call(self, func_name: str, args: list = None, kwargs: dict = None):
+    def call(self, func_name: str, args: list = (), kwargs: dict = None):
         """ call python functions in qml side. """
         func, narg = self._pyfunc_holder[func_name]  # narg: 'number of args'
         if kwargs:

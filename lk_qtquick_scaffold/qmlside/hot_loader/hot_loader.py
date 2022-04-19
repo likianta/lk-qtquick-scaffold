@@ -1,22 +1,21 @@
 import os
-import os.path as xpath
+import os.path
 from typing import Union
+
+from lk_utils import relpath
 
 TPath = Union[os.PathLike, str]
 
 
 class HotLoader:
-    # loader_filename: str = 'HotLoader.qml'
-    cache_dirname: str
     bootloader: TPath
     target: TPath
+    temp_dirname: str
     
-    def __init__(self, cache_dirname='__declare_qml__'):
-        self.cache_dirname = cache_dirname
-        self.bootloader = xpath.abspath(
-            f'{__file__}/../view.qml'
-        )
-        assert xpath.exists(self.bootloader)
+    def __init__(self):
+        self.temp_dirname = '__lk_qtquick_scaffold_temp__'
+        self.bootloader = relpath('view.qml')
+        assert os.path.exists(self.bootloader)
     
     def _check_bootloader_location(self, target: TPath):
         """
@@ -33,21 +32,21 @@ class HotLoader:
             这里有一个注意事项, target 必须使用相对路径 (相对于
             'HotLoader.qml'), 不能使用绝对路径. 否则会导致 target 文件中的所有
             relative import 语句全部无法正常工作.
-            当 target 与 HotLoader.qml 同盘符时, 使用 `xpath.relpath` 即可计算
-            出此相对路径. 但是二者不同盘符时, 无法使用 `xpath.relpath` 计算.
+            当 target 与 HotLoader.qml 同盘符时, 使用 `os.path.relpath` 即可计算
+            出此相对路径. 但是二者不同盘符时, 无法使用 `os.path.relpath` 计算.
             我们的解决方法是, 复制一个 HotLoader.qml 文件到与 target 同目录下的
             `~/{self.cache_dirname}/HotLoader.qml` 路径.
         """
         # 1
-        target = xpath.abspath(target)
+        target = os.path.abspath(target)
         if self.bootloader[0] == target[0]:
             return
         
         # 2
-        new_bootloader = xpath.join(
-            xpath.dirname(target), self.cache_dirname, 'view.qml'
+        new_bootloader = os.path.join(
+            os.path.dirname(target), self.temp_dirname, 'view.qml'
         )
-        if xpath.exists(new_bootloader):
+        if os.path.exists(new_bootloader):
             return
         
         # 3
@@ -57,8 +56,8 @@ class HotLoader:
             '.qml" in target directory:\n\t{}'.format(new_bootloader), ':v3p2'
         )
         
-        new_bootloader_dir = xpath.dirname(new_bootloader)
-        if not xpath.exists(new_bootloader_dir):
+        new_bootloader_dir = os.path.dirname(new_bootloader)
+        if not os.path.exists(new_bootloader_dir):
             os.mkdir(new_bootloader_dir)
         
         from shutil import copyfile
@@ -69,11 +68,7 @@ class HotLoader:
     def start(self, target: TPath, bg_color='#F2F2F2'):
         self._check_bootloader_location(target)
         
-        # FIXME
-        # # self.target = xpath.relpath(
-        # #     target, xpath.dirname(self.bootloader)
-        # # )
-        self.target = 'file:///' + xpath.abspath(target)
+        self.target = 'file:///' + os.path.abspath(target)
         
         # register hot reloader runtime functions.
         # see usages in `..LKQmSide.HotLoader`.

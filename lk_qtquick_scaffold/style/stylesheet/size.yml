@@ -4,5 +4,17 @@ button_height: 24
 
 indicator_radius: 6
 
+radius_xs: 2
+radius_s: 4
+radius_m: 6
+radius_l: 8
+radius_xl: 12
+
+spacing_xs: 1
+spacing_s: 2
+spacing_m: 4
+spacing_l: 8
+spacing_xl: 24
+
 win_width: 800
 win_height: 600

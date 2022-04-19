@@ -1,3 +1,10 @@
+black: 'black'
+blue: 'blue'
+green: 'green'
+red: 'red'
+white: 'white'
+yellow: 'yellow'
+
 theme_blue_9: '#2839FF'
 theme_gray_5: '#DBDBF7'
 theme_gray_7: '#F5F7FD'
