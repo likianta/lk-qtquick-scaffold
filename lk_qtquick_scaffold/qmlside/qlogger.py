@@ -98,45 +98,45 @@ _dir = getcwd()
 
 
 def _use_relpath(path: str) -> str:
-    """ Convert absolute path to relative path.
+    """ convert absolute path to relative.
     
-    Args:
-        path: currently found 2 types of paths:
-            1. 'file:///d:/workspacce/dev_master_likianta/declare_qml/...'
-            2. 'd:%5Cworkspace%5Cdev_master_likianta%5Cdeclare_qml%5C...'
-                  ^^^         ^^^                   ^^^           ^^^
+    args:
+        path: str qml file path.
+            currently we've found 2 forms:
+                1. file:///c:/workspace/...
+                2. c:%5Cworkspace%5C...
+                     ^^^         ^^^
     
-    IN: 'file:///c:/program files/programs/python/Python39/lib/site-packages/lk
-        _qtquick_scaffold/debugger/LKDebugger/../../../../../../../../workspace
-        /myprj/ui/view.qml'
-    OUT: 'ui/view.qml' (relative to current working dir)
+    warning:
+        the path may include '../' in the middle part:
+            file:///c:/workspace/../ui/view.qml
+                                 ^^^
+    
+    note:
+        to compilance with lk_logger's relpath form, we suggest adding './' to
+        the beginning of the path.
     """
     # print(':v', path)
-
+    
     if path.startswith('file:///'):
         path = abspath(path[8:])
-        #   'file:///c:/program files/programs/python/Python39/lib/site
-        #   -packages/lk_qtquick_scaffold/debugger/LKDebugger/../../../../../../
-        #   ../../workspace/myprj/ui/view.qml'
-        #   -> 'c:/program files/programs/python/Python39/lib/site-packages/lk_
-        #       qtquick_scaffold/debugger/LKDebugger/../../../../../../../../
-        #       workspace/myprj/ui/view.qml'
-        #   -> 'c:/program files/workspace/myprj/ui/view.qml'
-        path = './' + relpath(path, _dir)
-        #   launch_dir = 'c:/program files/workspace/myprj'
-        #   -> 'ui/view.qml' (or maybe 'ui\\view.qml')
-        return path.replace('\\', '/')
-
+        path = relpath(path, _dir).replace('\\', '/')
+        if not path.startswith('../'):
+            path = './' + path
+        return path
+    
     elif path.startswith('file://'):  # macos/linux
         path = abspath('/' + path[7].upper() + path[8:])
         #   'file://users/...' -> '/Users/...'
         if path.split('/', 2)[1] == _dir.split('/', 2)[1]:
-            path = './' + relpath(path, _dir)
+            path = relpath(path, _dir)
+            if not path.startswith('../'):
+                path = './' + path
         return path
     
     elif path[1:].startswith(':%5C'):
         return path.replace('%5C', '/')
     
     else:
-        # raise ValueError('Unknown path type', path)
+        # # raise ValueError('Unknown path type', path)
         return f'<{path}>'  # e.g. '<eval code>'
