@@ -100,9 +100,8 @@ class Application(QApplication):
                 a '.qml' file. usually it named '~/Main.qml', '~/Home.qml', etc.
                 the name case is not sensitive (you can also use lower case).
         """
-        from PySide6.QtCore import QUrl
-        # if xpath.isabs(qmlfile): qmlfile = 'file:///' + qmlfile
-        self.engine.load(QUrl(qmlfile))
+        from lk_utils.filesniff import normpath
+        self.engine.load('file:///' + normpath(qmlfile, force_abspath=True))
         self.exec()
         #   warning: do not use `sys.exit(self.exec())`, because
         #   `self.__pyobj_holder : values` will be released before qml
