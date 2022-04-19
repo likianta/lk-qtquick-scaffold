@@ -6,8 +6,12 @@ from PySide6.QtQml import QQmlContext
 from PySide6.QtWidgets import QApplication
 
 from ..path_model import theme_dir
-from ..typehint import Dict
-from ..typehint import TPath
+
+
+class T:
+    from os import PathLike
+    from typing import Union
+    Path = Union[PathLike, str]
 
 
 class _Application(QApplication):
@@ -16,7 +20,7 @@ class _Application(QApplication):
     
     # the holder is made for preventing the objects which were registered to
     # qml side from being recycled by python garbage collector incorrectly.
-    __pyobj_holder: Dict[str, QObject]
+    __pyobj_holder: dict[str, QObject]
     
     def __init__(self, app_name='LK QtQuick Scaffold App', **kwargs):
         """
@@ -114,7 +118,7 @@ class _Application(QApplication):
         self.root.setContextProperty(name, obj)
         self.__pyobj_holder[name] = obj
     
-    def start(self, qmlfile: TPath):
+    def start(self, qmlfile: T.Path):
         """
         Args:
             qmlfile: Pass a '.qml' file to launch the application.
@@ -166,7 +170,7 @@ class Application:
         # self.start(this.represents.qmlfile)
     
     @staticmethod
-    def start(qmlfile: TPath):
+    def start(qmlfile: T.Path):
         app.start(qmlfile)
 
 

@@ -1,11 +1,38 @@
+from typing import Any
+from typing import List
+
+from PySide6.QtCore import QObject
 from PySide6.QtQml import QQmlComponent
 
-from .__ext__ import TJsEvaluatorCore
-from .__ext__ import path_model
+from .. import path_model
+
+
+class T:
+    class JsEvaluatorCore:
+        # `declare_pyside/qmlside/LKQmlSide/QmlSide.qml`
+        
+        @staticmethod
+        def bind(t_obj: QObject, s_obj: QObject, expression: str): pass
+        
+        @staticmethod
+        def connect_prop(*_, **__) -> Any: pass
+        
+        @staticmethod
+        def create_component(_: str) -> QQmlComponent: pass
+        
+        @staticmethod
+        def create_object(component: QQmlComponent,
+                          container: QObject) -> QObject: pass
+        
+        @staticmethod
+        def eval_js(code: str, args: List[QObject]): pass
+        
+        @staticmethod
+        def test() -> str: pass
 
 
 class JsEvaluator:
-    core: TJsEvaluatorCore
+    core: T.JsEvaluatorCore
     
     def __init__(self):
         from ..pyside import app
@@ -51,7 +78,7 @@ class JsEvaluator:
         # if '\n' in code:
         #     code = dedent(code)
         return self.core.eval_js(code, args)
-        
+
 
 js_eval = JsEvaluator()
 eval_js = js_eval.eval_js_2  # TODO

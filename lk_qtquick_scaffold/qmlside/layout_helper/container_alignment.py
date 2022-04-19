@@ -4,33 +4,39 @@ from textwrap import indent
 from PySide6.QtCore import QObject
 from PySide6.QtCore import Slot
 
-from .__ext__ import *
+from .type_adapter import adapt_argtypes
+from ..js_evaluator import eval_js
+from ..js_evaluator import js_eval
 
 HORIZONTAL = 0
 VERTICAL = 1
+
+
+class T:
+    from PySide6.QtCore import QObject
 
 
 class ContainerAlignment:
     
     @Slot(QObject)
     @adapt_argtypes
-    def fill_width(self, parent: TQObject):
+    def fill_width(self, parent: T.QObject):
         self._fill_size(parent, orientation=HORIZONTAL)
     
     @Slot(QObject)
     @adapt_argtypes
-    def fill_height(self, parent: TQObject):
+    def fill_height(self, parent: T.QObject):
         self._fill_size(parent, orientation=VERTICAL)
     
-    def _fill_size(self, parent: TQObject, orientation: int):
+    def _fill_size(self, parent: T.QObject, orientation: int):
         
         def _get_total_spared_size(item, orientation):
             if orientation == HORIZONTAL:
                 return (
-                    item.property('width')
-                    - item.property('leftPadding')
-                    - item.property('rightPadding')
-                    - item.property('spacing') * (len(item.get_children()) - 1)
+                        item.property('width')
+                        - item.property('leftPadding')
+                        - item.property('rightPadding')
+                        - item.property('spacing') * (len(item.get_children()) - 1)
                 )
             else:
                 return (
@@ -39,13 +45,13 @@ class ContainerAlignment:
                         - item.property('bottomPadding')
                         - item.property('spacing') * (len(item.get_children()) - 1)
                 )
-                
+        
         prop_name = 'width' if orientation == HORIZONTAL else 'height'
         total_spared_size = _get_total_spared_size(parent, orientation)
         unclaimed_size = total_spared_size
         item_sizes = {}  # dict[int index, float size]
         size_undefined_items = []  # list[index]
-
+        
         for idx, item in enumerate(parent.get_children()):
             size = item.property(prop_name)
             if size >= 1:
@@ -57,7 +63,7 @@ class ContainerAlignment:
                 unclaimed_size -= size
             else:
                 size_undefined_items.append(idx)
-                
+        
         if size_undefined_items:
             if unclaimed_size > 0:
                 each_size = unclaimed_size / len(size_undefined_items)
@@ -75,8 +81,10 @@ class ContainerAlignment:
         #      changed events.
         #   2. unclaimed-size concerned:
         
-        
         spacing = parent.property('spacing')
+        padding = parent.property('padding')
+        padding_a = parent.property('leftPadding')
+        padding_b = parent.property('rightPadding')
         spared_space = parent.property(prop_name) \
                        - padding \
                        - spacing * (len(parent.get_children()) - 1)
@@ -129,7 +137,7 @@ class ContainerAlignment:
     
     @Slot(QObject)
     @adapt_argtypes
-    def halign_center(self, parent: TQObject):
+    def halign_center(self, parent: T.QObject):
         """ Align children in a horizontal line. """
         for item in parent.get_children():
             eval_js('{}.anchors.verticalCenter '
@@ -138,7 +146,7 @@ class ContainerAlignment:
     
     @Slot(QObject)
     @adapt_argtypes
-    def valign_center(self, parent: TQObject):
+    def valign_center(self, parent: T.QObject):
         """ Align children in a vertical line. """
         for item in parent.get_children():
             eval_js('{}.anchors.horizontalCenter '
@@ -149,16 +157,16 @@ class ContainerAlignment:
     
     @Slot(QObject, int, int)
     @adapt_argtypes
-    def halign_children(self, parent: TQObject, padding: int, spacing: int):
+    def halign_children(self, parent: T.QObject, padding: int, spacing: int):
         self._align_children(parent, padding, spacing, HORIZONTAL)
     
     @Slot(QObject, int, int)
     @adapt_argtypes
-    def valign_children(self, parent: TQObject, padding: int, spacing: int):
+    def valign_children(self, parent: T.QObject, padding: int, spacing: int):
         self._align_children(parent, padding, spacing, VERTICAL)
     
     @staticmethod
-    def _align_children(parent: TQObject, padding: int, spacing: int,
+    def _align_children(parent: T.QObject, padding: int, spacing: int,
                         orientation: int):
         children = list(parent.get_children())
         if len(children) == 0:
@@ -203,17 +211,17 @@ class ContainerAlignment:
     @Slot(QObject)
     @Slot(QObject, bool)
     @adapt_argtypes
-    def hadjust_children_size(self, parent: TQObject, constraint=True):
+    def hadjust_children_size(self, parent: T.QObject, constraint=True):
         self._auto_adjust_children_size(parent, HORIZONTAL, constraint)
     
     @Slot(QObject)
     @Slot(QObject, bool)
     @adapt_argtypes
-    def vadjust_children_size(self, parent: TQObject, constraint=True):
+    def vadjust_children_size(self, parent: T.QObject, constraint=True):
         self._auto_adjust_children_size(parent, VERTICAL, constraint)
     
     def _auto_adjust_children_size(
-            self, parent: TQObject, orientation: int, constraint: bool
+            self, parent: T.QObject, orientation: int, constraint: bool
     ):
         def _adjust(prop_name, unallocated_space):
             dynamic_sized_items_a = []  # type: List[Tuple[QObject, float]]
@@ -299,7 +307,7 @@ class ContainerAlignment:
             )
     
     @staticmethod
-    def _get_paddings(qobj: TQObject):
+    def _get_paddings(qobj: T.QObject):
         # return: tuple[left, top, right, bottom]
         return (
             qobj.property('leftPadding'),

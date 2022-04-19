@@ -2,16 +2,34 @@ from collections import defaultdict
 from functools import wraps
 from inspect import signature
 
-from ..typehint import *
+
+class T:
+    from typing import Callable, Dict, Literal, Tuple
+    
+    PyFunction = Callable
+    
+    PyClassName = str
+    PyMethName = str
+    RegisteredName = str
+    
+    NArgs = int  # number of arguments
+    Arg0 = Literal['', 'self', 'cls']
+    
+    PyClassHolder = Dict[
+        PyClassName, Dict[
+            PyMethName, Tuple[RegisteredName, NArgs]
+        ]
+    ]
+    PyFuncHolder = Dict[RegisteredName, Tuple[PyFunction, NArgs]]
 
 
 class PyRegister:
     strict_mode = True
-    _pyclass_holder: TPyClassHolder = defaultdict(lambda: defaultdict())
-    _pyfunc_holder: TPyFuncHolder = {}
+    _pyclass_holder: T.PyClassHolder = defaultdict(lambda: defaultdict())
+    _pyfunc_holder: T.PyFuncHolder = {}
     
     @staticmethod
-    def _get_number_of_args(func: Callable, strip_self=False) -> TNArgs:
+    def _get_number_of_args(func: T.Callable, strip_self=False) -> T.NArgs:
         """
         References:
             https://stackoverflow.com/questions/3517892/python-list-function
@@ -126,7 +144,7 @@ class PyRegister:
             self._register_instance(obj)
         return name
     
-    def register_via_decorator(self, name='', arg0: TArg0 = ''):
+    def register_via_decorator(self, name='', arg0: T.Arg0 = ''):
         """ A decorator for registering Python functions/methods to
             `.pyside.PySide.<namespace>`. Then it can be used in QML file via
             `PySide.call(<name>, <qml_args>)`.

@@ -1,9 +1,7 @@
 from os import listdir
 
-from PySide6.QtCore import QUrl
-
-from ._ext import path_model
 from .base import ResourceManager
+from ... import path_model
 
 
 class AssetsResourceManager(ResourceManager):
@@ -23,4 +21,3 @@ class AssetsResourceManager(ResourceManager):
     
     def _get(self, name, **kwargs):
         return f'file:///{self.index[name]}'
-

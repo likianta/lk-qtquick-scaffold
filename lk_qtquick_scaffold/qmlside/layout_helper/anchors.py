@@ -4,8 +4,8 @@ from PySide6.QtCore import QObject
 from PySide6.QtCore import Slot
 from PySide6.QtQml import QJSValue
 
-from .__ext__ import adapt_argtypes
-from .__ext__ import eval_js
+from .type_adapter import adapt_argtypes
+from ..js_evaluator import eval_js
 
 
 class T:  # TypeHint
