@@ -2,168 +2,139 @@ from textwrap import dedent
 from textwrap import indent
 
 from PySide6.QtCore import QObject
-from PySide6.QtCore import Slot
+from PySide6.QtQml import QQmlPropertyMap
 
-from .type_adapter import adapt_argtypes
 from ..js_evaluator import eval_js
 from ..js_evaluator import js_eval
-
-HORIZONTAL = 0
-VERTICAL = 1
+from ...pyside import slot
 
 
 class T:
     from PySide6.QtCore import QObject
 
 
-class ContainerAlignment:
+class Enum:
+    HORIZONTAL = 0
+    VERTICAL = 1
+    STRETCH = -1
+    SHRINK = -2
+
+
+class ContainerAlignment(QQmlPropertyMap):
     
-    @Slot(QObject)
-    @adapt_argtypes
-    def fill_width(self, parent: T.QObject):
-        self._fill_size(parent, orientation=HORIZONTAL)
+    def __init__(self):
+        super().__init__()
+        for k in dir(Enum):
+            if k.isupper() and not k.startswith('_'):
+                self.insert(k, getattr(Enum, k))
     
-    @Slot(QObject)
-    @adapt_argtypes
-    def fill_height(self, parent: T.QObject):
-        self._fill_size(parent, orientation=VERTICAL)
-    
-    def _fill_size(self, parent: T.QObject, orientation: int):
+    @slot(QObject, int)
+    def auto_layout(self, container: QObject, orientation: int):
+        """
+        size policy:
+            0: auto stretch to spared space.
+            0 ~ 1: the ratio of spared space.
+            1+: regular pixel point.
         
-        def _get_total_spared_size(item, orientation):
-            if orientation == HORIZONTAL:
-                return (
-                        item.property('width')
-                        - item.property('leftPadding')
-                        - item.property('rightPadding')
-                        - item.property('spacing') * (len(item.get_children()) - 1)
-                )
-            else:
-                return (
-                        item.property('height')
-                        - item.property('topPadding')
-                        - item.property('bottomPadding')
-                        - item.property('spacing') * (len(item.get_children()) - 1)
-                )
+        workflow:
+            1. get total space
+            2. consume used space
+            3. allocate unused space
         
-        prop_name = 'width' if orientation == HORIZONTAL else 'height'
-        total_spared_size = _get_total_spared_size(parent, orientation)
-        unclaimed_size = total_spared_size
+        TODO: method rename (candidate names):
+            mobilize
+            auto_pack
+        """
+        prop_name = 'width' if orientation == Enum.HORIZONTAL else 'height'
+        if not container.property(prop_name): return
+        total_size = self._get_total_available_size_for_children(
+            container, orientation)
         item_sizes = {}  # dict[int index, float size]
-        size_undefined_items = []  # list[index]
         
-        for idx, item in enumerate(parent.get_children()):
+        unclaimed_size = total_size
+        for idx, item in enumerate(container.children()):
+            print(idx, item.property('objectName'))
             size = item.property(prop_name)
+            if size < 0:
+                raise ValueError('cannot allocate negative size', idx, item)
             if size >= 1:
                 item_sizes[idx] = size
                 unclaimed_size -= size
-            elif 0 < size < 1:
-                ratio = size
-                item_sizes[idx] = size = total_spared_size * ratio
-                unclaimed_size -= size
-            else:
-                size_undefined_items.append(idx)
         
-        if size_undefined_items:
-            if unclaimed_size > 0:
-                each_size = unclaimed_size / len(size_undefined_items)
-            else:
-                each_size = 0
-            for idx in size_undefined_items:
-                item_sizes[idx] = each_size
+        def fast_finish_leftovers():
+            for idx, item in enumerate(container.children()):
+                if idx not in item_sizes:
+                    item.setProperty(prop_name, 0)
         
-        for idx, item in enumerate(parent.get_children()):
-            item.setProperty(prop_name, item_sizes[idx])
+        if unclaimed_size <= 0:
+            fast_finish_leftovers()
+            return
         
-        # create connections
-        # connections are divided into:
-        #   1. total-spared-size concerned: parent size, padding, spacing
-        #      changed events.
-        #   2. unclaimed-size concerned:
-        
-        spacing = parent.property('spacing')
-        padding = parent.property('padding')
-        padding_a = parent.property('leftPadding')
-        padding_b = parent.property('rightPadding')
-        spared_space = parent.property(prop_name) \
-                       - padding \
-                       - spacing * (len(parent.get_children()) - 1)
-        size_undefined_items = []  # list[index]
-        
-        for i, item in enumerate(parent.get_children()):
+        total_unclaimed_size = unclaimed_size
+        for idx, item in enumerate(container.children()):
             size = item.property(prop_name)
-            if size >= 1:
-                continue
-            elif 0 < size < 1:
-                ratio = size
-                # FIXME: use signal-slot prototypes.
-                js_eval.eval_js_2('''
-                    {{item}}.{prop} = Qt.binding(() => {{{{
-                        const spared_space = {{root}}.{prop}
-                            - {{root}}.{padding_a}
-                            - {{root}}.{padding_b}
-                            - {{root}}.{spacing} * ({{root}}.children.length - 1)
-                        return spared_space * {ratio}
-                    }}}})
-                '''.format(
-                    prop=prop_name, padding_a=padding_a, padding_b=padding_b,
-                    spacing='spacing', ratio=ratio
-                ), {
-                    'item': item, 'root': parent
-                })
-            else:
-                size_undefined_items.append(i)
+            if idx not in item_sizes:
+                if 0 < size < 1:
+                    ratio = size
+                    item_sizes[idx] = size = total_unclaimed_size * ratio
+                    unclaimed_size -= size
         
-        for item in parent.get_children():
-            size = item.property(prop_name)
-            if size >= 1:
-                continue
-            elif 0 < size < 1:
-                ratio = size
-            elif size == 0:
-                ratio = 1
-            else:
-                raise ValueError(size)
-            
-            js_eval.eval_js_2('''
-                {{item}}.{prop} = Qt.binding(() => {
-                    return {{parent}}.{prop} * {ratio} - {padding}
-                })
-            '''.format(
-                prop=prop_name, ratio=ratio, padding=padding
-            ), {'item': item, 'parent': parent})
+        if unclaimed_size <= 0:
+            fast_finish_leftovers()
+            return
+        
+        left_count = len(container.children()) - len(item_sizes)
+        left_size_average = unclaimed_size / left_count
+        for idx, item in enumerate(container.children()):
+            if idx not in item_sizes:
+                item.setProperty(prop_name, left_size_average)
+    
+    @staticmethod
+    def _get_total_available_size_for_children(
+            item: QObject, orientation: int) -> int:
+        if orientation == Enum.HORIZONTAL:
+            return (
+                    item.property('width')
+                    - item.property('leftPadding')
+                    - item.property('rightPadding')
+                    - item.property('spacing') * (len(item.children()) - 1)
+            )
+        else:
+            return (
+                    item.property('height')
+                    - item.property('topPadding')
+                    - item.property('bottomPadding')
+                    - item.property('spacing') * (len(item.children()) - 1)
+            )
     
     # --------------------------------------------------------------------------
+    # TODO: need review and refactor below
     
-    @Slot(QObject)
-    @adapt_argtypes
+    @slot('qobject')
     def halign_center(self, parent: T.QObject):
-        """ Align children in a horizontal line. """
+        """ Align children in a Enum.HORIZONTAL line. """
         for item in parent.get_children():
-            eval_js('{}.anchors.verticalCenter '
-                    '= Qt.binding(() => {}.verticalCenter)',
+            eval_js('{}.anchors.Enum.VERTICALCenter '
+                    '= Qt.binding(() => {}.Enum.VERTICALCenter)',
                     item, parent)
     
-    @Slot(QObject)
-    @adapt_argtypes
+    @slot('qobject')
     def valign_center(self, parent: T.QObject):
-        """ Align children in a vertical line. """
+        """ Align children in a Enum.VERTICAL line. """
         for item in parent.get_children():
-            eval_js('{}.anchors.horizontalCenter '
-                    '= Qt.binding(() => {}.horizontalCenter)',
+            eval_js('{}.anchors.Enum.HORIZONTALCenter '
+                    '= Qt.binding(() => {}.Enum.HORIZONTALCenter)',
                     item, parent)
     
     # --------------------------------------------------------------------------
     
-    @Slot(QObject, int, int)
-    @adapt_argtypes
+    @slot('qobject', int, int)
     def halign_children(self, parent: T.QObject, padding: int, spacing: int):
-        self._align_children(parent, padding, spacing, HORIZONTAL)
+        self._align_children(parent, padding, spacing, Enum.HORIZONTAL)
     
-    @Slot(QObject, int, int)
-    @adapt_argtypes
+    @slot('qobject', int, int)
     def valign_children(self, parent: T.QObject, padding: int, spacing: int):
-        self._align_children(parent, padding, spacing, VERTICAL)
+        self._align_children(parent, padding, spacing, Enum.VERTICAL)
     
     @staticmethod
     def _align_children(parent: T.QObject, padding: int, spacing: int,
@@ -172,7 +143,7 @@ class ContainerAlignment:
         if len(children) == 0:
             return
         
-        if orientation == HORIZONTAL:
+        if orientation == Enum.HORIZONTAL:
             eval_js(
                 '{{0}}.anchors.leftMargin = {}'.format(padding),
                 children[0]
@@ -191,7 +162,7 @@ class ContainerAlignment:
                 children[-1]
             )
         
-        prop = 'width' if orientation == HORIZONTAL else 'height'
+        prop = 'width' if orientation == Enum.HORIZONTAL else 'height'
         size = (
                 parent.property(prop)
                 - padding * 2
@@ -208,24 +179,22 @@ class ContainerAlignment:
     
     # --------------------------------------------------------------------------
     
-    @Slot(QObject)
-    @Slot(QObject, bool)
-    @adapt_argtypes
+    @slot('qobject')
+    @slot('qobject', bool)
     def hadjust_children_size(self, parent: T.QObject, constraint=True):
-        self._auto_adjust_children_size(parent, HORIZONTAL, constraint)
+        self._auto_adjust_children_size(parent, Enum.HORIZONTAL, constraint)
     
-    @Slot(QObject)
-    @Slot(QObject, bool)
-    @adapt_argtypes
+    @slot('qobject')
+    @slot('qobject', bool)
     def vadjust_children_size(self, parent: T.QObject, constraint=True):
-        self._auto_adjust_children_size(parent, VERTICAL, constraint)
+        self._auto_adjust_children_size(parent, Enum.VERTICAL, constraint)
     
     def _auto_adjust_children_size(
             self, parent: T.QObject, orientation: int, constraint: bool
     ):
         def _adjust(prop_name, unallocated_space):
-            dynamic_sized_items_a = []  # type: List[Tuple[QObject, float]]
-            dynamic_sized_items_b = []  # type: List[Tuple[QObject, float]]
+            dynamic_sized_items_a = []  # type: list[tuple[QObject, float]]
+            dynamic_sized_items_b = []  # type: list[tuple[QObject, float]]
             
             for i, item in enumerate(children):
                 size = item.property(prop_name)
@@ -286,7 +255,7 @@ class ContainerAlignment:
         children = parent.get_children()
         # lk.logp([x.property('objectName') for x in children])
         
-        if orientation == HORIZONTAL:
+        if orientation == Enum.HORIZONTAL:
             _adjust(
                 prop_name='width',
                 unallocated_space=(
@@ -296,7 +265,7 @@ class ContainerAlignment:
                 )
             )
         
-        elif orientation == VERTICAL:
+        elif orientation == Enum.VERTICAL:
             _adjust(
                 prop_name='height',
                 unallocated_space=(
