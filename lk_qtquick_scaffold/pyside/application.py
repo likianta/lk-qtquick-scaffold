@@ -93,6 +93,8 @@ class Application(QApplication):
         self.root.setContextProperty(name, instance)
         self.__pyobj_holder[id(instance)] = instance
     
+    register = register_pyobj  # alias
+    
     def start(self, qmlfile: T.Path):
         """
         Args:
