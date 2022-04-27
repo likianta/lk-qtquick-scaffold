@@ -1,6 +1,14 @@
 module LKWidgets
 
-LKButton    1.0     LKButton.qml
-LKRadioBox  1.0     LKRadioBox.qml
-LKText      1.0     LKText.qml
-LKWindow    1.0     LKWindow.qml
+LKButton        1.0     LKButton.qml
+LKCircle        1.0     LKCircle.qml
+LKColumn        1.0     LKColumn.qml
+LKImage         1.0     LKImage.qml
+LKListView      1.0     LKListView.qml
+LKMouseArea     1.0     LKMouseArea.qml
+LKRadioBox      1.0     LKRadioBox.qml
+LKRectangle     1.0     LKRectangle.qml
+LKRectangle2    1.0     LKRectangle2.qml
+LKRow           1.0     LKRow.qml
+LKText          1.0     LKText.qml
+LKWindow        1.0     LKWindow.qml
