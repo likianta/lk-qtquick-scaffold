@@ -1,11 +1,9 @@
 from typing import *
 
 from PySide6.QtCore import QObject
-from PySide6.QtCore import Slot
-from PySide6.QtQml import QJSValue
 
-from .type_adapter import adapt_argtypes
 from ..js_evaluator import eval_js
+from ...pyside import slot
 
 
 class T:  # TypeHint
@@ -48,8 +46,7 @@ class Anchors:
         else:
             return reclines
     
-    @Slot(QObject, QObject, QJSValue)
-    @adapt_argtypes
+    @slot('qobject', 'qobject', 'any')
     def weak_anchors(self, this: QObject, that: QObject, anchors: T.Anchors):
         reclines = self._normalize_reclines(anchors['reclines'])
         is_center_mode = False
@@ -114,8 +111,7 @@ class Anchors:
         this.setProperty('width', w0)
         this.setProperty('height', h0)
     
-    @Slot(QObject, QObject, QJSValue)
-    @adapt_argtypes
+    @slot('qobject', 'qobject', 'any')
     def quick_anchors(self, this: QObject, that: QObject, anchors: T.Anchors):
         
         reclines = self._normalize_reclines(anchors['reclines'])

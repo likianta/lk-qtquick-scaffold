@@ -12,7 +12,12 @@ from PySide6.QtQml import QJSValue
 __global_life_cycle = []
 
 
-def slot(*argtypes: type, name='', result: Union[str, type, None] = None):
+def slot(*argtypes: Union[type, str], name='',
+         result: Union[str, type, None] = None):
+    """
+    args:
+        argtypes: see also `def _reformat_argtypes`.
+    """
     if result not in (None, str) and type(result) is not str:
         result = 'QVariant'
     
@@ -29,10 +34,24 @@ def slot(*argtypes: type, name='', result: Union[str, type, None] = None):
 
 
 def _reformat_argtypes(argtypes: tuple) -> tuple:
+    """
+    args:
+        argtypes: tuple[union[type, str alias], ...]
+            type_alias: to reduce additionally imports for some un-basic types,
+                we support using their alias. the alias will be converted to
+                corresponding types here:
+                    'qobject'   ->  QObject
+                    'item'      ->  QObject
+                    'any'       ->  QJSValue
+                    'pyobject'  ->  QJSValue
+                    'object'    ->  QJSValue
+    """
     new_argtypes = []
     for t in argtypes:
-        if t is object:
+        if t in ('qobject', 'item'):
             t = QObject
+        elif t in ('any', 'pyobject', 'object'):
+            t = QJSValue
         elif t not in (bool, bytes, float, int, str, QObject):
             t = QJSValue
         new_argtypes.append(t)

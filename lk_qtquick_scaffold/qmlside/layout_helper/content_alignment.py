@@ -1,5 +1,6 @@
 from PySide6.QtCore import QObject
-from PySide6.QtCore import Slot
+
+from ...pyside import slot
 
 H_LEFT = 1
 H_CENTER = 4
@@ -11,7 +12,7 @@ V_BOTTOM = 64
 
 class ContentAlignment:
     
-    @Slot(QObject, str)
+    @slot(QObject, str)
     def quick_align(self, qobj: QObject, alignment: str):
         def _normalize_alignment(alignment: str):
             for k, v in {
