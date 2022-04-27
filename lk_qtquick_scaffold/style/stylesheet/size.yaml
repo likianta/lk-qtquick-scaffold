@@ -5,6 +5,11 @@ border_width_xl: 3
 button_width: 52
 button_height: 24
 
+col_width_m: 48
+
+h_spacing_m: 4
+height_m: 24
+
 indicator_radius: 6
 
 padding_s: 2
@@ -16,11 +21,15 @@ radius_m: 6
 radius_l: 8
 radius_xl: 12
 
+row_height_m: 32
+
 spacing_xs: 1
 spacing_s: 2
 spacing_m: 4
 spacing_l: 8
 spacing_xl: 24
+
+v_spacing_m: 4
 
 win_width: 800
 win_height: 600

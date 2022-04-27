@@ -16,10 +16,10 @@ class Style:
     def __init__(self):
         from lk_utils import relpath
         assets_dir = relpath('./stylesheet')
-        self.color.update_from_file(f'{assets_dir}/color.yml')
-        self.font.update_from_file(f'{assets_dir}/font.yml')
-        self.motion.update_from_file(f'{assets_dir}/motion.yml')
-        self.size.update_from_file(f'{assets_dir}/size.yml')
+        self.color.update_from_file(f'{assets_dir}/color.yaml')
+        self.font.update_from_file(f'{assets_dir}/font.yaml')
+        self.motion.update_from_file(f'{assets_dir}/motion.yaml')
+        self.size.update_from_file(f'{assets_dir}/size.yaml')
         
         # DELETE below
         # self.color.update(
