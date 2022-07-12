@@ -1,8 +1,8 @@
 from textwrap import dedent
 from textwrap import indent
 
-from PySide6.QtCore import QObject
-from PySide6.QtQml import QQmlPropertyMap
+from qtpy.QtCore import QObject
+from qtpy.QtQml import QQmlPropertyMap
 
 from ..js_evaluator import eval_js
 from ..js_evaluator import js_eval
@@ -10,7 +10,7 @@ from ...pyside import slot
 
 
 class T:
-    from PySide6.QtCore import QObject
+    from qtpy.QtCore import QObject
 
 
 class Enum:

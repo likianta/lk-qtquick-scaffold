@@ -1,6 +1,6 @@
 from typing import *
 
-from PySide6.QtCore import QObject
+from qtpy.QtCore import QObject
 
 from ..js_evaluator import eval_js
 from ...pyside import slot

@@ -1,10 +1,8 @@
 from typing import Any
 from typing import List
 
-from PySide6.QtCore import QObject
-from PySide6.QtQml import QQmlComponent
-
-from .. import path_model
+from qtpy.QtCore import QObject
+from qtpy.QtQml import QQmlComponent
 
 
 class T:
@@ -35,9 +33,11 @@ class JsEvaluator:
     core: T.JsEvaluatorCore
     
     def __init__(self):
+        from lk_utils.filesniff import relpath
         from ..pyside import app
         component = QQmlComponent(
-            app.engine, f'{path_model.qmlside_dir}/js_evaluator_controls.qml')
+            app.engine, relpath('js_evaluator_controls.qml')
+        )
         qobject = component.create()
         self.core = qobject
         

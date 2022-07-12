@@ -3,10 +3,10 @@ fix typehint of Signal and Slot.
 """
 from typing import Union
 
-from PySide6.QtCore import QObject
-from PySide6.QtCore import Signal
-from PySide6.QtCore import Slot
-from PySide6.QtQml import QJSValue
+from qtpy.QtCore import QObject
+from qtpy.QtCore import Signal
+from qtpy.QtCore import Slot
+from qtpy.QtQml import QJSValue
 
 # hold some objects globally (elevate their refcount), to prevent python gc.
 __global_life_cycle = []

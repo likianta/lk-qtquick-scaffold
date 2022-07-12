@@ -1,6 +1,6 @@
-import QtQuick
-import QtQuick.Controls
-import QtQuick.Window
+import QtQuick 2.15
+import QtQuick.Controls 2.15
+import QtQuick.Window 2.15
 
 //  References:
 //      https://qml.guide/live-reloading-hot-reloading-qml
@@ -24,11 +24,13 @@ Window {
                 `================= Reload Target (${p_cnt}) =================`
             )
 
-            source = ""
-            pyside.call('__clear_component_cache')
-            _loader.source = p_target
-            //  this will open a new window to show the target. (because the
-            //  target usually has a root Window widget itself.)
+            _loader.source = p_target + '?magic_count=' + p_cnt
+
+//            source = ""
+//            pyside.call('__clear_component_cache')
+//            _loader.source = p_target
+//            //  this will open a new window to show the target. (because the
+//            //  target usually has a root Window widget itself.)
         }
     }
 

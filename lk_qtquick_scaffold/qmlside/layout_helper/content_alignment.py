@@ -1,4 +1,4 @@
-from PySide6.QtCore import QObject
+from qtpy.QtCore import QObject
 
 from ...pyside import slot
 

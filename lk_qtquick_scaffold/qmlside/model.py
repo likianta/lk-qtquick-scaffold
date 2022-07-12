@@ -1,5 +1,5 @@
-from PySide6.QtCore import QAbstractListModel
-from PySide6.QtCore import QModelIndex
+from qtpy.QtCore import QAbstractListModel
+from qtpy.QtCore import QModelIndex
 
 from ..pyside import slot
 

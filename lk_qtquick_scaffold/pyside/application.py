@@ -1,7 +1,7 @@
-from PySide6.QtCore import QObject
-from PySide6.QtQml import QQmlApplicationEngine
-from PySide6.QtQml import QQmlContext
-from PySide6.QtWidgets import QApplication
+from qtpy.QtCore import QObject
+from qtpy.QtQml import QQmlApplicationEngine
+from qtpy.QtQml import QQmlContext
+from qtpy.QtWidgets import QApplication
 
 
 class T:
@@ -51,6 +51,7 @@ class Application(QApplication):
         self.register_qmldir(relpath('../themes'))
         
         self.on_exit = super().aboutToQuit  # noqa
+        self.on_exit.connect(self._on_exit)
     
     def set_app_name(self, name: str):
         # just made a consistent snake-case function alias for external caller,
@@ -60,7 +61,7 @@ class Application(QApplication):
     def _ui_fine_tune(self):
         from platform import system
         if system() == 'Windows':
-            self.setFont('Microsoft YaHei UI')
+            self.setFont('Microsoft YaHei UI')  # noqa
     
     def register_qmldir(self, qmldir: str):
         """
@@ -104,7 +105,12 @@ class Application(QApplication):
         """
         from lk_utils.filesniff import normpath
         self.engine.load('file:///' + normpath(qmlfile, force_abspath=True))
-        self.exec()
+        
+        from os import getenv
+        if getenv('QT_API') in ('pyside2', 'pyqt5'):
+            self.exec_()
+        else:
+            self.exec()
         #   warning: do not use `sys.exit(self.exec())`, because
         #   `self.__pyobj_holder : values` will be released before qml
         #   triggered `Component.onDestroyed`. then there will be an error
@@ -112,8 +118,35 @@ class Application(QApplication):
     
     # alias for compatible.
     launch = run = open = start
+    
     #   https://ux.stackexchange.com/questions/106001/do-we-open-or-launch-or
     #   -startapps+&cd=1&hl=zh-CN&ct=clnk&gl=sg
+    
+    def show_splash_screen(self, file: T.Path):
+        from os.path import exists
+        assert exists(file)
+        
+        from qtpy.QtCore import Qt
+        from qtpy.QtGui import QPixmap
+        from qtpy.QtWidgets import QSplashScreen, QWidget
+        
+        pixmap = QPixmap(file)
+        splash = QSplashScreen(pixmap, Qt.WindowStaysOnTopHint)
+        splash.setMask(pixmap.mask())
+        
+        def on_close():
+            nonlocal splash
+            print(':v', 'Close splash screen')
+            splash.hide()
+            splash.finish(QWidget())
+        
+        self.engine.objectCreated.connect(on_close)  # noqa
+        
+        splash.show()
+        self.processEvents()
+        
+    def _on_exit(self):
+        self.__pyobj_holder.clear()
 
 
 app = Application()

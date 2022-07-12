@@ -1,7 +1,10 @@
-from PySide6.QtQml import QQmlPropertyMap
+from qtpy.QtQml import QQmlPropertyMap
 
 
 class Base(QQmlPropertyMap):
+    
+    def __init__(self):
+        super().__init__()
     
     def update(self, **kwargs):
         # https://stackoverflow.com/questions/62629628/attaching-qt-property-to

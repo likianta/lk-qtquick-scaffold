@@ -1,5 +1,5 @@
-from PySide6.QtCore import Property
-from PySide6.QtCore import QObject
+from qtpy.QtCore import Property
+from qtpy.QtCore import QObject
 
 from ._patch import get_children
 from ...pyside import slot

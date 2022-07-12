@@ -2,10 +2,9 @@ from os import getcwd
 from os.path import abspath
 from os.path import relpath
 
-from PySide6.QtCore import QtCriticalMsg
-from PySide6.QtCore import QtWarningMsg
-from PySide6.QtCore import qInstallMessageHandler
-from lk_logger.general import std_print as print  # FIXME  # noqa
+from qtpy.QtCore import QtCriticalMsg
+from qtpy.QtCore import QtWarningMsg
+from qtpy.QtCore import qInstallMessageHandler
 
 
 def setup():
@@ -40,7 +39,7 @@ def _log(mode, ctx, msg: str):
             -errors-in-python-console
         
     Args:
-        mode: PySide6.QtCore.QtMsgType
+        mode: qtpy.QtCore.QtMsgType
             There're six message types:
                 QtCriticalMsg  # 1
                 QtDebugMsg
@@ -49,7 +48,7 @@ def _log(mode, ctx, msg: str):
                 QtSystemMsg
                 QtWarningMsg  # 2
             #1 and #2 are what we mostly occurred.
-        ctx: PySide6.QtCore.QMessageLogContext. (ctx: 'context')
+        ctx: qtpy.QtCore.QMessageLogContext. (ctx: 'context')
             Context indicates to the place where `console.log` is called or
             where runtime errors happened.
             ctx.file: Optional[str].
@@ -91,7 +90,9 @@ def _log(mode, ctx, msg: str):
         msg = '\033[31m' + msg + '!' + '\033[0m'
         #   change font color to red, and add an exclamation mark to it.
     
-    print('{}:{}'.format(filename, lineno), ctx.function, msg, sep='\t>>\t')
+    from lk_logger import default_print
+    default_print('{}:{}'.format(filename, lineno),
+                  ctx.function, msg, sep='\t>>\t')
 
 
 _dir = getcwd()
