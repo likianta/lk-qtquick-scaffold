@@ -23,7 +23,7 @@ class LayoutHelper(QObject):
     HORIZONTAL = Property(int, lambda _: 0, constant=True, final=True)
     VERTICAL = Property(int, lambda _: 1, constant=True, final=True)
     
-    @slot(QObject, int)
+    @slot(object, int)
     def auto_size_children(self, container: QObject, orientation: int):
         """
         size policy:
@@ -111,9 +111,9 @@ class LayoutHelper(QObject):
                     - item.property('spacing') * (children_length - 1)
             )
     
-    @slot(object, result=tuple)
-    @slot(object, int, result=tuple)
-    @slot(object, int, int, result=tuple)
+    @slot(list, result=tuple)
+    @slot(list, int, result=tuple)
+    @slot(list, int, int, result=tuple)
     def calc_text_block_size(
             self, lines: list[str],
             char_width=10, line_height=20
@@ -123,6 +123,10 @@ class LayoutHelper(QObject):
         width = max(map(len, lines)) * char_width
         height = (len(lines) + 1) * line_height
         return width, height
+
+    @slot(object, str)
+    def equal_size_children(self, container: QObject, orientation: str):
+        pass
 
 
 pylayout = LayoutHelper()

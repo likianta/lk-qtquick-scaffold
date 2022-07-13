@@ -1,7 +1,7 @@
 """
 fix typehint of Signal and Slot.
 """
-from typing import Union
+from __future__ import annotations
 
 from qtpy.QtCore import QObject
 from qtpy.QtCore import Signal
@@ -12,16 +12,17 @@ from qtpy.QtQml import QJSValue
 __global_life_cycle = []
 
 
-def slot(*argtypes: Union[type, str], name='',
-         result: Union[str, type, None] = None):
+def slot(*argtypes: type | str,
+         name: str = '',
+         result: type | None = None):
     """
     args:
-        argtypes: see also `def _reformat_argtypes`.
+        argtypes: see `def _reformat_argtypes()`.
+        name: str
+        result: see `def _reformat_result()`.
     """
-    if result not in (None, str) and type(result) is not str:
-        result = 'QVariant'
-    
     argtypes = _reformat_argtypes(argtypes)
+    result = _reformat_result(result)
     
     def decorator(func):
         nonlocal argtypes, name, result
@@ -35,27 +36,89 @@ def slot(*argtypes: Union[type, str], name='',
 
 def _reformat_argtypes(argtypes: tuple) -> tuple:
     """
-    args:
-        argtypes: tuple[union[type, str alias], ...]
-            type_alias: to reduce additionally imports for some un-basic types,
-                we support using their alias. the alias will be converted to
-                corresponding types here:
-                    'qobject'   ->  QObject
-                    'item'      ->  QObject
-                    'any'       ->  QJSValue
-                    'pyobject'  ->  QJSValue
-                    'object'    ->  QJSValue
+    mapping:
+        # <group>:
+        #   <input>: <output>  # <optional note>
+        basic types:
+            bool : bool
+            float: float
+            int  : int
+            str  : str
+        object:
+            QObject  : QObject
+            object   : QObject
+            'item'   : QObject
+            'object' : QObject
+            'qobject': QObject
+        qjsvalue:
+            dict      : QJSValue
+            list      : QJSValue
+            set       : QJSValue
+            tuple     : QJSValue
+            ...       : QJSValue
+            'any'     : QJSValue
+            'pyobject': QJSValue  # deprecated
+            '...'     : QJSValue
+        error:
+            None   : None is not convertable!
+            <other>: <other> is not convertable!
     """
     new_argtypes = []
+    
+    str_2_type = {
+        'any'     : QJSValue,
+        'item'    : QObject,
+        'object'  : QObject,
+        'pyobject': QJSValue,
+        'qobject' : QObject,
+        '...'     : QJSValue,
+    }
+    
     for t in argtypes:
-        if t in ('qobject', 'item'):
+        if isinstance(t, str):
+            if t in str_2_type:
+                t = str_2_type[t]
+            else:
+                raise Exception(f'Argtype `{t}` is not convertable!')
+        elif t in (bool, bytes, float, int, str, QObject):
+            pass
+        elif t in (object,):
             t = QObject
-        elif t in ('any', 'pyobject', 'object'):
+        elif t in (dict, list, set, tuple):
             t = QJSValue
-        elif t not in (bool, bytes, float, int, str, QObject):
-            t = QJSValue
+        else:
+            raise Exception(f'Argtype `{t}` is not convertable!')
         new_argtypes.append(t)
+    
     return tuple(new_argtypes)
+
+
+def _reformat_result(result: type | None) -> str | type | None:
+    """
+    mapping:
+        # <group>:
+        #   <input>: <output>  # <optional note>
+        basic types:
+            None : None
+            bool : bool
+            float: float
+            int  : int
+            str  : str
+        qvariant:
+            dict  : 'QVariant'
+            list  : 'QVariant'
+            object: 'QVariant'
+            set   : 'QVariant'
+            tuple : 'QVariant'
+            ...   : 'QVariant'
+        error:
+            <other>: <other> is not convertable!
+    """
+    if result in (None, bool, float, int, str):
+        return result
+    if result in (dict, list, set, tuple, object, ...):
+        return 'QVariant'
+    raise Exception(f'Result `{result}` is not convertable!')
 
 
 # -----------------------------------------------------------------------------

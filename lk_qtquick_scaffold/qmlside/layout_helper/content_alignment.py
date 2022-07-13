@@ -12,7 +12,7 @@ V_BOTTOM = 64
 
 class ContentAlignment:
     
-    @slot(QObject, str)
+    @slot(object, str)
     def quick_align(self, qobj: QObject, alignment: str):
         def _normalize_alignment(alignment: str):
             for k, v in {

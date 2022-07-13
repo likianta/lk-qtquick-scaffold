@@ -28,7 +28,7 @@ class ContainerAlignment(QQmlPropertyMap):
             if k.isupper() and not k.startswith('_'):
                 self.insert(k, getattr(Enum, k))
     
-    @slot(QObject, int)
+    @slot(object, int)
     def auto_layout(self, container: QObject, orientation: int):
         """
         size policy:
