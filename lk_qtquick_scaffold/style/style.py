@@ -20,19 +20,6 @@ class Style:
         self.font.update_from_file(f'{assets_dir}/font.yaml')
         self.motion.update_from_file(f'{assets_dir}/motion.yaml')
         self.size.update_from_file(f'{assets_dir}/size.yaml')
-        
-        # DELETE below
-        # self.color.update(
-        #     comp_bg_default='#FFFFFF',
-        #     comp_bg_darker='#F5F7FD',
-        #     comp_bg_darker_b='#DBDBF7',
-        #     comp_bg_highlighted='#C8E6FC',
-        #
-        #     frame_bg_default='#F2F2F2',
-        #     frame_bg_darker='#F5F7FD',
-        #
-        #     theme_blue='#2839FF',
-        # )
 
 
 class StyleForQml(QObject):

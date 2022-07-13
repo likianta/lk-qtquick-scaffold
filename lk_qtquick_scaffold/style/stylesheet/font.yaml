@@ -10,7 +10,7 @@ color_general_9: '#DEDEDE'
 color_dark_5: '#393355'
 color_light_5: '#F2F2F2'
 
-font_default: 'Microsoft YaHei UI'
+font_default: ''
 
 size_xs: 6
 size_s: 9
