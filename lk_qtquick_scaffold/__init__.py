@@ -6,7 +6,7 @@ if 2:  # step2: select qt api
     # this should be defined before importing qtpy.
     # refer: [lib:qtpy/__init__.py : docstring]
     import os
-    import sys
+    from importlib.util import find_spec
     
     api = ''
     if not os.getenv('QT_API'):
@@ -16,7 +16,7 @@ if 2:  # step2: select qt api
             'PySide2': 'pyside2',
             'PyQt5'  : 'pyqt5',
         }.items():
-            if api in sys.modules:
+            if find_spec(pkg):
                 print(':v2', 'Auto detected Qt API: ' + api)
                 os.environ['QT_API'] = api
                 break

@@ -15,7 +15,7 @@ class Application(QApplication):
     root: QQmlContext
     
     # the holder is made for preventing the objects which were registered to
-    # qml side from being recycled by python garbage collector incorrectly.
+    #   qml side from being recycled by python garbage collector incorrectly.
     __pyobj_holder: dict[int, QObject]
     
     def __init__(self, app_name='LK QtQuick Scaffold App', **kwargs):
@@ -51,7 +51,7 @@ class Application(QApplication):
         self.register_qmldir(relpath('../themes'))
         
         self.on_exit = super().aboutToQuit  # noqa
-        self.on_exit.connect(self._on_exit)
+        self.on_exit.connect(self._exit)
     
     def set_app_name(self, name: str):
         # just made a consistent snake-case function alias for external caller,
@@ -59,8 +59,8 @@ class Application(QApplication):
         self.setApplicationName(name)
     
     def _ui_fine_tune(self):
-        from platform import system
-        if system() == 'Windows':
+        from os import name
+        if name == 'nt':
             self.setFont('Microsoft YaHei UI')  # noqa
     
     def register_qmldir(self, qmldir: str):
@@ -112,15 +112,14 @@ class Application(QApplication):
         else:
             self.exec()
         #   warning: do not use `sys.exit(self.exec())`, because
-        #   `self.__pyobj_holder : values` will be released before qml
-        #   triggered `Component.onDestroyed`. then there will be an error
-        #   'cannot call from null!'
+        #   `self.__pyobj_holder` will be released before qml triggered
+        #   `Component.onDestroyed`. then there will be an error 'cannot call
+        #   from null!'
     
     # alias for compatible.
-    launch = run = open = start
-    
     #   https://ux.stackexchange.com/questions/106001/do-we-open-or-launch-or
     #   -startapps+&cd=1&hl=zh-CN&ct=clnk&gl=sg
+    launch = run = open = start
     
     def show_splash_screen(self, file: T.Path):
         from os.path import exists
@@ -130,7 +129,7 @@ class Application(QApplication):
         from qtpy.QtGui import QPixmap
         from qtpy.QtWidgets import QSplashScreen, QWidget
         
-        pixmap = QPixmap(file)
+        pixmap = QPixmap(file)  # noqa
         splash = QSplashScreen(pixmap, Qt.WindowStaysOnTopHint)
         splash.setMask(pixmap.mask())
         
@@ -144,8 +143,25 @@ class Application(QApplication):
         
         splash.show()
         self.processEvents()
+    
+    def _exit(self):
+        """
+        when user closes the app window, a weird thing happens that
+        `self.engine` is not released at once.
+        in the meantime, `self.__pyobj_holder` is released, which causes a
+        TypeError of calling property on a null object.
+        to resolve this, we need to explicitly clear `self.engine` before
+        `self.__pyobj_holder`.
         
-    def _on_exit(self):
+        ref:
+            keywords: QML TypeError: Cannot read property of null
+            link:
+                https://bugreports.qt.io/browse/QTBUG-81247?focusedCommentId
+                =512347&page=com.atlassian.jira.plugin.system.issuetabpanels
+                :comment-tabpanel#comment-512347
+        """
+        print('[red dim]Exit application[/]', ':r')
+        del self.engine
         self.__pyobj_holder.clear()
 
 
