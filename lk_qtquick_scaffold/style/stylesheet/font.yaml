@@ -7,6 +7,7 @@ color_general_5: '#666666'
 color_general_7: '#CCCCCC'
 color_general_9: '#DEDEDE'
 
+color_dark_1: '$color_general_7'
 color_dark_5: '#393355'
 color_light_5: '#F2F2F2'
 

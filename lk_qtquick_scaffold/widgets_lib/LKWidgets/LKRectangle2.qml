@@ -1,4 +1,5 @@
-import QtQuick
+/// a rectangle with mouse hover enabled.
+import QtQuick 2.15
 
 Rectangle {
     border.color: pressed ? borderColor2 : (hovered ? borderColor1 : borderColor0)
