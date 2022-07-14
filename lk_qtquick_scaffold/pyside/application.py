@@ -98,7 +98,7 @@ class Application(QApplication):
         from qtpy.QtQml import qmlRegisterType
         # noinspection PyTypeChecker
         qmlRegisterType(qobj_cls, package, 1, 0, name or qobj_cls.__name__)
-
+    
     def register_pyobj(self, instance: QObject, name=''):
         """
         register a QObject based instance to qml global namespace (i.e. qml's
@@ -121,13 +121,21 @@ class Application(QApplication):
     
     register = register_pyobj  # alias
     
-    def run(self, qmlfile: T.Path):
+    def run(self, qmlfile: T.Path, debug=False):
         """
-        Args:
+        args:
             qmlfile: str filepath.
                 a '.qml' file. usually it named '~/Main.qml', '~/Home.qml', etc.
                 the name case is not sensitive (you can also use lower case).
         """
+        if debug:
+            from ..qmlside import HotReloader
+            reloader = HotReloader()
+            reloader.run(qmlfile)
+        else:
+            self._run(qmlfile)
+    
+    def _run(self, qmlfile: str):
         from lk_utils.filesniff import normpath
         self.engine.load('file:///' + normpath(qmlfile, force_abspath=True))
         
@@ -145,7 +153,7 @@ class Application(QApplication):
     #   https://ux.stackexchange.com/questions/106001/do-we-open-or-launch-or
     #   -startapps+&cd=1&hl=zh-CN&ct=clnk&gl=sg
     launch = start = open = run
-
+    
     def show_splash_screen(self, file: T.Path):
         from os.path import exists
         assert exists(file)
@@ -162,7 +170,7 @@ class Application(QApplication):
             nonlocal splash
             print(':v', 'Close splash screen')
             splash.hide()
-            splash.finish(QWidget())
+            splash.finish(QWidget())  # noqa
         
         self.engine.objectCreated.connect(on_close)  # noqa
         

@@ -28,11 +28,11 @@ class HotReloader(QObject):
         self.source = 'file:///' + normpath(file, force_abspath=True)
         app.set_app_name(self.title)
         app.register(self, 'pyloader')
-        app.run(self._get_bootloader_file(file))
+        app._run(self._get_bootloader_file(file))  # noqa
         
     def dry_run(self):
         app.register(self, 'pyloader')
-        app.run(self._view_file)
+        app._run(self._view_file)  # noqa
     
     def _get_bootloader_file(self, target_ref: str) -> str:
         """

@@ -41,7 +41,6 @@ from .pyside import signal
 from .pyside import slot
 from .qmlside import Model
 from .qmlside import eval_js
-from .qmlside import hot_loader
 from .qmlside import js_eval
 from .style import pystyle
 
