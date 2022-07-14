@@ -14,7 +14,7 @@ def main(target_file: str | None, app_name: str = None):
         app_name: optional. if not set, will use hot reloader's default name -
             ([magenta]"LK Hot Reloader"[/]).
     """
-    from .main import HotReloader
+    from .hot_reloader import HotReloader
     reloader = HotReloader(app_name or 'LK Hot Reloader')
     if target_file is None:
         reloader.dry_run()
