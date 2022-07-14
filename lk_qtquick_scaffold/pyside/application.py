@@ -121,7 +121,7 @@ class Application(QApplication):
     
     register = register_pyobj  # alias
     
-    def start(self, qmlfile: T.Path):
+    def run(self, qmlfile: T.Path):
         """
         Args:
             qmlfile: str filepath.
@@ -144,8 +144,8 @@ class Application(QApplication):
     # alias for compatible.
     #   https://ux.stackexchange.com/questions/106001/do-we-open-or-launch-or
     #   -startapps+&cd=1&hl=zh-CN&ct=clnk&gl=sg
-    launch = run = open = start
-    
+    launch = start = open = run
+
     def show_splash_screen(self, file: T.Path):
         from os.path import exists
         assert exists(file)

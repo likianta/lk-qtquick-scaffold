@@ -45,7 +45,7 @@ from .qmlside import hot_loader
 from .qmlside import js_eval
 from .style import pystyle
 
-__version__ = '1.3.0'
+__version__ = '2.0.0'
 
 
 def __setup__():
