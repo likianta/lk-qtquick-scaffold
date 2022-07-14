@@ -15,13 +15,16 @@ class HotReloader(QObject):
             reload_scheme: 'default' or 'clear_cache'
                 see its only usage in `def reload`.
         """
-        from lk_utils import relpath
         super().__init__(None)
+        
         self.source = ''
         self.title = title
         self._loader = None
         self._reload_scheme = reload_scheme
-        self._view_file = relpath('./view.qml')
+        
+        from lk_utils import relpath
+        self._view_file = relpath('./view_temp.qml')
+        # # self._view_file = relpath('./view.qml')  # TODO: wip
     
     def run(self, file: str):
         from lk_utils.filesniff import normpath
@@ -83,7 +86,7 @@ class HotReloader(QObject):
     @slot()
     def reload(self):
         assert self._loader, 'Loader is not set, did you forget to call ' \
-                             '`pyloader.set_loader`?'
+                             '`set_loader`?'
         self._count += 1
     
         if self._count == 0:

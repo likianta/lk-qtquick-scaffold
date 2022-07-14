@@ -121,19 +121,13 @@ class Application(QApplication):
     
     register = register_pyobj  # alias
     
-    def run(self, qmlfile: T.Path, debug=False):
-        """
-        args:
-            qmlfile: str filepath.
-                a '.qml' file. usually it named '~/Main.qml', '~/Home.qml', etc.
-                the name case is not sensitive (you can also use lower case).
-        """
+    def run(self, qml_file: str, debug=False):
         if debug:
             from ..qmlside import HotReloader
             reloader = HotReloader()
-            reloader.run(qmlfile)
+            reloader.run(qml_file)
         else:
-            self._run(qmlfile)
+            self._run(qml_file)
     
     def _run(self, qmlfile: str):
         from lk_utils.filesniff import normpath
