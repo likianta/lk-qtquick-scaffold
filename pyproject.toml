@@ -18,8 +18,12 @@ lk-lambdex = ""
 lk-logger = ""
 lk-utils = ""
 qtpy = ""
+pyside6 = { version = "", optional = true }
+pyside2 = { version = "", optional = true }
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.extras]
+qt6 = ["pyside6"]  # pip install lk-qtquick-scaffold[qt6]
+qt5 = ["pyside2"]  # pip install lk-qtquick-scaffold[qt5]
 
 [build-system]
 requires = ["poetry"]
