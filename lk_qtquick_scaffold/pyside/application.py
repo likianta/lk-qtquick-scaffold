@@ -74,6 +74,31 @@ class Application(QApplication):
         """
         self.engine.addImportPath(qmldir)
     
+    @staticmethod
+    def register_qmltype(qobj_cls, package='LKScaffold', name: str = None):
+        """
+        ref: https://qmlbook.github.io/ch20-python/python.html#exposing-a-python
+            -class-to-qml
+        
+        to use it in qml side:
+            import <package> 1.0
+            <class_name> { ... }
+            
+        example:
+            # python side
+            class MyObject(QObject):
+                pass
+            from lk_qtquick_scaffold import app
+            app.register_qmltype(MyObject)
+            
+            # qml side
+            import LKScaffold 1.0
+            MyObject { ... }
+        """
+        from qtpy.QtQml import qmlRegisterType
+        # noinspection PyTypeChecker
+        qmlRegisterType(qobj_cls, package, 1, 0, name or qobj_cls.__name__)
+
     def register_pyobj(self, instance: QObject, name=''):
         """
         register a QObject based instance to qml global namespace (i.e. qml's

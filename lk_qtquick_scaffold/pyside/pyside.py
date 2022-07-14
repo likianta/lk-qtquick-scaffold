@@ -1,5 +1,6 @@
+from __future__ import annotations
+
 from qtpy.QtCore import QObject
-from lk_lambdex import lambdex
 
 from .register import PyRegister
 from .signal_slot import slot
@@ -28,6 +29,7 @@ class PySide(QObject, PyRegister):
     @slot(str, result=object)
     @slot(str, dict, result=object)
     def eval(self, code, kwargs: dict = None):
+        from lk_lambdex import lambdex
         # print(':v', kwargs, code)
         if kwargs is None:
             return lambdex('', code)()
@@ -64,5 +66,5 @@ class PySide(QObject, PyRegister):
         )
 
 
-pyside = PySide()
+pyside = PySide()  # noqa
 register = pyside.register_via_decorator
