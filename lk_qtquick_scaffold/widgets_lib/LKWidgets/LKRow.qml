@@ -1,19 +1,17 @@
-import QtQuick
+import QtQuick 2.15
 
 Row {
     height: pysize.row_height_m
     spacing: pysize.h_spacing_m
 
-    property bool autoSize: true
-    property bool centerAlignChildren: true
+    property string alignment: 'vcenter,vfill'
+    //  see [lib:lk-qtquick-scaffold/qmlside/layout_helper/layout_helper.py
+    //      : def auto_align : docstring].
+    property bool   autoSize: false
 
     Component.onCompleted: {
-        if (this.centerAlignChildren) {
-            for (let i = 0; i < this.children.length; i++) {
-                this.children[i].anchors.verticalCenter = Qt.binding(() => {
-                    return this.verticalCenter
-                })
-            }
+        if (this.alignment) {
+            pylayout.auto_align(this, this.alignment)
         }
         if (this.autoSize) {
             pylayout.auto_size_children(this, pylayout.HORIZONTAL)

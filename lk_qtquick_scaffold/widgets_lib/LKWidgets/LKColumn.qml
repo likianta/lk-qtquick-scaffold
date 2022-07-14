@@ -1,19 +1,15 @@
-import QtQuick
+import QtQuick 2.15
 
 Column {
     width: pysize.col_width_m
     spacing: pysize.v_spacing_m
 
-    property bool autoSize: true
-    property bool centerAlignChildren: true
+    property string alignment: 'hcenter,hfill'
+    property bool   autoSize: false
 
     Component.onCompleted: {
-        if (this.centerAlignChildren) {
-            for (let i = 0; i < this.children.length; i++) {
-                this.children[i].anchors.horizontalCenter = Qt.binding(() => {
-                    return this.horizontalCenter
-                })
-            }
+        if (this.alignment) {
+            pylayout.auto_align(this, this.alignment)
         }
         if (this.autoSize) {
             pylayout.auto_size_children(this, pylayout.VERTICAL)

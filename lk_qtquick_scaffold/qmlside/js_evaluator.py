@@ -1,3 +1,5 @@
+from re import compile
+from textwrap import dedent
 from typing import Any
 from typing import List
 
@@ -7,7 +9,7 @@ from qtpy.QtQml import QQmlComponent
 
 class T:
     class JsEvaluatorCore:
-        # `declare_pyside/qmlside/LKQmlSide/QmlSide.qml`
+        # stub for `./js_evaluator_core.qml`
         
         @staticmethod
         def bind(t_obj: QObject, s_obj: QObject, expression: str): pass
@@ -36,7 +38,7 @@ class JsEvaluator:
         from lk_utils.filesniff import relpath
         from ..pyside import app
         component = QQmlComponent(
-            app.engine, relpath('js_evaluator_controls.qml')
+            app.engine, relpath('js_evaluator_core.qml')
         )
         qobject = component.create()
         self.core = qobject
@@ -55,7 +57,7 @@ class JsEvaluator:
             a_prop, b_prop
         ), a_obj, b_obj)
     
-    def eval_js(self, code, *args):
+    def eval_js(self, code, *args):  # DELETE
         # lk.log(code.format(
         #     *(f'<QObject#{i}>' if isinstance(x, QObject)
         #       else str(x) for i, x in enumerate(args))), h='parent'
@@ -66,15 +68,21 @@ class JsEvaluator:
             list(args)
         )
     
+    _placeholder = compile(r'\$\w+')
+    
     def eval_js_2(self, code: str, kwargs: dict = None):
+        if '\n' in code:
+            code = dedent(code)
+        
         args = list(kwargs.values())
         delegated_args = {
             k: f'args[{i}]'
             for i, k in enumerate((kwargs or {}).keys())
         }
-        code = code.format(**delegated_args)
-        # if '\n' in code:
-        #     code = dedent(code)
+        code = self._placeholder.sub(
+            lambda m: delegated_args[m.group(0)[1:]], code
+        )
+        
         return self.core.eval_js(code, args)
 
 
