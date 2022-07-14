@@ -52,25 +52,18 @@ class JsEvaluator:
         #   .eval_js` here, that problem will be gone.
         print(':v2', self.core.eval_js('"JsEvaluator.core is ready"', []))
     
-    def quick_bind(self, a_obj, a_prop, b_obj, b_prop):
-        self.eval_js('{{0}}.{} = Qt.binding(() => {{1}}.{})'.format(
-            a_prop, b_prop
-        ), a_obj, b_obj)
-    
-    def eval_js(self, code, *args):  # DELETE
-        # lk.log(code.format(
-        #     *(f'<QObject#{i}>' if isinstance(x, QObject)
-        #       else str(x) for i, x in enumerate(args))), h='parent'
-        # )
-        # lk.logt('[D3345]', code)
-        return self.core.eval_js(
-            code.format(*(f'args[{i}]' for i in range(len(args)))),
-            list(args)
-        )
-    
     _placeholder = compile(r'\$\w+')
     
-    def eval_js_2(self, code: str, kwargs: dict = None):
+    def eval_js(self, code: str, kwargs: dict = None):
+        """
+        usage:
+            eval_js('''
+                for (let i = 0; i < $total; i++) {
+                    $num++
+                    console.log($num)
+                }
+            ''', {'total': 10, 'num': 100})
+        """
         if '\n' in code:
             code = dedent(code)
         
@@ -87,4 +80,4 @@ class JsEvaluator:
 
 
 js_eval = JsEvaluator()
-eval_js = js_eval.eval_js_2  # TODO
+eval_js = js_eval.eval_js
