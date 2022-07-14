@@ -31,6 +31,7 @@ class HotReloader(QObject):
         app.run(self._get_bootloader_file(file))
         
     def dry_run(self):
+        app.register(self, 'pyloader')
         app.run(self._view_file)
     
     def _get_bootloader_file(self, target_ref: str) -> str:
@@ -91,7 +92,7 @@ class HotReloader(QObject):
             return
     
         print(':dvs', f'Reload target ({self._count})')
-        if self.reload_scheme == 0:
+        if self._reload_scheme == 'default':
             # A. use "magic count" to update url but not change the source path.
             self._loader.setProperty(
                 'source', self.source + f'?magic_count={self._count}'

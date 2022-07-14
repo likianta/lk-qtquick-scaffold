@@ -3,5 +3,5 @@
 /deleted/
 /dist/
 /tests/
-/to_be_deleted/
-__pycache__
+__pycache__/
+.DS_Store
