@@ -1,61 +1,51 @@
 import QtQuick 2.15
-import QtQuick.Controls 2.15
 import QtQuick.Window 2.15
 
 //  References:
 //      https://qml.guide/live-reloading-hot-reloading-qml
 
 Window {
+    visible: true
     color: '#f2f2f2'
     flags: Qt.WindowStaysOnTopHint
     title: "Hot Reloader"
 
-    property int    p_cnt: -1
-    property string p_bg_color: pyside.call('__get_default_bg_color')
-    property string p_target: pyside.call('__get_target_to_load')
-
     Loader {
         id: _loader
         anchors.centerIn: parent
-
-        function reload() {
-            p_cnt += 1
-            console.log(
-                `================= Reload Target (${p_cnt}) =================`
-            )
-
-            _loader.source = p_target + '?magic_count=' + p_cnt
-
-//            source = ""
-//            pyside.call('__clear_component_cache')
-//            _loader.source = p_target
-//            //  this will open a new window to show the target. (because the
-//            //  target usually has a root Window widget itself.)
+        Component.onCompleted: {
+            PyHotLoaderControl.set_loader(this)
         }
     }
 
-    Button {
+    Rectangle {
         id: _btn
         anchors.centerIn: parent
         width: 160
         height: 60
-        flat: true
-        hoverEnabled: true
-        text: "Reload"
 
-        background: Rectangle {
-            id: _rect
-            color: p_bg_color
-        }
-
-        contentItem: Text {
+        Text {
+            anchors.centerIn: parent
+            color: _area.containsMouse ? '#5f00ff' : '#666666'
             font.pixelSize: 28
-            horizontalAlignment: Text.AlignHCenter
-            verticalAlignment: Text.AlignVCenter
-            text: _btn.text
+            text: 'Reload'
+//            Behavior on color {
+//                ColorAnimation {
+//                    duration: 100
+//                }
+//            }
         }
 
-        onClicked: _loader.reload()
+        MouseArea {
+            id: _area
+            anchors.fill: parent
+            hoverEnabled: true
+            onClicked: PyHotLoaderControl.reload()
+        }
+
+        Component.onCompleted: {
+            this.color = PyHotLoaderControl.get_bg_color()
+        }
     }
 
     // Rectangle {

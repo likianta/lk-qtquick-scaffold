@@ -48,9 +48,7 @@ class JsEvaluator:
         #   .QQuickItem' object has no attribute 'eval_js'". i don't know why
         #   does it happen, unless we instantly call at least once `self.core
         #   .eval_js` here, that problem will be gone.
-        print(':v2', self.core.eval_js(
-            '"JsEvaluator.core is ready to use"', []
-        ))
+        print(':v2', self.core.eval_js('"JsEvaluator.core is ready"', []))
     
     def quick_bind(self, a_obj, a_prop, b_obj, b_prop):
         self.eval_js('{{0}}.{} = Qt.binding(() => {{1}}.{})'.format(
