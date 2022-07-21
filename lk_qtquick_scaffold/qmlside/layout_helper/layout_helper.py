@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import typing as t
 from functools import partial
 
 from qtpy.QtCore import Property
@@ -10,11 +11,8 @@ from ..js_evaluator import eval_js
 from ...pyside import slot
 
 
-class Enum:  # DELETE
-    HORIZONTAL = 0
-    VERTICAL = 1
-    STRETCH = -1
-    SHRINK = -2
+class T:
+    Orientation = t.Literal['h', 'horizontal', 'v', 'vertical']
 
 
 class LayoutHelper(QObject):
@@ -35,7 +33,7 @@ class LayoutHelper(QObject):
                     vfill: child.height = container.height
                     stretch
         """
-        children = tuple(get_children(container))
+        children = get_children(container)
         
         for a in alignment.split(','):
             if a == 'hcenter':
@@ -78,7 +76,7 @@ class LayoutHelper(QObject):
                 def stretch_children(orientation: str):
                     nonlocal container
                     prop = 'width' if orientation == 'h' else 'height'
-                    children = tuple(get_children(container))
+                    children = get_children(container)
                     size_total = (container.property(prop)
                                   - container.property('spacing')
                                   * (len(children) - 1))
@@ -99,7 +97,11 @@ class LayoutHelper(QObject):
                     container.heightChanged.emit()
     
     @slot(object, int)
-    def auto_size_children(self, container: QObject, orientation: int):
+    def auto_size_children(
+            self,
+            container: QObject,
+            orientation: T.Orientation
+    ):
         """
         size policy:
             0: auto stretch to spared space.
@@ -115,9 +117,9 @@ class LayoutHelper(QObject):
             mobilize
             auto_pack
         """
-        prop_name = 'width' if orientation == Enum.HORIZONTAL else 'height'
+        prop_name = 'width' if orientation in ('h', 'horizontal') else 'height'
         if container.property(prop_name) <= 0: return
-        children = tuple(get_children(container))
+        children = get_children(container)
         total_size = self._get_total_available_size_for_children(
             container, len(children), orientation)
         # item_sizes = {}  # dict[int index, float size]
@@ -170,8 +172,11 @@ class LayoutHelper(QObject):
     
     @staticmethod
     def _get_total_available_size_for_children(
-            item: QObject, children_length: int, orientation: int) -> int:
-        if orientation == Enum.HORIZONTAL:
+            item: QObject,
+            children_length: int,
+            orientation: T.Orientation
+    ) -> int:
+        if orientation in ('h', 'horizontal'):
             return (
                     item.property('width')
                     - item.property('leftPadding')
@@ -202,7 +207,7 @@ class LayoutHelper(QObject):
     @slot(object, str)
     def equal_size_children(self, container: QObject, orientation: str):
         # roughly equal size children
-        children = tuple(get_children(container))
+        children = get_children(container)
         if orientation in ('horizontal', 'h'):
             prop = 'width'
         else:
@@ -225,4 +230,4 @@ class LayoutHelper(QObject):
             return 0
 
 
-pylayout = LayoutHelper()
+pylayout = LayoutHelper(None)
