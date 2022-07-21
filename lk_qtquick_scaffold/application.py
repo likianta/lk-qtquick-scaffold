@@ -123,8 +123,8 @@ class Application(QApplication):
     
     def run(self, qml_file: str, debug=False):
         if debug:
-            from ..qmlside import HotReloader
-            reloader = HotReloader()
+            from .qmlside import HotReloader
+            reloader = HotReloader(reload_scheme='clear_cache')
             reloader.run(qml_file)
         else:
             self._run(qml_file)

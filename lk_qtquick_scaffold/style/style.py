@@ -32,4 +32,4 @@ class StyleForQml(QObject):
 
 
 pystyle = Style()
-pystyle_for_qml = StyleForQml()
+pystyle_for_qml = StyleForQml(None)

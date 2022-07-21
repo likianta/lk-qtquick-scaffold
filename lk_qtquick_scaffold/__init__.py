@@ -33,8 +33,8 @@ if 2:  # step2: select qt api
 
 # -----------------------------------------------------------------------------
 
-from .pyside import Application
-from .pyside import app
+from .application import Application
+from .application import app
 from .pyside import pyside
 from .pyside import register
 from .pyside import signal
@@ -54,9 +54,11 @@ def __setup__():
     """
     from .qmlside import pylayout
     from .qmlside import qlogger
+    from .qmlside import widgets_backend
     from .style import pystyle_for_qml
     
     qlogger.setup()
+    widgets_backend.init(app)
     
     app.register_pyobj(pyside, 'pyside')
     app.register_pyobj(pystyle_for_qml, 'pystyle')
@@ -65,7 +67,7 @@ def __setup__():
     app.register_pyobj(pystyle.motion, 'pymotion')
     app.register_pyobj(pystyle.size, 'pysize')
     app.register_pyobj(pylayout, 'pylayout')
-    
+
 
 __setup__()
 del __setup__

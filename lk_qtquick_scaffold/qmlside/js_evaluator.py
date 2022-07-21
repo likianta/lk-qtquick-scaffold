@@ -36,7 +36,7 @@ class JsEvaluator:
     
     def __init__(self):
         from lk_utils.filesniff import relpath
-        from ..pyside import app
+        from ..application import app
         component = QQmlComponent(
             app.engine, relpath('js_evaluator_core.qml')
         )

@@ -1,3 +1,4 @@
+from . import widgets_backend
 from .hot_reloader import HotReloader
 from .js_evaluator import eval_js
 from .js_evaluator import js_eval

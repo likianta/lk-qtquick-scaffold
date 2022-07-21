@@ -4,9 +4,10 @@ fix typehint of Signal and Slot.
 from __future__ import annotations
 
 from qtpy.QtCore import QObject
-from qtpy.QtCore import Signal
 from qtpy.QtCore import Slot
 from qtpy.QtQml import QJSValue
+
+__all__ = ['signal', 'slot']
 
 # hold some objects globally (elevate their refcount), to prevent python gc.
 __global_life_cycle = []
@@ -123,7 +124,7 @@ def _reformat_result(result: type | None) -> str | type | None:
 
 # -----------------------------------------------------------------------------
 
-class SignalTypeHint:
+class SignalType:
     
     def __call__(self, *argtypes: type):
         pass
@@ -135,12 +136,14 @@ class SignalTypeHint:
         pass
 
 
-signal: SignalTypeHint
+signal: SignalType
 
 
 def __init__():
-    global signal
-    signal = Signal
+    from qtpy.QtCore import Signal
+    # # global signal
+    # # signal = Signal
+    globals()['signal'] = Signal
 
 
 __init__()

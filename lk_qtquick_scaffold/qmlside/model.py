@@ -28,7 +28,7 @@ class Model(QAbstractListModel):
     _items: T.Items
     
     def __init__(self, role_names: T.RoleNames):
-        super().__init__()
+        super().__init__(None)
         self._name_2_role = {x: i for i, x in enumerate(role_names)}
         self._role_2_name = {v: k for k, v in self._name_2_role.items()}
         self._items = []
@@ -185,7 +185,7 @@ class Model(QAbstractListModel):
         self._items[index.row()][name] = value
         self.dataChanged.emit(index, index)
     
-    def rowCount(self, parent=QModelIndex()):
+    def rowCount(self, parent=QModelIndex()):  # noqa
         return len(self._items)
     
     def roleNames(self) -> T.Dict[int, bytes]:
