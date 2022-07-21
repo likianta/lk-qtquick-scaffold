@@ -1,16 +1,16 @@
 from os import listdir
 
 from .base import ResourceManager
-from ... import path_model
 
 
 class AssetsResourceManager(ResourceManager):
-    assets_dir = path_model.assets_dir
+    from lk_utils import relpath
+    assets_dir = relpath('../../themes/Theme/Assets')
     icons_dir = f'{assets_dir}/icons'
     index: dict
     
     def __init__(self):
-        super().__init__()
+        super().__init__(None)
         self._indexing_assets()
     
     def _indexing_assets(self):
