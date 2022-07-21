@@ -3,6 +3,8 @@ fix typehint of Signal and Slot.
 """
 from __future__ import annotations
 
+from functools import wraps
+
 from qtpy.QtCore import QObject
 from qtpy.QtCore import Slot
 from qtpy.QtQml import QJSValue
@@ -26,10 +28,29 @@ def slot(*argtypes: type | str,
     result = _reformat_result(result)
     
     def decorator(func):
+        @wraps(func)
+        def func_wrapper(*args, **kwargs):
+            new_args = []
+            new_kwargs = {}
+            for arg in args:
+                if isinstance(arg, QJSValue):
+                    new_args.append(arg.toVariant())
+                else:
+                    new_args.append(arg)
+            for k, v in kwargs.items():
+                if isinstance(v, QJSValue):
+                    new_kwargs[k] = v.toVariant()
+                else:
+                    new_kwargs[k] = v
+            return func(*new_args, **new_kwargs)
+    
         nonlocal argtypes, name, result
         __global_life_cycle.append(
-            Slot(*argtypes, name=(name or func.__name__), result=result)(func)
+            Slot(*argtypes,
+                 name=(name or func.__name__),
+                 result=result)(func_wrapper)
         )
+        
         return func
     
     return decorator
@@ -42,6 +63,7 @@ def _reformat_argtypes(argtypes: tuple) -> tuple:
         #   <input>: <output>  # <optional note>
         basic types:
             bool : bool
+            bytes: bytes  # not tested!
             float: float
             int  : int
             str  : str
@@ -54,7 +76,7 @@ def _reformat_argtypes(argtypes: tuple) -> tuple:
         qjsvalue:
             dict      : QJSValue
             list      : QJSValue
-            set       : QJSValue
+            set       : QJSValue  # never happened
             tuple     : QJSValue
             ...       : QJSValue
             'any'     : QJSValue
@@ -102,6 +124,7 @@ def _reformat_result(result: type | None) -> str | type | None:
         basic types:
             None : None
             bool : bool
+            bytes: bytes  # not tested!
             float: float
             int  : int
             str  : str
@@ -109,13 +132,13 @@ def _reformat_result(result: type | None) -> str | type | None:
             dict  : 'QVariant'
             list  : 'QVariant'
             object: 'QVariant'
-            set   : 'QVariant'
+            set   : 'QVariant'  # not tested!
             tuple : 'QVariant'
             ...   : 'QVariant'
         error:
             <other>: <other> is not convertable!
     """
-    if result in (None, bool, float, int, str):
+    if result in (None, bool, bytes, float, int, str):
         return result
     if result in (dict, list, set, tuple, object, ...):
         return 'QVariant'
@@ -127,13 +150,13 @@ def _reformat_result(result: type | None) -> str | type | None:
 class SignalType:
     
     def __call__(self, *argtypes: type):
-        pass
+        ...
     
     def connect(self, func):
-        pass
+        ...
     
     def emit(self, *args):
-        pass
+        ...
 
 
 signal: SignalType
@@ -143,6 +166,7 @@ def __init__():
     from qtpy.QtCore import Signal
     # # global signal
     # # signal = Signal
+    # try to cheat with IDE checker
     globals()['signal'] = Signal
 
 
