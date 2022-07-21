@@ -33,8 +33,6 @@ class Application(QApplication):
                         have not been set: QVector("organizationName",
                         "organizationDomain")
         """
-        from lk_utils import relpath
-        
         super().__init__()
         
         self.setApplicationName(app_name)
@@ -47,8 +45,10 @@ class Application(QApplication):
         self.__pyobj_holder = {}
         
         self._ui_fine_tune()
-        self.register_qmldir(relpath('../widgets_lib'))
-        self.register_qmldir(relpath('../themes'))
+        
+        from lk_utils import relpath
+        self.register_qmldir(relpath('./widgets_lib'))
+        self.register_qmldir(relpath('./themes'))
         
         self.on_exit = super().aboutToQuit  # noqa
         self.on_exit.connect(self._exit)
@@ -65,13 +65,17 @@ class Application(QApplication):
     
     def register_qmldir(self, qmldir: str):
         """
-        Args:
-            qmldir: str dirpath
+        args:
+            qmldir:
                 this directory should include at least one sub folder, which is
                 available for qml to import.
                 the sub folders should contain one 'qmldir' file, and multiple
-                '*.qml' files. see example of '../widgets_lib'.
+                '*.qml' files. see example of './widgets_lib'.
         """
+        from os.path import exists
+        if not exists(qmldir):
+            print(':v3', 'the qmldir not exists! it may cause a "xxx is not '
+                         'installed" error in qml side.', qmldir)
         self.engine.addImportPath(qmldir)
     
     @staticmethod
@@ -124,7 +128,7 @@ class Application(QApplication):
     def run(self, qml_file: str, debug=False):
         if debug:
             from .qmlside import HotReloader
-            reloader = HotReloader(reload_scheme='clear_cache')
+            reloader = HotReloader(reload_scheme='clear_cache', app=app)
             reloader.run(qml_file)
         else:
             self._run(qml_file)
