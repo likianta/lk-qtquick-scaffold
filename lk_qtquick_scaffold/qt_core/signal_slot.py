@@ -28,6 +28,15 @@ def slot(*argtypes: type | str,
     result = _reformat_result(result)
     
     def decorator(func):
+        nonlocal argtypes, name, result
+        __global_life_cycle.append(
+            Slot(*argtypes,
+                 name=(name or func.__name__),
+                 result=result)(func)
+        )
+        
+        # return func
+        
         @wraps(func)
         def func_wrapper(*args, **kwargs):
             new_args = []
@@ -43,15 +52,8 @@ def slot(*argtypes: type | str,
                 else:
                     new_kwargs[k] = v
             return func(*new_args, **new_kwargs)
-    
-        nonlocal argtypes, name, result
-        __global_life_cycle.append(
-            Slot(*argtypes,
-                 name=(name or func.__name__),
-                 result=result)(func_wrapper)
-        )
-        
-        return func
+
+        return func_wrapper
     
     return decorator
 

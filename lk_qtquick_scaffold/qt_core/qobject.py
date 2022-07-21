@@ -9,5 +9,5 @@ class QObject(QObjectBase):
         super().__init__(parent)
     
     @slot(name='__file__', result=str)
-    def __file__(self) -> str:
+    def _self_path(self) -> str:
         return __file__
