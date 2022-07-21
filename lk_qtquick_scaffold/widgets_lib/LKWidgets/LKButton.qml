@@ -36,6 +36,7 @@ Rectangle {
     LKText {
         id: _text
         anchors.centerIn: parent
+        color: pycolor.dark_5
     }
 
     Component.onCompleted: {

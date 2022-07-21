@@ -4,7 +4,7 @@ Row {
     height: pysize.row_height_m
     spacing: pysize.h_spacing_m
 
-    property string alignment: 'vcenter,vfill'
+    property string alignment: 'vcenter'
     //  see [lib:lk-qtquick-scaffold/qmlside/layout_helper/layout_helper.py
     //      : def auto_align : docstring].
     property bool   autoSize: false
@@ -14,7 +14,7 @@ Row {
             pylayout.auto_align(this, this.alignment)
         }
         if (this.autoSize) {
-            pylayout.auto_size_children(this, pylayout.HORIZONTAL)
+            pylayout.auto_size_children(this, 'h')
         }
     }
 }
