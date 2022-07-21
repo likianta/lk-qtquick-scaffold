@@ -1,8 +1,9 @@
 from __future__ import annotations
 
+from qtpy.QtCore import QObject
+
 from lk_qtquick_scaffold import app
 from lk_qtquick_scaffold import slot
-from qtpy.QtCore import QObject
 
 __all__ = ['HotReloader']
 
@@ -32,7 +33,7 @@ class HotReloader(QObject):
         app.set_app_name(self.title)
         app.register(self, 'pyloader')
         app._run(self._get_bootloader_file(file))  # noqa
-        
+    
     def dry_run(self):
         app.register(self, 'pyloader')
         app._run(self._view_file)  # noqa
@@ -82,18 +83,18 @@ class HotReloader(QObject):
     @slot(object)
     def set_loader(self, loader: QObject):
         self._loader = loader
-        
+    
     @slot()
     def reload(self):
         assert self._loader, 'Loader is not set, did you forget to call ' \
                              '`set_loader`?'
         self._count += 1
-    
+        
         if self._count == 0:
             # it's the first time to load.
             self._loader.setProperty('source', self.source)
             return
-    
+        
         print(':dvs', f'Reload target ({self._count})')
         if self._reload_scheme == 'default':
             # A. use "magic count" to update url but not change the source path.

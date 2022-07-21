@@ -6,7 +6,7 @@ from qtpy.QtQml import QQmlPropertyMap
 
 from ..js_evaluator import eval_js
 from ..js_evaluator import js_eval
-from ...pyside import slot
+from ...qt_core import slot
 
 
 class T:

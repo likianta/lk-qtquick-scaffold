@@ -3,7 +3,7 @@ from typing import *
 from qtpy.QtCore import QObject
 
 from ..js_evaluator import eval_js
-from ...pyside import slot
+from ...qt_core import slot
 
 
 class T:  # TypeHint

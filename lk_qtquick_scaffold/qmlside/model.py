@@ -1,7 +1,7 @@
 from qtpy.QtCore import QAbstractListModel
 from qtpy.QtCore import QModelIndex
 
-from ..pyside import slot
+from ..qt_core import slot
 
 
 class T:  # 'TypeHint'

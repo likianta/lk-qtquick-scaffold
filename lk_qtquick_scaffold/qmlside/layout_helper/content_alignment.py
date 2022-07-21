@@ -1,6 +1,6 @@
 from qtpy.QtCore import QObject
 
-from ...pyside import slot
+from ...qt_core import slot
 
 H_LEFT = 1
 H_CENTER = 4

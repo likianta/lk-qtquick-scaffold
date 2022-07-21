@@ -37,11 +37,11 @@ from .application import Application
 from .application import app
 from .pyside import pyside
 from .pyside import register
-from .pyside import signal
-from .pyside import slot
 from .qmlside import Model
 from .qmlside import eval_js
 from .qmlside import js_eval
+from .qt_core import signal
+from .qt_core import slot
 from .style import pystyle
 
 __version__ = '2.0.0'

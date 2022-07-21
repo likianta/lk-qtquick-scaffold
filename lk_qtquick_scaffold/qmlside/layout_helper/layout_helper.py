@@ -4,11 +4,11 @@ import typing as t
 from functools import partial
 
 from qtpy.QtCore import Property
-from qtpy.QtCore import QObject
 
 from ._patch import get_children
 from ..js_evaluator import eval_js
-from ...pyside import slot
+from ...qt_core import QObject
+from ...qt_core import slot
 
 
 class T:

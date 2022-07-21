@@ -1,9 +1,8 @@
 from __future__ import annotations
 
-from qtpy.QtCore import QObject
-
 from .register import PyRegister
-from .signal_slot import slot
+from ..qt_core import QObject
+from ..qt_core import slot
 
 
 class PySide(QObject, PyRegister):
