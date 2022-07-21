@@ -2,21 +2,26 @@ from __future__ import annotations
 
 from qtpy.QtCore import QObject
 
-from lk_qtquick_scaffold import app
-from lk_qtquick_scaffold import slot
+from ...qt_core import slot
 
 __all__ = ['HotReloader']
 
 
 class HotReloader(QObject):
     
-    def __init__(self, title='LK Hot Reloader', reload_scheme='default'):
+    def __init__(self, title='LK Hot Reloader', reload_scheme='default',
+                 app=None):
         """
         args:
             reload_scheme: 'default' or 'clear_cache'
                 see its only usage in `def reload`.
         """
         super().__init__(None)
+        if app is None:
+            from ...application import app
+            self._app = app
+        else:
+            self._app = app
         
         self.source = ''
         self.title = title
@@ -24,19 +29,19 @@ class HotReloader(QObject):
         self._reload_scheme = reload_scheme
         
         from lk_utils import relpath
-        self._view_file = relpath('./view_temp.qml')
+        self._view_file = relpath('legacy_view.qml')
         # # self._view_file = relpath('./view.qml')  # TODO: wip
     
     def run(self, file: str):
         from lk_utils.filesniff import normpath
         self.source = 'file:///' + normpath(file, force_abspath=True)
-        app.set_app_name(self.title)
-        app.register(self, 'pyloader')
-        app._run(self._get_bootloader_file(file))  # noqa
+        self._app.set_app_name(self.title)
+        self._app.register(self, 'pyloader')
+        self._app._run(self._get_bootloader_file(file))  # noqa
     
     def dry_run(self):
-        app.register(self, 'pyloader')
-        app._run(self._view_file)  # noqa
+        self._app.register(self, 'pyloader')
+        self._app._run(self._view_file)  # noqa
     
     def _get_bootloader_file(self, target_ref: str) -> str:
         """
@@ -104,5 +109,5 @@ class HotReloader(QObject):
         else:
             # B. clear component cache to force reload.
             self._loader.setProperty('source', '')
-            app.engine.clearComponentCache()
+            self._app.engine.clearComponentCache()
             self._loader.setProperty('source', self.source)
