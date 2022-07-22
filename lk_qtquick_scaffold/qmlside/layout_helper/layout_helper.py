@@ -5,7 +5,7 @@ from functools import partial
 
 from ..js_evaluator import eval_js
 from ...qt_core import QObject
-from ...qt_core import bind_func
+from ...qt_core import bind_func  # noqa
 from ...qt_core import slot
 
 
@@ -92,12 +92,12 @@ class LayoutHelper(QObject):
                     )
                     container.heightChanged.emit()
     
-    @slot(object, str)
+    @slot(object, str, result=bool)
     def auto_size_children(
             self,
             container: QObject,
             orientation: T.Orientation
-    ) -> None:
+    ) -> bool:
         """
         size policy:
             0: auto stretch to spared space.
@@ -112,14 +112,15 @@ class LayoutHelper(QObject):
         TODO: method rename (candidate names):
             mobilize
             auto_pack
+        
+        return: is dynamical binding effective?
+            True means whenever container's size changed, this method should be
+            called again.
         """
         prop_name = 'width' if orientation in ('h', 'horizontal') else 'height'
-        if container.property(prop_name) <= 0: return
+        # if container.property(prop_name) <= 0: return False
         
         children = container.children()
-        total_size = self._get_total_available_size_for_children(
-            container, len(children), orientation)
-        print(orientation, len(children), total_size)
         
         elastic_items: dict[int, float] = {}  # dict[int index, float ratio]
         stretch_items: dict[int, int] = {}  # dict[int index, int _]
@@ -139,25 +140,11 @@ class LayoutHelper(QObject):
                 claimed_size += size
         
         if not elastic_items and not stretch_items:
-            return
+            return False
         
         self._auto_size_children(
-            container, claimed_size, prop_name,
+            container, orientation, claimed_size,
             elastic_items, stretch_items
-        )
-        
-        # ---------------------------------------------------------------------
-        
-        bind_func(
-            container, f'{prop_name}Changed',
-            partial(
-                self._auto_size_children,
-                container=container,
-                claimed_size=claimed_size,
-                prop_name=prop_name,
-                elastic_items=elastic_items,
-                stretch_items=stretch_items,
-            )
         )
         
         print(':l', 'overview container and children sizes:',
@@ -165,18 +152,42 @@ class LayoutHelper(QObject):
               {(x.property('objectName') or 'child') + f'#{idx}': (
                   x.property('width'), x.property('height')
               ) for idx, x in enumerate(children)})
+        
+        # TODO: if children count is changed, trigger this method again.
+        bind_func(
+            container, f'{prop_name}Changed',
+            partial(
+                self._auto_size_children,
+                container=container,
+                orientation=orientation,
+                claimed_size=claimed_size,
+                elastic_items=elastic_items,
+                stretch_items=stretch_items,
+            )
+        )
+        
+        return True
     
-    @staticmethod
     def _auto_size_children(
-            container: QObject, claimed_size: int, prop_name: str,
-            elastic_items: dict[int, float], stretch_items: dict[int, int]
+            self,
+            container: QObject,
+            orientation: T.Orientation,
+            claimed_size: int,
+            elastic_items: dict[int, float],
+            stretch_items: dict[int, int]
     ) -> None:
         """
         note: param `stretch_items`.values() are useless (they are all zero), 
             it is made just for keeping same type form with `elastic_items`.
         """
+        prop_name = 'width' if orientation in ('h', 'horizontal') else 'height'
+        
         children = container.children()
-        unclaimed_size = container.property(prop_name) - claimed_size
+        total_spare_size = self._get_total_available_size_for_children(
+            container, len(children), orientation)
+        unclaimed_size = total_spare_size - claimed_size
+        print(container.property(prop_name), total_spare_size, claimed_size,
+              unclaimed_size, orientation, len(children), ':l')
         
         if unclaimed_size <= 0:
             # fast finish leftovers
