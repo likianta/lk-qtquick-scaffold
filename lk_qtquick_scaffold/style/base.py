@@ -18,9 +18,16 @@ class Base(QQmlPropertyMap):
     def update_from_file(self, file: str):
         from lk_utils import loads
         data: dict = loads(file)
-        for k, v in data.items():
+        for i, (k, v) in enumerate(data.items()):
             if isinstance(v, str) and v.startswith('$'):
-                data[k] = data[v[1:]]
+                try:
+                    data[k] = data[v[1:]]
+                except KeyError as e:
+                    print(':v4',
+                          'Failed dynamically assign value to key'
+                          '(source key does not exist)! '
+                          'index: {}, key: {}, value: {}'.format(i, k, v))
+                    raise e
         self.update(**data)
     
     def _get_abbrs(self, name: str) -> (str, ...):
