@@ -17,6 +17,8 @@ LKRectangle {
     property alias textColor: _input.color
     property alias textHint: _placeholder.text
 
+    signal textEdited(string text)
+
     Loader {
         // a workaround for adjusting cursor shape
         id: _loader
@@ -55,5 +57,9 @@ LKRectangle {
         anchors.fill: _placeholder
         clip: true
         selectByMouse: true
+        onTextEdited: {
+//            console.log(this.text, this.displayText)
+            root.textEdited(this.text)
+        }
     }
 }

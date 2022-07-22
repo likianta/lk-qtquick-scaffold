@@ -10,14 +10,9 @@ LKProgress {
     Item {
         id: _indicator
         anchors.verticalCenter: parent.verticalCenter
-        x: 0
+        x: root.progWidth * root.__progValue
         width: root.draggableZone
         height: root.draggableZone
-
-        onXChanged: {
-            if (root.demoMode) { return }
-            root.progValue = this.x / root.progWidth
-        }
 
         Behavior on x {
             enabled: root.demoMode
@@ -74,23 +69,23 @@ LKProgress {
             : _indicator_area.containsMouse ? Qt.OpenHandCursor
             : Qt.ArrowCursor
 
-        function setIndicatorPos(x) {
-            if (x < 0) {
-                _indicator.x = 0
-            } else if (x > root.progWidth) {
-                _indicator.x = root.progWidth
+        function updateProgress(x) {
+            if (x <= 0) {
+                root.progValue = 0
+            } else if (x >= root.progWidth) {
+                root.progValue = 1
             } else {
-                _indicator.x = x
+                root.progValue = x / root.progWidth
             }
         }
 
         onClicked: (mouse) => {
-            this.setIndicatorPos(mouse.x)
+            this.updateProgress(mouse.x)
         }
 
         onPositionChanged: (mouse) => {
             if (this.containsPress) {
-                this.setIndicatorPos(mouse.x)
+                this.updateProgress(mouse.x)
             }
         }
     }
@@ -98,9 +93,6 @@ LKProgress {
     Component.onCompleted: {
         root.demoModeChanged.connect(() => {
             if (root.demoMode) {
-                root.progValueChanged.connect(() => {
-                    _indicator.x = root.progValue * root.progWidth
-                })
                 root.textClicked.connect(() => {
                     root.draggable = !root.draggable
                 })

@@ -4,14 +4,20 @@ Item {
     id: root
 
     property bool   demoMode: false
-    property int    precision: 0
+    property int    precision: 0  // suggest 0 or 2
     property string progColorBg: pycolor.prog_bg
     property string progColorFg: pycolor.prog_fg
     property alias  progWidth: _prog_bg.width
     property int    progHeight: 4
     property int    progRadius: progHeight / 2
-    property real   progValue: 0  // 0.0 ~ 1.0
+    property real   progValue: 0  // usually 0.0 ~ 1.0, allow overflows.
+    property int    __animDuration: 100  // 100ms
     property int    __padding: 4
+    property real   __progValue: {  // 0.0 ~ 1.0
+        if (progValue < 0) { return 0 }
+        if (progValue > 1) { return 1 }
+        return progValue
+    }
 
     signal textClicked()
 
@@ -30,7 +36,7 @@ Item {
         LKRectangle {
             id: _prog_fg
             anchors.left: parent.left
-            width: parent.width * root.progValue
+            width: parent.width * root.__progValue
             height: parent.height
 //            radius: parent.radius
             color: root.progColorFg
@@ -90,11 +96,11 @@ Item {
             verticalCenter: parent.verticalCenter
         }
 
-        property real __value: root.progValue
+        property real __value: root.__progValue
 
         Behavior on __value {
             NumberAnimation {
-                duration: 200
+                duration: root.__animDuration
             }
         }
 

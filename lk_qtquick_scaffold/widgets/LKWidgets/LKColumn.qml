@@ -4,7 +4,8 @@ Column {
     width: pysize.col_width_m
     spacing: pysize.v_spacing_m
 
-    property string alignment: 'hcenter,hfill'
+    property string alignment: 'hcenter'
+    //  warning: if child type is Repeater, the `alignment` cannot work.
     property bool   autoSize: false
 
     Component.onCompleted: {
@@ -12,7 +13,7 @@ Column {
             pylayout.auto_align(this, this.alignment)
         }
         if (this.autoSize) {
-            pylayout.auto_size_children(this, pylayout.VERTICAL)
+            pylayout.auto_size_children(this, 'v')
         }
     }
 }
