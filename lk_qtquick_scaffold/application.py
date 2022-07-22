@@ -74,8 +74,8 @@ class Application(QApplication):
         """
         from os.path import exists
         if not exists(qmldir):
-            print(':v3', 'the qmldir not exists! it may cause a "xxx is not '
-                         'installed" error in qml side.', qmldir)
+            print(':v3p', 'The qmldir not exists! It may cause a "xxx is not '
+                          'installed" error in qml side.', qmldir)
         self.engine.addImportPath(qmldir)
     
     @staticmethod

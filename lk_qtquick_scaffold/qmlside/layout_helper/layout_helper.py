@@ -147,11 +147,11 @@ class LayoutHelper(QObject):
             elastic_items, stretch_items
         )
         
-        print(':l', 'overview container and children sizes:',
-              (container.property('width'), container.property('height')),
-              {(x.property('objectName') or 'child') + f'#{idx}': (
-                  x.property('width'), x.property('height')
-              ) for idx, x in enumerate(children)})
+        # print(':l', 'overview container and children sizes:',
+        #       (container.property('width'), container.property('height')),
+        #       {(x.property('objectName') or 'child') + f'#{idx}': (
+        #           x.property('width'), x.property('height')
+        #       ) for idx, x in enumerate(children)})
         
         # TODO: if children count is changed, trigger this method again.
         bind_func(
@@ -186,8 +186,8 @@ class LayoutHelper(QObject):
         total_spare_size = self._get_total_available_size_for_children(
             container, len(children), orientation)
         unclaimed_size = total_spare_size - claimed_size
-        print(container.property(prop_name), total_spare_size, claimed_size,
-              unclaimed_size, orientation, len(children), ':l')
+        # print(container.property(prop_name), total_spare_size, claimed_size,
+        #       unclaimed_size, orientation, len(children), ':l')
         
         if unclaimed_size <= 0:
             # fast finish leftovers

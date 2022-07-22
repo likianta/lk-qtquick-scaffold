@@ -40,6 +40,7 @@ from .pyside import register
 from .qmlside import Model
 from .qmlside import eval_js
 from .qmlside import js_eval
+from .qt_core import QObject
 from .qt_core import signal
 from .qt_core import slot
 from .style import pystyle
