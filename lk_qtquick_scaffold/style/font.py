@@ -11,14 +11,15 @@ class Font(Base):
     def update_from_file(self, file: str):
         from lk_utils import loads
         data: dict = loads(file)
-        for k, v in data.items():
-            if k == 'font_default' and v == '':
+        
+        if 'font_default' in data:
+            if data['font_default'] == '':
                 from qtpy.QtWidgets import QApplication
                 from os import name
                 if name == 'nt':
-                    v = 'Microsoft YaHei UI'
+                    font = 'Microsoft YaHei UI'
                 else:
-                    v = QApplication.font().family()  # noqa
-            if isinstance(v, str) and v.startswith('$'):
-                data[k] = data[v[1:]]
-        self.update(**data)
+                    font = QApplication.font().family()  # noqa
+                data['font_default'] = font
+        
+        self.update(data)
