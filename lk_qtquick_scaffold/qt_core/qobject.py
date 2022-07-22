@@ -1,3 +1,5 @@
+import typing as t
+
 from qtpy.QtCore import QObject as QObjectBase
 
 from .signal_slot import slot
@@ -11,3 +13,9 @@ class QObject(QObjectBase):
     @slot(name='__file__', result=str)
     def _self_path(self) -> str:
         return __file__
+    
+    def property(self, name: str) -> t.Any:
+        return super().property(name)  # type: ignore
+    
+    def setProperty(self, name: str, value: t.Any) -> None:
+        return super().setProperty(name, value)  # type: ignore

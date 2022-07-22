@@ -156,7 +156,7 @@ class LayoutHelper(QObject):
         
         if unclaimed_size <= 0:
             fast_finish_leftovers()
-            return
+            # do not return here.
         
         left_count = len(children) - len(item_sizes)
         left_size_average = unclaimed_size / left_count
@@ -224,10 +224,10 @@ class LayoutHelper(QObject):
             (the value is Qt.LeftToRight(=0) or Qt.RightToLeft(=1)), while
             column doesn't have this property(=None).
         """
-        if container.property('effectiveLayoutDirection') is None:
-            return 1
+        if container.property('effectiveLayoutDirection') is not None:
+            return 0  # row
         else:
-            return 0
+            return 1  # column
 
 
 pylayout = LayoutHelper(None)
