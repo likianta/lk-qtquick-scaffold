@@ -3,11 +3,9 @@ from __future__ import annotations
 import typing as t
 from functools import partial
 
-from qtpy.QtCore import Property
-
-from ._patch import get_children
 from ..js_evaluator import eval_js
 from ...qt_core import QObject
+from ...qt_core import bind_func
 from ...qt_core import slot
 
 
@@ -16,8 +14,6 @@ class T:
 
 
 class LayoutHelper(QObject):
-    HORIZONTAL = Property(int, lambda _: 0, constant=True, final=True)
-    VERTICAL = Property(int, lambda _: 1, constant=True, final=True)
     
     @slot(object, str)
     def auto_align(self, container: QObject, alignment: str):
@@ -33,7 +29,7 @@ class LayoutHelper(QObject):
                     vfill: child.height = container.height
                     stretch
         """
-        children = get_children(container)
+        children = container.children()
         
         for a in alignment.split(','):
             if a == 'hcenter':
@@ -56,7 +52,7 @@ class LayoutHelper(QObject):
                 def resize_children(orientation: str):
                     nonlocal container
                     prop = 'width' if orientation == 'h' else 'height'
-                    for child in get_children(container):
+                    for child in container.children():
                         child.setProperty(prop, container.property(prop))
                 
                 if a == 'hfill':
@@ -76,13 +72,13 @@ class LayoutHelper(QObject):
                 def stretch_children(orientation: str):
                     nonlocal container
                     prop = 'width' if orientation == 'h' else 'height'
-                    children = get_children(container)
+                    children = container.children()
                     size_total = (container.property(prop)
                                   - container.property('spacing')
                                   * (len(children) - 1))
                     size_aver = size_total / len(children)
                     # print(':v', prop, size_total, size_aver)
-                    for child in get_children(container):
+                    for child in container.children():
                         child.setProperty(prop, size_aver)
                 
                 if container_type == 0:
@@ -96,18 +92,18 @@ class LayoutHelper(QObject):
                     )
                     container.heightChanged.emit()
     
-    @slot(object, int)
+    @slot(object, str)
     def auto_size_children(
             self,
             container: QObject,
             orientation: T.Orientation
-    ):
+    ) -> None:
         """
         size policy:
             0: auto stretch to spared space.
             0 ~ 1: the ratio of spared space.
             1+: regular pixel point.
-
+        
         workflow:
             1. get total space
             2. consume used space
@@ -119,76 +115,120 @@ class LayoutHelper(QObject):
         """
         prop_name = 'width' if orientation in ('h', 'horizontal') else 'height'
         if container.property(prop_name) <= 0: return
-        children = get_children(container)
+        
+        children = container.children()
         total_size = self._get_total_available_size_for_children(
             container, len(children), orientation)
-        # item_sizes = {}  # dict[int index, float size]
-        item_sizes = []  # list[int index]
+        print(orientation, len(children), total_size)
         
-        unclaimed_size = total_size
+        elastic_items: dict[int, float] = {}  # dict[int index, float ratio]
+        stretch_items: dict[int, int] = {}  # dict[int index, int _]
+        #   note: stretch_items.values() are useless (they are all zeros). it
+        #   is made just for keeping the same form with elastic_items.
+        
+        claimed_size = 0
         for idx, item in enumerate(children):
             size = item.property(prop_name)
             if size < 0:
                 raise ValueError('cannot allocate negative size', idx, item)
-            if size >= 1:
-                item_sizes.append(idx)
-                unclaimed_size -= size
+            elif size == 0:
+                stretch_items[idx] = 0
+            elif 0 < size < 1:
+                elastic_items[idx] = size
+            else:
+                claimed_size += size
         
-        def fast_finish_leftovers():
-            for idx, item in enumerate(children):
-                if idx not in item_sizes:
-                    item.setProperty(prop_name, 0)
-        
-        if unclaimed_size <= 0:
-            fast_finish_leftovers()
+        if not elastic_items and not stretch_items:
             return
         
-        total_unclaimed_size = unclaimed_size
-        for idx, item in enumerate(children):
-            size = item.property(prop_name)
-            if idx not in item_sizes:
-                if 0 < size < 1:
-                    ratio = size
-                    size = total_unclaimed_size * ratio
-                    item.setProperty(prop_name, size)
-                    item_sizes.append(idx)
-                    unclaimed_size -= size
+        self._auto_size_children(
+            container, claimed_size, prop_name,
+            elastic_items, stretch_items
+        )
+        
+        # ---------------------------------------------------------------------
+        
+        bind_func(
+            container, f'{prop_name}Changed',
+            partial(
+                self._auto_size_children,
+                container=container,
+                claimed_size=claimed_size,
+                prop_name=prop_name,
+                elastic_items=elastic_items,
+                stretch_items=stretch_items,
+            )
+        )
+        
+        print(':l', 'overview container and children sizes:',
+              (container.property('width'), container.property('height')),
+              {(x.property('objectName') or 'child') + f'#{idx}': (
+                  x.property('width'), x.property('height')
+              ) for idx, x in enumerate(children)})
+    
+    @staticmethod
+    def _auto_size_children(
+            container: QObject, claimed_size: int, prop_name: str,
+            elastic_items: dict[int, float], stretch_items: dict[int, int]
+    ) -> None:
+        """
+        note: param `stretch_items`.values() are useless (they are all zero), 
+            it is made just for keeping same type form with `elastic_items`.
+        """
+        children = container.children()
+        unclaimed_size = container.property(prop_name) - claimed_size
         
         if unclaimed_size <= 0:
-            fast_finish_leftovers()
-            # do not return here.
+            # fast finish leftovers
+            for idx, item in enumerate(children):
+                if idx in elastic_items:
+                    item.setProperty(prop_name, 0)
+                # note: no need to check if idx in stretch_items, because their
+                # size is already 0.
+            return
         
-        left_count = len(children) - len(item_sizes)
-        left_size_average = unclaimed_size / left_count
-        for idx, item in enumerate(children):
-            if idx not in item_sizes:
-                item.setProperty(prop_name, left_size_average)
+        # allocate elastic items
+        total_unclaimed_size = unclaimed_size
+        for idx, ratio in elastic_items.items():
+            child = children[idx]
+            size = total_unclaimed_size * ratio
+            child.setProperty(prop_name, size)
+            unclaimed_size -= size
         
-        print(':d')
-        print(':sv2', (container.property('width'), container.property('height')))
-        for idx, item in enumerate(children):
-            print(idx, item.property('objectName'),
-                  (item.property('width'), item.property('height')), ':s')
+        if unclaimed_size <= 0:
+            return
+        
+        # allocate stretch items
+        total_unclaimed_size = unclaimed_size
+        stretch_items_count = len(stretch_items)
+        stretch_item_size_aver = total_unclaimed_size / stretch_items_count
+        for idx in stretch_items.keys():
+            child = children[idx]
+            child.setProperty(prop_name, stretch_item_size_aver)
     
     @staticmethod
     def _get_total_available_size_for_children(
             item: QObject,
-            children_length: int,
+            children_count: int,
             orientation: T.Orientation
     ) -> int:
+        # print(':lp', {p: item.property(p) for p in (
+        #     'width', 'height', 'spacing', 'padding',
+        #     'leftPadding', 'rightPadding', 'topPadding', 'bottomPadding'
+        # )})
         if orientation in ('h', 'horizontal'):
             return (
                     item.property('width')
                     - item.property('leftPadding')
                     - item.property('rightPadding')
-                    - item.property('spacing') * (children_length - 1)
+                    - item.property('spacing') * (children_count - 1)
             )
         else:
             return (
                     item.property('height')
                     - item.property('topPadding')
                     - item.property('bottomPadding')
-                    - item.property('spacing') * (children_length - 1)
+                    - item.property('spacing') * (children_count - 1)
             )
     
     @slot(list, result=tuple)
@@ -207,7 +247,7 @@ class LayoutHelper(QObject):
     @slot(object, str)
     def equal_size_children(self, container: QObject, orientation: str):
         # roughly equal size children
-        children = get_children(container)
+        children = container.children()
         if orientation in ('horizontal', 'h'):
             prop = 'width'
         else:
