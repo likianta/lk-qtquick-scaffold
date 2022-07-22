@@ -16,7 +16,7 @@ class Application(QApplication):
     
     # the holder is made for preventing the objects which were registered to
     #   qml side from being recycled by python garbage collector incorrectly.
-    __pyobj_holder: dict[int, QObject]
+    __hidden_ref: dict[int, QObject]
     
     def __init__(self, app_name='LK QtQuick Scaffold App', **kwargs):
         """
@@ -42,7 +42,7 @@ class Application(QApplication):
         
         self.engine = QQmlApplicationEngine()
         self.root = self.engine.rootContext()
-        self.__pyobj_holder = {}
+        self.__hidden_ref = {}
         
         self._ui_fine_tune()
         
@@ -121,7 +121,7 @@ class Application(QApplication):
         """
         name = name or instance.__class__.__name__
         self.root.setContextProperty(name, instance)
-        self.__pyobj_holder[id(instance)] = instance
+        self.__hidden_ref[id(instance)] = instance
     
     register = register_pyobj  # alias
     
@@ -143,7 +143,7 @@ class Application(QApplication):
         else:
             self.exec()
         #   warning: do not use `sys.exit(self.exec())`, because
-        #   `self.__pyobj_holder` will be released before qml triggered
+        #   `self.__hidden_ref` will be released before qml triggered
         #   `Component.onDestroyed`. then there will be an error 'cannot call
         #   from null!'
     
@@ -179,10 +179,10 @@ class Application(QApplication):
         """
         when user closes the app window, a weird thing happens that
         `self.engine` is not released at once.
-        in the meantime, `self.__pyobj_holder` is released, which causes a
+        in the meantime, `self.__hidden_ref` is released, which causes a
         TypeError of calling property on a null object.
         to resolve this, we need to explicitly clear `self.engine` before
-        `self.__pyobj_holder`.
+        `self.__hidden_ref`.
         
         ref:
             keywords: QML TypeError: Cannot read property of null
@@ -193,7 +193,7 @@ class Application(QApplication):
         """
         print('[red dim]Exit application[/]', ':r')
         del self.engine
-        self.__pyobj_holder.clear()
+        self.__hidden_ref.clear()
 
 
 app = Application()

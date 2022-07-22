@@ -12,7 +12,7 @@ from qtpy.QtQml import QJSValue
 __all__ = ['signal', 'slot']
 
 # hold some objects globally (elevate their refcount), to prevent python gc.
-__global_life_cycle = []
+__hidden_ref = []
 
 
 def slot(*argtypes: type | str,
@@ -29,7 +29,7 @@ def slot(*argtypes: type | str,
     
     def decorator(func):
         nonlocal argtypes, name, result
-        __global_life_cycle.append(
+        __hidden_ref.append(
             Slot(*argtypes,
                  name=(name or func.__name__),
                  result=result)(func)
