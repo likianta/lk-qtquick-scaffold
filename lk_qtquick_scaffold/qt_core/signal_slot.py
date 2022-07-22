@@ -3,6 +3,7 @@ fix typehint of Signal and Slot.
 """
 from __future__ import annotations
 
+from functools import partial
 from functools import wraps
 
 from qtpy.QtCore import QObject
@@ -35,24 +36,33 @@ def slot(*argtypes: type | str,
                  result=result)(func)
         )
         
-        # return func
-        
         @wraps(func)
         def func_wrapper(*args, **kwargs):
+            from .qobject import get_children
+            
             new_args = []
             new_kwargs = {}
+            
             for arg in args:
                 if isinstance(arg, QJSValue):
                     new_args.append(arg.toVariant())
+                elif isinstance(arg, QObject):
+                    setattr(arg, 'children', partial(get_children, arg))
+                    new_args.append(arg)
                 else:
                     new_args.append(arg)
+            
             for k, v in kwargs.items():
                 if isinstance(v, QJSValue):
                     new_kwargs[k] = v.toVariant()
+                elif isinstance(v, QObject):
+                    setattr(v, 'children', partial(get_children, v))
+                    new_kwargs[k] = v
                 else:
                     new_kwargs[k] = v
+            
             return func(*new_args, **new_kwargs)
-
+        
         return func_wrapper
     
     return decorator

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import typing as t
 
 from qtpy.QtCore import QObject as QObjectBase
@@ -19,3 +21,17 @@ class QObject(QObjectBase):
     
     def setProperty(self, name: str, value: t.Any) -> None:
         return super().setProperty(name, value)  # type: ignore
+
+
+def get_children(self) -> list[QObjectBase]:
+    """ a patch method for QObject.children().
+    
+    see only usage in [./signal_slot.py : def slot : def decorator : def
+        func_wrapper].
+    """
+    out = []
+    for i in QObjectBase.children(self):
+        if i.property('enabled') is None:
+            continue
+        out.append(i)
+    return out
