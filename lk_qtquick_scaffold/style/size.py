@@ -29,9 +29,16 @@ examples:
     - margin_xl
 """
 from .base import Base
+from ..qt_core import slot
 
 
 class Size(Base):
+    
     def _get_abbrs(self, name: str) -> (str, ...):
         if name.endswith('_m'):
             yield name[:-2]
+    
+    @slot(str, result=int)
+    @slot(str, int, result=int)
+    def get_size_of_text(self):
+        pass

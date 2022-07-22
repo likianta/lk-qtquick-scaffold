@@ -5,17 +5,24 @@ LKRectangle {
     width: pysize.edit_width
     height: pysize.edit_height
     border.width: 1
-    border.color: pycolor.border_normal
-    color: _input.activeFocus ? pycolor.white : pycolor.transparent
+    border.color: _input.activeFocus ? colorBorderActive : colorBorderDefault
+    color: _input.activeFocus ? colorBgActive : colorBgDefault
 
-    property alias activeFocus_: _input.activeFocus
-    property int   cursorShape: -1
-    property alias displayText: _input.displayText
-    property alias focus_: _input.focus
-    property alias inputMask: _input.inputMask
-    property alias text: _input.text
-    property alias textColor: _input.color
-    property alias textHint: _placeholder.text
+    property alias  activeFocus_: _input.activeFocus
+    property string colorBgDefault: pycolor.input_bg_normal
+    property string colorBgActive: pycolor.input_bg_active
+    property string colorBorderDefault: pycolor.input_border_normal
+    property string colorBorderActive: pycolor.input_border_active
+    property string colorBottomHighlight: pycolor.input_indicator_active
+    property int    cursorShape: -1
+    property alias  displayText: _input.displayText
+    property alias  focus_: _input.focus
+    property alias  inputMask: _input.inputMask
+    property bool   showIndicator: false
+//    property bool   showIndicator: Boolean(colorBottomHighlight)
+    property alias  text: _input.text
+    property alias  textColor: _input.color
+    property alias  textHint: _placeholder.text
 
     signal textEdited(string text)
 
@@ -41,6 +48,7 @@ LKRectangle {
 
     Text {
         id: _placeholder
+        visible: _placeholder.text && !_input.text
         anchors {
             left: parent.left
             right: parent.right
@@ -48,18 +56,30 @@ LKRectangle {
             rightMargin: 8
             verticalCenter: parent.verticalCenter
         }
-        color: pycolor.border_normal
-        visible: _placeholder.text && !_input.text
+        color: pycolor.text_hint
     }
 
     TextInput {
         id: _input
         anchors.fill: _placeholder
         clip: true
+        color: pycolor.text_normal
         selectByMouse: true
         onTextEdited: {
 //            console.log(this.text, this.displayText)
             root.textEdited(this.text)
         }
+    }
+
+    Rectangle {
+        id: _bottom_highlight
+        visible: root.showIndicator
+        anchors.bottom: parent.bottom
+//        anchors.bottomMargin: 1
+        anchors.horizontalCenter: parent.horizontalCenter
+        width: parent.width - 2
+        height: _input.activeFocus ? 2 : 0
+        radius: parent.radius
+        color: root.colorBottomHighlight
     }
 }

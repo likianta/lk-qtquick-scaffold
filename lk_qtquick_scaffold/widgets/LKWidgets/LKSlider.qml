@@ -7,6 +7,9 @@ LKProgress {
     property int  draggableZone: indiRadius * 2
     property int  indiRadius: 6
 
+    // triggered when user drags the indicator.
+    signal progressUpdatedByDragging(real prog)
+
     Item {
         id: _indicator
         anchors.verticalCenter: parent.verticalCenter
@@ -77,6 +80,7 @@ LKProgress {
             } else {
                 root.progValue = x / root.progWidth
             }
+            root.progressUpdatedByDragging(root.progValue)
         }
 
         onClicked: (mouse) => {
