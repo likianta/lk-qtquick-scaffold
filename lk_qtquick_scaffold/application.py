@@ -47,8 +47,8 @@ class Application(QApplication):
         self._ui_fine_tune()
         
         from lk_utils import relpath
-        self.register_qmldir(relpath('./widgets_lib'))
-        self.register_qmldir(relpath('./themes'))
+        self.register_qmldir(relpath('widgets'))
+        self.register_qmldir(relpath('themes'))
         
         self.on_exit = super().aboutToQuit  # noqa
         self.on_exit.connect(self._exit)
