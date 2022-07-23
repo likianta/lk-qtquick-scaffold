@@ -1,11 +1,31 @@
 /// the classic Rectangle-Text-MouseArea structure.
 import QtQuick 2.15
 
-LKRectangle2 {
-    property alias text: _text
-    property alias text_: _text.text
+LKRectangle {
+    id: root
+
+    property bool   hoverEnabled: true
+    property alias  hovered: _area.containsMouse
+    property string text
+    property alias  textDelegate: _text
+//    property var    textObject
+
+    signal clicked()
+
     LKText {
         id: _text
         anchors.centerIn: parent
+        text: root.text
     }
+
+    MouseArea {
+        id: _area
+        anchors.fill: parent
+        hoverEnabled: root.hoverEnabled
+        onClicked: root.clicked()
+    }
+
+//    Component.onCompleted: {
+//        this.textDelegate = this.children[0]
+//    }
 }

@@ -1,8 +1,8 @@
 module LKWidgets
 
-LKButton        1.0     LKButton.qml
 LKCircle        1.0     LKCircle.qml
 LKColumn        1.0     LKColumn.qml
+LKFrame         1.0     LKFrame.qml
 LKImage         1.0     LKImage.qml
 LKInput         1.0     LKInput.qml
 LKListView      1.0     LKListView.qml
@@ -15,3 +15,8 @@ LKRow           1.0     LKRow.qml
 LKSlider        1.0     LKSlider.qml
 LKText          1.0     LKText.qml
 LKWindow        1.0     LKWindow.qml
+
+LKButton        1.0     LKButtons/LKButton.qml
+LKGhostButton   1.0     LKButtons/LKGhostButton.qml
+
+LKSidebar       1.0     LKSidebar/LKSidebar.qml

@@ -3,7 +3,9 @@ border_width_l: 2
 border_width_xl: 3
 
 button_width: 52
-button_height: 24
+button_height: 20
+button_height_l: 32
+button_radius: '$radius_m'
 
 col_width_m: 48
 
@@ -11,12 +13,18 @@ edit_width: 64
 edit_height: '$button_height'
 
 h_spacing_m: 4
-height_m: 24
+height_m: 20
 
 indicator_radius: 6
 
 padding_s: 2
 padding_m: 4
+padding_h_m: 4
+padding_h_l: 8
+padding_v_m: 2
+
+panel_width: 320
+panel_height: 240
 
 radius_xs: 1
 radius_s: 2
@@ -25,6 +33,9 @@ radius_l: 8
 radius_xl: 12
 
 row_height_m: 32
+
+sidebar_width: 160
+sidebar_height: '$win_height'
 
 spacing_xs: 1
 spacing_s: 2

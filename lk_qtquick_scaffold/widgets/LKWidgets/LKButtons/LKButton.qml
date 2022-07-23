@@ -1,22 +1,24 @@
-import QtQuick
+import QtQuick 2.15
+import ".."
 
 Rectangle {
     id: root
     width: 0
     height: pysize.button_height
-    radius: pysize.radius_m
-//    color: pycolor.white
-
+    radius: pysize.button_radius
     border.width: pysize.border_width_m
-//    border.width: pressed ? pysize.border_width_l : pysize.border_width_m
+//    border.width: pressed ? 2 : 1
     border.color: hovered ? pycolor.border_active : pycolor.border_default
+//    color: pycolor.white
     color:
         pressed ? pycolor.button_pressed :
         hovered ? pycolor.button_hovered : pycolor.button_default
 
-    property alias hovered: _area.containsMouse
-    property alias pressed: _area.pressed
-    property alias text: _text.text
+    property alias  hovered: _area.containsMouse
+    property alias  pressed: _area.pressed
+    property string text
+    property alias  textDelegate: _text
+
     signal clicked()
 
     Behavior on border.color {
@@ -37,6 +39,7 @@ Rectangle {
         id: _text
         anchors.centerIn: parent
         color: pycolor.dark_5
+        text: root.text
     }
 
     Component.onCompleted: {
