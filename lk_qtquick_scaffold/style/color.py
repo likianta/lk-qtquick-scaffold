@@ -88,6 +88,10 @@ class Color(Base):
             yield name[:-2]
         elif name.endswith('_default'):
             yield name[:-8]
+        elif name.endswith('_normal'):
+            # DELETE: remove this. we won't use "normal" anymore, please use
+            #   "default" instead.
+            yield name[:-7]
         
         # strip both
         if name.startswith('theme_') and name.endswith('_0'):

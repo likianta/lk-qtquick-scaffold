@@ -9,9 +9,9 @@ LKRectangle {
     color: _input.activeFocus ? colorBgActive : colorBgDefault
 
     property alias  activeFocus_: _input.activeFocus
-    property string colorBgDefault: pycolor.input_bg_normal
+    property string colorBgDefault: pycolor.input_bg_default
     property string colorBgActive: pycolor.input_bg_active
-    property string colorBorderDefault: pycolor.input_border_normal
+    property string colorBorderDefault: pycolor.input_border_default
     property string colorBorderActive: pycolor.input_border_active
     property string colorBottomHighlight: pycolor.input_indicator_active
     property int    cursorShape: -1
@@ -46,7 +46,7 @@ LKRectangle {
         }
     }
 
-    Text {
+    LKText {
         id: _placeholder
         visible: _placeholder.text && !_input.text
         anchors {
@@ -63,7 +63,9 @@ LKRectangle {
         id: _input
         anchors.fill: _placeholder
         clip: true
-        color: pycolor.text_normal
+        color: pycolor.text_default
+        font.family: pyfont.font_default
+        font.pixelSize: pyfont.size_m
         selectByMouse: true
         onTextEdited: {
 //            console.log(this.text, this.displayText)
