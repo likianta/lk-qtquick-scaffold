@@ -8,7 +8,6 @@ LKRectangle {
     property alias  hovered: _area.containsMouse
     property string text
     property alias  textDelegate: _text
-//    property var    textObject
 
     signal clicked()
 
@@ -24,8 +23,4 @@ LKRectangle {
         hoverEnabled: root.hoverEnabled
         onClicked: root.clicked()
     }
-
-//    Component.onCompleted: {
-//        this.textDelegate = this.children[0]
-//    }
 }

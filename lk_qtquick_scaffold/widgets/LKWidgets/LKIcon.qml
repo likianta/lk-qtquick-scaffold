@@ -8,6 +8,7 @@ Button {
     width: size
     height: size
     background: Item {}
+    flat: true
     icon.width: width
     icon.height: height
     icon.color: color

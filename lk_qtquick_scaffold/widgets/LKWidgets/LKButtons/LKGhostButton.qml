@@ -1,7 +1,7 @@
 import QtQuick 2.15
 import ".."
 
-LKRectangle3 {
+LKRectangle {
     id: root
     width: 0
     height: 0
@@ -13,10 +13,16 @@ LKRectangle3 {
     property string bgHovered: pycolor.button_bg_hovered
     property string bgActive: pycolor.button_bg_active
     property string borderColor: pycolor.border_glow
+    property alias  hovered: _area.containsMouse
     property string iconColor
+    property var    iconDelegate
     property int    iconSize: pysize.icon_size
     property url    iconSource
     property bool   selected: false
+    property string text
+    property alias  textDelegate: _text
+
+    signal clicked()
 
     Loader {
         id: _icon_loader
@@ -33,32 +39,44 @@ LKRectangle3 {
             this.item.color = root.iconColor
             this.item.size = root.iconSize
             this.item.source = root.iconSource
+            root.iconDelegate = this.item
         }
     }
 
-    Component.onCompleted: {
-        const text_ = this.textDelegate
+    LKText {
+        id: _text
+        anchors.fill: parent
+        horizontalAlignment: Text.AlignHCenter
+        verticalAlignment: Text.AlignVCenter
+        text: root.text
 
+        Component.onCompleted: {
+            if (root.iconSource) {
+                this.horizontalAlignment = Text.AlignLeft
+                this.leftPadding = _icon_loader.x
+                    + _icon_loader.width
+                    + pysize.padding_h_m
+            }
+        }
+    }
+
+    MouseArea {
+        id: _area
+        anchors.fill: parent
+        hoverEnabled: true
+        onClicked: root.clicked()
+    }
+
+    Component.onCompleted: {
         if (this.width == 0) {
             this.width = Qt.binding(() => {
-                return text_.contentWidth + pysize.padding_h_l * 2
+                return _text.contentWidth + pysize.padding_h_l * 2
             })
         }
         if (this.height == 0) {
             this.height = Qt.binding(() => {
-                return text_.contentHeight + pysize.padding_v_m * 2
+                return _text.contentHeight + pysize.padding_v_m * 2
             })
-        }
-
-        text_.anchors.fill = Qt.binding(() => this)
-        text_.horizontalAlignment = Text.AlignHCenter
-        text_.verticalAlignment = Text.AlignVCenter
-
-        if (this.iconSource) {
-            text_.leftPadding = _icon_loader.x
-                + _icon_loader.width
-                + pysize.padding_h_m
-            text_.horizontalAlignment = Text.AlignLeft
         }
     }
 }
