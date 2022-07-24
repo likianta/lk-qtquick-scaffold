@@ -7,6 +7,8 @@ if __name__ == '__main__':
 def init(app: 'Application'):
     from .listview import ListView
     from .slider import Slider
+    from .util import Util
     
     app.register(ListView(), 'PyListView')
     app.register(Slider(), 'PySlider')
+    app.register(Util(), 'PyUtil')
