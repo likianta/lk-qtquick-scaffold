@@ -23,12 +23,14 @@ Window {
         anchors.centerIn: parent
         width: 160
         height: 60
+        color: pycolor.panel_bg
 
         Text {
             anchors.centerIn: parent
-            color: _area.containsMouse ? '#5f00ff' : '#666666'
+            color: pycolor.text_default
+//            color: _area.containsMouse ? '#5f00ff' : '#666666'
             font.pixelSize: 28
-            text: 'Reload'
+            text: 'RELOAD'
         }
 
         MouseArea {

@@ -45,7 +45,8 @@ class PySide(QObject, PyRegister):
         ''').format(source_code=indent(dedent(code), '    '))
         exec(code_wrapper, kwargs)
         
-        print(kwargs['__return_hook__'])
+        if kwargs['__return_hook__'] is not None:
+            print(kwargs['__return_hook__'])
         return kwargs['__return_hook__']
     
     @slot(str, name='def')
@@ -53,7 +54,7 @@ class PySide(QObject, PyRegister):
         import re
         from textwrap import dedent
         code_block = dedent(code_block)
-        funcname = re.search('^def (\w+)', code_block).group(1)
+        funcname = re.search(r'^def (\w+)', code_block).group(1)
         code_wrapper = dedent('''
             {source_code}
             __func_hook__ = {funcname}

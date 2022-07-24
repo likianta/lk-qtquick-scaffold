@@ -1,6 +1,7 @@
 border_width_m: 1
 border_width_l: 2
 border_width_xl: 3
+border_radius_m: '$radius_m'
 
 button_width: 52
 button_height: 20
@@ -15,7 +16,14 @@ edit_height: '$button_height'
 h_spacing_m: 4
 height_m: 20
 
+indicator_size: 16
 indicator_radius: 6
+
+listview_height: 120
+
+margin_s: 2
+margin_m: 4
+margin_l: 8
 
 padding_s: 2
 padding_m: 4

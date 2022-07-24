@@ -182,7 +182,7 @@ class PyRegister:
                 class AAA: pass
         """
         
-        def _wrap0(func):
+        def decorator(func):
             nonlocal name, arg0
             
             name = name or func.__name__
@@ -197,9 +197,9 @@ class PyRegister:
                 raise Exception('Registerinag classmethod is not supported yet')
             
             @wraps(func)
-            def _wrap1(*args, **kwargs):
+            def wrapper(*args, **kwargs):
                 return func(*args, **kwargs)
             
-            return _wrap1
+            return wrapper
         
-        return _wrap0
+        return decorator
