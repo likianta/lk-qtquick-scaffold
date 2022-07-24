@@ -17,6 +17,8 @@ LKText          1.0     LKText.qml
 LKWindow        1.0     LKWindow.qml
 
 LKButton        1.0     LKButtons/LKButton.qml
+LKCheckBox      1.0     LKButtons/LKCheckBox.qml
+LKComboBox      1.0     LKButtons/LKComboBox.qml
 LKGhostButton   1.0     LKButtons/LKGhostButton.qml
 
 LKSidebar       1.0     LKSidebar/LKSidebar.qml

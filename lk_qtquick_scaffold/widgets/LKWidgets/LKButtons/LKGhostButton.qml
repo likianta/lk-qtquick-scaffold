@@ -8,9 +8,9 @@ LKRectangle3 {
     radius: pysize.button_radius
     border.width: hovered ? 1 : 0
     border.color: borderColor
-    color: selected ? bgActive : (hovered ? bgHover : 'transparent')
+    color: selected ? bgActive : (hovered ? bgHovered : 'transparent')
 
-    property string bgHover: pycolor.button_bg_hover
+    property string bgHovered: pycolor.button_bg_hovered
     property string bgActive: pycolor.button_bg_active
     property string borderColor: pycolor.border_glow
     property bool   selected: false

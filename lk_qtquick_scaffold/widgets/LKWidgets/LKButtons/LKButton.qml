@@ -11,8 +11,8 @@ Rectangle {
     border.color: hovered ? pycolor.border_active : pycolor.border_default
 //    color: pycolor.white
     color:
-        pressed ? pycolor.button_pressed :
-        hovered ? pycolor.button_hovered : pycolor.button_default
+        pressed ? pycolor.button_bg_pressed :
+        hovered ? pycolor.button_bg_hovered : pycolor.button_bg_default
 
     property alias  hovered: _area.containsMouse
     property alias  pressed: _area.pressed
@@ -38,7 +38,6 @@ Rectangle {
     LKText {
         id: _text
         anchors.centerIn: parent
-        color: pycolor.dark_5
         text: root.text
     }
 

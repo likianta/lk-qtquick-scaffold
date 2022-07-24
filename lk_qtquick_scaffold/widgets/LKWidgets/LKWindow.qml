@@ -1,8 +1,9 @@
-import QtQuick
+import QtQuick 2.15
+import QtQuick.Window 2.15
 
 Window {
     visible: true
     width: pysize.win_width
     height: pysize.win_height
-    color: pycolor.frame_bg_default
+    color: pycolor.win_bg_default
 }
