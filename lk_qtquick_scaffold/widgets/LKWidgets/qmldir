@@ -3,6 +3,7 @@ module LKWidgets
 LKCircle        1.0     LKCircle.qml
 LKColumn        1.0     LKColumn.qml
 LKFrame         1.0     LKFrame.qml
+LKIcon          1.0     LKIcon.qml
 LKImage         1.0     LKImage.qml
 LKInput         1.0     LKInput.qml
 LKListView      1.0     LKListView.qml

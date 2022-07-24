@@ -13,25 +13,52 @@ LKRectangle3 {
     property string bgHovered: pycolor.button_bg_hovered
     property string bgActive: pycolor.button_bg_active
     property string borderColor: pycolor.border_glow
+    property string iconColor
+    property int    iconSize: pysize.icon_size
+    property url    iconSource
     property bool   selected: false
 
+    Loader {
+        id: _icon_loader
+        enabled: Boolean(root.iconSource)
+        anchors {
+            left: parent.left
+            leftMargin: pysize.padding_h_m
+            verticalCenter: parent.verticalCenter
+        }
+        width: root.iconSize
+        height: root.iconSize
+        sourceComponent: LKIcon { }
+        onLoaded: {
+            this.item.color = root.iconColor
+            this.item.size = root.iconSize
+            this.item.source = root.iconSource
+        }
+    }
+
     Component.onCompleted: {
+        const text_ = this.textDelegate
+
         if (this.width == 0) {
             this.width = Qt.binding(() => {
-                return this.textDelegate.contentWidth + pysize.padding_h_l * 2
+                return text_.contentWidth + pysize.padding_h_l * 2
             })
         }
         if (this.height == 0) {
             this.height = Qt.binding(() => {
-                return this.textDelegate.contentHeight + pysize.padding_v_m * 2
+                return text_.contentHeight + pysize.padding_v_m * 2
             })
         }
 
-        this.textDelegate.anchors.fill = Qt.binding(() => this)
-        this.textDelegate.anchors.leftMargin = pysize.padding_h_l
-//        this.textDelegate.anchors.verticalCenter = Qt.binding(
-//            () => this.verticalCenter)
-        this.textDelegate.horizontalAlignment = Text.AlignHCenter
-        this.textDelegate.verticalAlignment = Text.AlignVCenter
+        text_.anchors.fill = Qt.binding(() => this)
+        text_.horizontalAlignment = Text.AlignHCenter
+        text_.verticalAlignment = Text.AlignVCenter
+
+        if (this.iconSource) {
+            text_.leftPadding = _icon_loader.x
+                + _icon_loader.width
+                + pysize.padding_h_m
+            text_.horizontalAlignment = Text.AlignLeft
+        }
     }
 }

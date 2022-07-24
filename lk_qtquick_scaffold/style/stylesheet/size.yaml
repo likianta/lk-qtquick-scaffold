@@ -16,6 +16,8 @@ edit_height: '$button_height'
 h_spacing_m: 4
 height_m: 20
 
+icon_size: 16
+
 indicator_size: 16
 indicator_radius: 6
 

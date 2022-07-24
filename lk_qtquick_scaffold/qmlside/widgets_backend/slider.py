@@ -1,6 +1,5 @@
-from qtpy.QtCore import QObject
-
-from ...qt_core import slot
+from .__ext__ import QObject
+from .__ext__ import slot
 
 
 class Slider(QObject):
