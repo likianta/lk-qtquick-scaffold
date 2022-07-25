@@ -58,7 +58,7 @@ def __setup__():
     from .qmlside import widgets_backend
     from .style import pystyle_for_qml
     
-    qlogger.setup()
+    qlogger.setup(ignore_unpleasent_warnings=True)
     widgets_backend.init(app)
     
     app.register_pyobj(pyside, 'pyside')

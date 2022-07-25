@@ -2,12 +2,16 @@ from os import getcwd
 from os.path import abspath
 from os.path import relpath
 
+from qtpy.QtCore import QMessageLogContext
 from qtpy.QtCore import QtCriticalMsg
+from qtpy.QtCore import QtMsgType
 from qtpy.QtCore import QtWarningMsg
 from qtpy.QtCore import qInstallMessageHandler
 
+_IGNORE_UNPLEASENT_WARNINGS = False
 
-def setup():
+
+def setup(ignore_unpleasent_warnings=False):
     """ Print QML runtime info in Python (PyCharm) console.
     
     Motivation:
@@ -24,11 +28,13 @@ def setup():
     Notes:
         Call this function before application starts.
     """
+    global _IGNORE_UNPLEASENT_WARNINGS
+    _IGNORE_UNPLEASENT_WARNINGS = ignore_unpleasent_warnings
     qInstallMessageHandler(_log)
 
 
 # noinspection PyUnusedLocal
-def _log(mode, ctx, msg: str):
+def _log(mode: QtMsgType, ctx: QMessageLogContext, msg: str) -> None:
     """
     Features:
         1. Output stream via PyCharm console.
@@ -71,6 +77,15 @@ def _log(mode, ctx, msg: str):
     """
     # filename
     filename = _use_relpath(ctx.file) if ctx.file else '<unknown_source>'
+    
+    if _IGNORE_UNPLEASENT_WARNINGS:
+        if filename in (
+                # https://forum.qt.io/topic/131823/lots-of-typeerrors-in-console
+                # -when-migrating-to-qt6/2
+                '<qrc:/qt-project.org/imports/QtQuick/Controls/'
+                'macOS/Button.qml>',
+        ):
+            return
     
     # line number
     lineno = 0 if ctx.line == -1 else ctx.line
