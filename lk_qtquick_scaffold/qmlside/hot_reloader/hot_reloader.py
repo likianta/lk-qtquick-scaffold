@@ -34,7 +34,8 @@ class HotReloader(QObject):
     
     def run(self, file: str):
         from lk_utils.filesniff import normpath
-        self.source = 'file:///' + normpath(file, force_abspath=True)
+        file = normpath(file, force_abspath=True)
+        self.source = 'file:///' + file
         self._app.set_app_name(self.title)
         self._app.register(self, 'pyloader')
         self._app._run(self._get_bootloader_file(file))  # noqa
@@ -45,6 +46,9 @@ class HotReloader(QObject):
     
     def _get_bootloader_file(self, target_ref: str) -> str:
         """
+        args:
+            target_ref: an absolute file path (.qml file).
+            
         we must put [./view.qml] and [target_ref] under the same hard driver.
         otherwise all relative imports in qml side will be crashed.
         so here we check the bootloader (./view.qml) location's initial letter
