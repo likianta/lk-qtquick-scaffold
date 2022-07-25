@@ -61,35 +61,6 @@ class PySide(QObject, PyRegister):
         ''').format(source_code=code_block, funcname=funcname)
         exec(code_wrapper, hook := {})
         self.register(hook['__func_hook__'], name=funcname)
-    
-    @slot(result=list)
-    def list_reserved_pyhandler_names(self) -> tuple[str, ...]:
-        """
-        list:
-            # if you see multiple keywords in a line below (separated by comma),
-            # they mean candidate words. the candidates are not registered into
-            # qml side, but backuped in this docstring.
-            pyside
-            pystyle, pytheme
-                pyalign     # from `pystyle.align`
-                pycolor     # from `pystyle.color`
-                pyfont      # from `pystyle.font`
-                pymotion    # from `pystyle.motion`
-                pysize      # from `pystyle.size`
-            pylayout, pyctrl, pycontrol
-            pyrss, pyresource
-        """
-        return (
-            'pyside',
-            'pystyle',
-            'pyalign',
-            'pycolor',
-            'pyfont',
-            'pymotion',
-            'pysize',
-            'pylayout',
-            'pyrss',
-        )
 
 
 pyside = PySide()
