@@ -17,7 +17,7 @@ LKRectangle {
     property string iconColor
     property var    iconDelegate
     property int    iconSize: pysize.icon_size
-    property url    iconSource
+    property string iconSource
     property bool   selected: false
     property string text
     property alias  textDelegate: _text
@@ -69,14 +69,10 @@ LKRectangle {
 
     Component.onCompleted: {
         if (this.width == 0) {
-            this.width = Qt.binding(() => {
-                return _text.contentWidth + pysize.padding_h_l * 2
-            })
+            this.width = _text.contentWidth * 1.5
         }
         if (this.height == 0) {
-            this.height = Qt.binding(() => {
-                return _text.contentHeight + pysize.padding_v_m * 2
-            })
+            this.height = _text.contentHeight * 1.5
         }
     }
 }
