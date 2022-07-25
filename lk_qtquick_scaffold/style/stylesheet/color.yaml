@@ -39,6 +39,6 @@ button_bg_pressed: '$blue_7'
 
 frame_bg_default: '$grey_5'
 panel_bg_default: '$grey_3'
-window_bg_default: '$grey_5'
+win_bg_default: '$grey_5'
 
 text_default: '$black_5'

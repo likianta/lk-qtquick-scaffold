@@ -114,7 +114,7 @@ class MyObject(QObject):
 app.register(MyObject())  
 #   it will be available as 'MyObject' in QML side.
 # 1.1. or use alias
-app.register(MyObject, 'PyObject')
+app.register(MyObject(), name='PyObject')
 #   it will be available as 'PyObject' in QML side.
 
 # 2. register regular function by `pyside.register`.
@@ -123,7 +123,7 @@ def foo(a: int, b: int, c: int):
 pyside.register(foo)
 #   it will be available as 'pyside.call("foo", ...)' in QML side.
 # 2.1. or use alias
-pyside.register(foo, 'add_abc')
+pyside.register(foo, name='add_abc')
 #   it will be available as 'pyside.call("add_abc", ...)' in QML side.
 ```
 
@@ -145,7 +145,7 @@ Item {
 
 ## Integrate qt logging in python console
 
-When you use `console.log` in QML side, it will be printed in Python console.
+When you use `console.log` in QML side, it will be printed in Python console:
 
 ![](examples/console_print/screenshot.png)
 
@@ -156,16 +156,17 @@ extended their functionalities:
 
 1.  You can get the correct type hint in IDE:
 
-    ![](examples/signal_slot/screenshot_1.png):
+    ![](examples/signal_slot/screenshot_1.png)
 
-2.  The `slot` accepts more types as alias of "QObject" and "QVariant":
+2.  The `slot` accepts more types as alias to "QObject" and "QVariant" -- it is
+    more convenient and more readable:
 
     ```python
     from lk_qtquick_scaffold import QObject, slot
     
     class MyObject(QObject):
 
-        @slot(int, dict, result=list)
+        @slot(int, dict, result=list)  # <- here
         def foo(self, index, data):
             return [index, len(data)]
     
@@ -177,12 +178,12 @@ extended their functionalities:
     '''
     ```
 
-    Here is a full alias list (which is documented in `lk_qtquick_scaffold/
-    qt_core/signal_slot.py`):
+    Here is a full alias list (which is documented in 
+    `lk_qtquick_scaffold/qt_core/signal_slot.py`):
 
-    **`slot(*args)`**
+    **slot(\*args)**
 
-    | Alias         | Convert to    | Note              |
+    | Alias         | Real value    | Note              |
     | ------------- | ------------- |------------------ |
     | `bool`        | `bool`        | basic type        |
     | `float`       | `float`       | basic type        |
@@ -200,9 +201,9 @@ extended their functionalities:
     | `...`         | `QJSValue`    | qjsvalue          |
     | `'any'`       | `QJSValue`    | qjsvalue (string) |
 
-    **`slot(result=...)`**
+    **slot(result=...)**
 
-    | Alias     | Convert to    | Note          |
+    | Alias     | Real value    | Note          |
     | --------- | ------------- |-------------- |
     | `None`    | `None`        | basic type    |
     | `bool`    | `bool`        | basic type    |
@@ -294,7 +295,7 @@ The dark theme:
 
 More screenshots: see `examples/lk_widgets/screenshot_*`.
 
-All widgets names are started with 'LK', the full list is in
+All widget names are started with 'LK', the full list is in
 `lk_qtquick_scaffold/widgets/LKWidgets/qmldir` file.
 
 Note: the widgets documentation is not ready. Currently you may have a look at 
@@ -456,5 +457,17 @@ to learn from its style.
 ![](gallery/widgets_demo/breathing-circle-avatar.gif)
 
 [![](gallery/widgets_demo/password-eye-open.gif)](https://uimovement.com/media/resource_image/image_5213.gif.mp4)
+
+<div>
+    <video controls="controls">
+        <source src="gallery/widgets_demo/3d-like-rect-tilt-with-parallax-scrolling-image.mp4" type="video/mp4">
+    </video>
+</div>
+
+<div>
+    <video controls="controls">
+        <source src="gallery/widgets_demo/fast-blur-anim.mp4" type="video/mp4">
+    </video>
+</div>
 
 *TODO:AddMoreWidgetsDemo*
