@@ -458,8 +458,8 @@ to learn from its style.
 
 [![](gallery/widgets_demo/password-eye-open.gif)](https://uimovement.com/media/resource_image/image_5213.gif.mp4)
 
-https://github.com/likianta/lk-qtquick-scaffold/blob/master/gallery/widgets_demo/3d-like-rect-tilt-with-parallax-scrolling-image.mp4
+https://user-images.githubusercontent.com/27986259/180829198-7110831e-c060-436a-a9be-c41452f49932.mp4
 
-https://github.com/likianta/lk-qtquick-scaffold/blob/master/gallery/widgets_demo/fast-blur-anim.mp4
+https://user-images.githubusercontent.com/27986259/180829267-cd497bcc-de38-4d00-bb19-c4a84b251031.mp4
 
 *TODO:AddMoreWidgetsDemo*
