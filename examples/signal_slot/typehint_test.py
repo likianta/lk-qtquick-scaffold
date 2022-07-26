@@ -1,5 +1,5 @@
 from PySide6.QtCore import QObject, Signal, Slot
-from lk_qtquick_scaffold import signal, slot
+from lk_qtquick_scaffold import signal, slot  # requires v2.0.0+
 
 
 class SignalTest(QObject):

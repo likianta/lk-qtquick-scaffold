@@ -1,5 +1,5 @@
-import QtQuick
-import LKWidgets
+import QtQuick 2.15
+import LKWidgets 1.0
 
 LKWindow {
     Component.onCompleted: {

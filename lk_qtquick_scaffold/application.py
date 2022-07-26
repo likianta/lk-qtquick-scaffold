@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from qtpy.QtCore import QObject
 from qtpy.QtQml import QQmlApplicationEngine
 from qtpy.QtQml import QQmlContext

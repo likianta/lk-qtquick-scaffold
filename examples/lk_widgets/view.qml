@@ -1,4 +1,4 @@
-import LKWidgets
+import LKWidgets 1.0
 
 LKWindow {
     color: '#DBDBF7'
