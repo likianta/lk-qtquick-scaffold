@@ -1,2 +1,3 @@
 from lk_qtquick_scaffold import app
-app.run('view.qml', debug=True)
+from lk_utils import relpath
+app.run(relpath('view.qml'), debug=True)
