@@ -171,7 +171,7 @@ class SignalType:
         ...
 
 
-signal: SignalType
+signal = SignalType()
 
 
 def __init__():

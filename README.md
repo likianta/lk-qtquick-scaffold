@@ -17,9 +17,21 @@ predefined tools.
 
 # How to install
 
+`lk-qtquick-scaffold` requires Python 3.8+ interpreter version.
+
+Use pip install:
+
 ```shell
+# the 1.x version. (1.3.0)
 pip install lk-qtquick-scaffold
+
+# the next big version is coming soon. currently i've released a preview version.
+pip install lk-qtquick-scaffold>=2.0.0a0
 ```
+
+Note: many features in this document are based on 2.0, currently the 2.0 formal
+release is still in progress, you may install the alpha version to taste the
+newest features.
 
 ## Install Qt backend
 
