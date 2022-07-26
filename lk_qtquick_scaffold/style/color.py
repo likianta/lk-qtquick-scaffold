@@ -66,7 +66,7 @@ from .base import Base
 
 class Color(Base):
     
-    def _get_abbrs(self, name: str) -> (str, ...):
+    def _get_abbrs(self, name: str):
         """
         rules:
             - if name starts with 'comp_' but not 'comp_bg_', strip 'comp_'

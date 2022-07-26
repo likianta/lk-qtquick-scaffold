@@ -2,7 +2,7 @@ from .base import Base
 
 
 class Font(Base):
-    def _get_abbrs(self, name: str) -> (str, ...):
+    def _get_abbrs(self, name: str):
         if name.endswith('_m'):
             yield name[:-2]
         elif name.endswith('_default'):

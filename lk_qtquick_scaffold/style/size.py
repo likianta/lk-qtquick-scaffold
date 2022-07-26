@@ -34,7 +34,7 @@ from ..qt_core import slot
 
 class Size(Base):
     
-    def _get_abbrs(self, name: str) -> (str, ...):
+    def _get_abbrs(self, name: str):
         if name.endswith('_m'):
             yield name[:-2]
     

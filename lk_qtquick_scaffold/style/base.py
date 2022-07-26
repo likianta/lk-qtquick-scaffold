@@ -1,3 +1,4 @@
+from typing import Iterator
 from qtpy.QtQml import QQmlPropertyMap
 
 
@@ -46,5 +47,5 @@ class Base(QQmlPropertyMap):
             for k_abbr in self._get_abbrs(k):
                 self.insert(k_abbr, v)
     
-    def _get_abbrs(self, name: str) -> (str, ...):
+    def _get_abbrs(self, name: str) -> Iterator[str]:
         raise NotImplementedError

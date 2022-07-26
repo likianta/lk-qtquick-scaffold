@@ -1,7 +1,8 @@
+from __future__ import annotations
+
 from re import compile
 from textwrap import dedent
 from typing import Any
-from typing import List
 
 from qtpy.QtCore import QObject
 from qtpy.QtQml import QQmlComponent
@@ -25,7 +26,7 @@ class T:
                           container: QObject) -> QObject: pass
         
         @staticmethod
-        def eval_js(code: str, args: List[QObject]): pass
+        def eval_js(code: str, args: list[QObject]): pass
         
         @staticmethod
         def test() -> str: pass
