@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "lk-qtquick-scaffold"
-version = "2.0.0-alpha.1"
+version = "2.0.0-alpha.2"
 homepage = "https://github.com/likianta/lk-qtquick-scaffold"
 description = "A flexible toolset to improve QML coding experience for PyQt/PySide development."
 readme = "README.md"
@@ -14,9 +14,11 @@ default = true
 
 [tool.poetry.dependencies]
 python = "^3.8"
+argsense = ""
 lk-lambdex = ""
 lk-logger = ""
 lk-utils = ""
+pyyaml = ""
 qtpy = ""
 pyside6 = { version = "", optional = true }
 pyside2 = { version = "", optional = true }

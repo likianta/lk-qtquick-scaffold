@@ -2,4 +2,5 @@ argsense
 lk-lambdex
 lk-logger
 lk-utils
+pyyaml
 qtpy
