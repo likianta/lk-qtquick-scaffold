@@ -95,7 +95,7 @@ app.run('view.qml', debug=True)
 It starts a floating window that includes a button "RELOAD", each time when you 
 modify "view.qml", click "RELOAD" to refresh your GUI:
 
-![](examples/hot_reloader/screenshot.gif)
+![](examples/hot_reloader/screenshot_1.gif)
 
 BTW you can run "view.qml" in command line:
 
@@ -104,11 +104,13 @@ BTW you can run "view.qml" in command line:
 py -m lk_qtquick_scaffold -h
 
 # run
-py -m lk_qtquick_scaffold view.qml
+py -m lk_qtquick_scaffold run view.qml
 
 # run in debug mode
-py -m lk_qtquick_scaffold view.qml --debug
+py -m lk_qtquick_scaffold run view.qml --debug
 ```
+
+![](examples/hot_reloader/screenshot_2.png)
 
 It has the same result like above "main.py" does.
 

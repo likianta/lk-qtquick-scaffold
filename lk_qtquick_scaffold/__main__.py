@@ -9,9 +9,15 @@ usage:
 from argsense import cli
 
 
+# from argsense import config
+# config.CONSOLE_WIDTH = 120
+
+
 @cli.cmd()
 def run(view: str, debug=False):
     """
+    Run target QML file.
+    
     args:
         view: the qml file (relative or absolute path) to load.
     """
@@ -22,20 +28,23 @@ def run(view: str, debug=False):
 @cli.cmd()
 def list_builtin_pyhandlers():
     """
-    list:
-        # if you see multiple keywords in a line below (separated by comma),
-        # they mean candidate words.
-        # the candidates are not registered into qml side, but only reserved
-        # here.
-        pyside
-        pystyle, pytheme
-            pyalign     # from `pystyle.align`
-            pycolor     # from `pystyle.color`
-            pyfont      # from `pystyle.font`
-            pymotion    # from `pystyle.motion`
-            pysize      # from `pystyle.size`
-        pylayout, pyctrl, pycontrol
-        pyrss, pyresource
+    List global registered pyhandler names which are available across all -
+    QML files.
+    
+    Example usage:
+        [dim]// view.qml[/]
+        [dim]// assume `pyside` and `pylayout` are built-in pyhandlers.[/]
+        [red]import[/] [magenta]QtQuick[/]
+        [yellow]Column[/] {
+            [green]width[/]: [cyan][b]pyside[/].call('get_init_width')[/]
+            [dim]//     ^^^^^^[/]
+            [green]height[/]: [cyan][b]pyside[/].call('get_init_height')[/]
+            [dim]//      ^^^^^^[/]
+            [yellow]Component.[i]onCompleted[/][/]: {
+                [cyan][b]pylayout[/].auto_align(this, 'hcenter,hfill')[/]
+            [dim]//  ^^^^^^^^[/]
+            }
+        }
     """
     # list_ = (
     #     'pyside',
