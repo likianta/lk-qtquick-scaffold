@@ -9,7 +9,8 @@ LKRectangle {
     clip: true
     color: pycolor.sidebar_bg
 
-    property var  model
+    property alias listview: _listview
+    property var   model
     //  union[list[str], list[dict]]
     //      for list[dict]:
     //          required keys:
@@ -17,7 +18,7 @@ LKRectangle {
     //          optional keys:
     //              icon: str
     //              color: str
-    property bool reuseItems: true
+    property bool  reuseItems: true
 
     signal clicked(int index, string text)
 
@@ -33,10 +34,7 @@ LKRectangle {
         id: _listview
         anchors {
             fill: parent
-            leftMargin: pysize.margin_m
-            rightMargin: pysize.margin_m
-            topMargin: pysize.margin_s
-            bottomMargin: pysize.margin_s
+            margins: pysize.margin_m
         }
         reuseItems: root.reuseItems
         spacing: pysize.spacing_m
