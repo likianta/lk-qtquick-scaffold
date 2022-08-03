@@ -15,6 +15,22 @@ class T:
 
 class LayoutHelper(QObject):
     
+    def __init__(self):
+        super().__init__()
+        from lk_utils import relpath
+        from qtpy.QtQml import QQmlComponent
+        from ...application import app
+        component = QQmlComponent(
+            app.engine, relpath('layout_helper_virtual_view.qml')
+        )
+        qobject = component.create()
+        self._virtual_view = qobject
+
+    @slot(str, result=int)
+    @slot(str, int, result=int)
+    def get_text_size(self, text: str, pixel: int = 12) -> int:
+        return self._virtual_view.get_content_size(text, pixel)
+    
     @slot(object, str)
     def auto_align(self, container: QObject, alignment: str):
         """
@@ -281,4 +297,4 @@ class LayoutHelper(QObject):
             return 1  # column
 
 
-pylayout = LayoutHelper(None)
+pylayout = LayoutHelper()
