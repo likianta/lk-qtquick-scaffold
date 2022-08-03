@@ -6,20 +6,28 @@ LKRectangle {
     id: root
     width: pysize.sidebar_width
     height: pysize.sidebar_height
+    clip: true
     color: pycolor.sidebar_bg
 
     property var  model
-    //  [dict, ...]
-    //      dict:
+    //  union[list[str], list[dict]]
+    //      for list[dict]:
     //          required keys:
     //              text: str
     //          optional keys:
     //              icon: str
     //              color: str
-
     property bool reuseItems: true
 
     signal clicked(int index, string text)
+
+    onModelChanged: {
+        if (root.model) {
+            _listview.model = PyListView.fill_model(
+                root.model, {'text': '', 'icon': '', 'color': ''}, 'text'
+            )
+        }
+    }
 
     ListView {
         id: _listview
@@ -54,47 +62,6 @@ LKRectangle {
                     return this.index == _listview.currentIndex
                 })
             }
-        }
-
-//        delegate: LKRow {
-//            id: _item
-//            width: _listview.width
-//            height: pysize.button_height_l
-//            alignment: 'vcenter'
-//            autoSize: true
-//            spacing: 0
-//
-//            property int index: model.index
-//
-//            LKIcon {
-//                source: modelData.icon
-//                color: modelData.color
-//                size: 28
-//            }
-//
-//            LKGhostButton {
-//                width: 0
-//                text: modelData.text
-//                onClicked: {
-//                    root.clicked(_item.index, this.text)
-//                    _listview.currentIndex = _item.index
-//                }
-//                Component.onCompleted: {
-//                    this.textDelegate.horizontalAlignment = Text.AlignLeft
-//                    this.selected = Qt.binding(() => {
-//                        return _item.index == _listview.currentIndex
-//                    })
-//                }
-//            }
-//        }
-
-        Component.onCompleted: {
-//            this.model = root.model
-            this.model = PyListView.fill_model(
-                root.model,
-                {'text': '', 'icon': '', 'color': ''},
-                'text'
-            )
         }
     }
 }
