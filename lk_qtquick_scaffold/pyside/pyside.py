@@ -45,8 +45,8 @@ class PySide(QObject, PyRegister):
         ''').format(source_code=indent(dedent(code), '    '))
         exec(code_wrapper, kwargs)
         
-        if kwargs['__return_hook__'] is not None:
-            print(kwargs['__return_hook__'])
+        # if kwargs['__return_hook__'] is not None:
+        #     print(kwargs['__return_hook__'])
         return kwargs['__return_hook__']
     
     @slot(str, name='def')
