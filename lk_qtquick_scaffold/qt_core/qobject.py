@@ -11,6 +11,9 @@ class QObject(QObjectBase):
     
     def __init__(self, parent=None):
         super().__init__(parent)
+        
+    def __getattr__(self, item):
+        super().__getattribute__(item)
     
     @slot(name='__file__', result=str)
     def _self_path(self) -> str:
