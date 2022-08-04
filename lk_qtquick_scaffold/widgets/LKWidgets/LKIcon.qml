@@ -11,7 +11,6 @@ Item {
     property alias  icon: _btn.icon
     property int    size: pysize.icon_size
     property string source
-//    property alias  source: _btn.icon.source
 
     signal clicked()
 
@@ -24,8 +23,8 @@ Item {
         background: Item {}
         flat: true
         hoverEnabled: false
-        icon.width: width
-        icon.height: height
+        icon.width: root.size
+        icon.height: root.size
         icon.color: root.color
         icon.source: root.source
     }
