@@ -93,7 +93,7 @@ LKProgress {
 
 //        onReleased: (mouse) => {
 //            if (root.model) {
-//                root.progValue = PyProgress.get_nearest_progress(
+//                root.progValue = lkprogress.get_nearest_progress(
 //                    mouse.x / root.progWidth, root.model
 //                )
 //            }

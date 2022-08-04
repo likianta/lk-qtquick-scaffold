@@ -10,7 +10,8 @@ Item {
     property alias  hovered: _area.containsMouse
     property alias  icon: _btn.icon
     property int    size: pysize.icon_size
-    property alias  source: _btn.icon.source
+    property string source
+//    property alias  source: _btn.icon.source
 
     signal clicked()
 
@@ -26,7 +27,7 @@ Item {
         icon.width: width
         icon.height: height
         icon.color: root.color
-//        icon.source: root.source
+        icon.source: root.source
     }
 
     MouseArea {

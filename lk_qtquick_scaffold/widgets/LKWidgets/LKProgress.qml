@@ -127,10 +127,10 @@ Item {
             }
     
             Component.onCompleted: {
-                this.text = PyProgress.show_value(100, root.precision)
+                this.text = lkprogress.show_value(100, root.precision)
                 this.width = this.contentWidth
                 this.__valueChanged.connect(() => {
-                    this.text = PyProgress.show_value(
+                    this.text = lkprogress.show_value(
                         this.__value, root.precision
                     )
                 })
@@ -150,7 +150,7 @@ Item {
                     `, {'model': root.model})
                 )
                 root.__progValueChanged.connect(() => {
-                    this.text = PyProgress.get_nearest_value(
+                    this.text = lkprogress.get_nearest_value(
                         root.__progValue, root.model
                     )
                 })
@@ -171,7 +171,7 @@ Item {
             })
         } else {
             root.progValueChanged.connect(() => {
-                root.__progValue = PyProgress.get_nearest_progress(
+                root.__progValue = lkprogress.get_nearest_progress(
                     root.progValue, root.model
                 )
 //                if (root.progValue > 1) {

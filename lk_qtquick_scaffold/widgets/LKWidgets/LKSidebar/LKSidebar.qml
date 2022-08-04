@@ -25,7 +25,7 @@ LKRectangle {
 
     onModelChanged: {
         if (root.model) {
-            _listview.model = PyListView.fill_model(
+            _listview.model = lklistview.fill_model(
                 root.model, {'text': '', 'icon': '', 'color': ''}, 'text'
             )
         }
