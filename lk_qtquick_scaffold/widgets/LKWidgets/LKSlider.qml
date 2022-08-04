@@ -5,6 +5,7 @@ LKProgress {
 
     property bool draggable: true
     property int  draggableZone: indiRadius * 2
+    property bool handCursorShape: true
     property int  indiRadius: 6
 
     // triggered when user drags the indicator.
@@ -68,9 +69,6 @@ LKProgress {
         enabled: !root.demoMode
         anchors.fill: parent
         drag.target: _virtual_drag
-        cursorShape: drag.active ? Qt.ClosedHandCursor
-            : _indicator_area.containsMouse ? Qt.OpenHandCursor
-            : Qt.ArrowCursor
 
         function updateProgress(x) {
             if (x <= 0) {
@@ -100,6 +98,20 @@ LKProgress {
 //                )
 //            }
 //        }
+
+        Component.onCompleted: {
+            if (root.handCursorShape) {
+                this.cursorShape = Qt.binding(() => {
+                    if (this.drag.active) {
+                        return Qt.ClosedHandCursor
+                    } else if (this.containsMouse) {
+                        return Qt.OpenHandCursor
+                    } else {
+                        return Qt.ArrowCursor
+                    }
+                })
+            }
+        }
     }
 
     Component.onCompleted: {
