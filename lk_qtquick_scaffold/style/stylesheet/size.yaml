@@ -37,6 +37,9 @@ padding_v_m: 2
 panel_width: 320
 panel_height: 240
 
+popup_width: 100
+popup_height: 60
+
 radius_xs: 1
 radius_s: 2
 radius_m: 4
@@ -53,6 +56,9 @@ spacing_s: 2
 spacing_m: 4
 spacing_l: 8
 spacing_xl: 24
+
+tooltip_width: 120
+tooltip_height: 48
 
 v_spacing_m: 4
 
