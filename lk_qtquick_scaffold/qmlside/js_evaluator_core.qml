@@ -31,4 +31,17 @@ Item {
     function test() {
         return 'JsEvaluator is ready to use'
     }
+
+    // ------------------------------------------------------------------------
+
+    function get_content_width(text, pixel_size) {
+        _text.font.pixelSize = pixel_size
+        _text.text = text
+        return _text.contentWidth
+    }
+
+    Text {
+        id: _text
+        font.pixelSize: 12
+    }
 }

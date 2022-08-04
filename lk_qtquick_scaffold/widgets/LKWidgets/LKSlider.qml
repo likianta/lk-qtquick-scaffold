@@ -92,6 +92,14 @@ LKProgress {
                 this.updateProgress(mouse.x)
             }
         }
+
+//        onReleased: (mouse) => {
+//            if (root.model) {
+//                root.progValue = PyProgress.get_nearest_progress(
+//                    mouse.x / root.progWidth, root.model
+//                )
+//            }
+//        }
     }
 
     Component.onCompleted: {

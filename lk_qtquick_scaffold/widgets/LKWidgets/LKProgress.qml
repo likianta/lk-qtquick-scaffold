@@ -4,6 +4,7 @@ Item {
     id: root
 
     property bool   demoMode: false
+    property var    model  // optional[dict[float progress, str text]]
     property int    precision: 0  // suggest 0 or 2
     property string progColorBg: pycolor.prog_bg
     property string progColorFg: pycolor.prog_fg
@@ -88,36 +89,97 @@ Item {
             this.item.progress = root
         }
     }
-
-    LKText {
+    
+    // ------------------------------------------------------------------------
+    
+    Loader {
         id: _display
         anchors {
             right: parent.right
             verticalCenter: parent.verticalCenter
         }
-
-        property real __value: root.__progValue
-
-        Behavior on __value {
-            NumberAnimation {
-                duration: root.__animDuration
-            }
-        }
-
+        
         MouseArea {
             anchors.fill: parent
             onClicked: {
                 root.textClicked()
             }
         }
-
+        
         Component.onCompleted: {
-            this.text = PySlider.show_value(100, root.precision)
-            this.width = this.contentWidth
-            this.__valueChanged.connect(() => {
-                this.text = PySlider.show_value(this.__value, root.precision)
+            if (!root.model) {
+                this.sourceComponent = _display_1
+            } else {
+                this.sourceComponent = _display_2
+            }
+        }
+    }
+    
+    Component {
+        id: _display_1
+        LKText {
+            property real __value: root.__progValue
+    
+            Behavior on __value {
+                NumberAnimation {
+                    duration: root.__animDuration
+                }
+            }
+    
+            Component.onCompleted: {
+                this.text = PyProgress.show_value(100, root.precision)
+                this.width = this.contentWidth
+                this.__valueChanged.connect(() => {
+                    this.text = PyProgress.show_value(
+                        this.__value, root.precision
+                    )
+                })
+                this.__valueChanged()
+            }
+        }
+    }
+    
+    Component {
+        id: _display_2
+        LKText {
+            Component.onCompleted: {
+                this.width = pylayout.get_content_width(
+                    this, pyside.eval(`
+                        return max(map(str, model.values()),
+                                   key=lambda x: len(x))
+                    `, {'model': root.model})
+                )
+                root.__progValueChanged.connect(() => {
+                    this.text = PyProgress.get_nearest_value(
+                        root.__progValue, root.model
+                    )
+                })
+            }
+        }
+    }
+
+    Component.onCompleted: {
+        if (!root.model) {
+            root.progValueChanged.connect(() => {
+                if (root.progValue > 1) {
+                    root.__progValue = 1
+                } else if (root.progValue < 0) {
+                    root.__progValue = 0
+                } else {
+                    root.__progValue = root.progValue
+                }
             })
-            this.__valueChanged()
+        } else {
+            root.progValueChanged.connect(() => {
+                root.__progValue = PyProgress.get_nearest_progress(
+                    root.progValue, root.model
+                )
+//                if (root.progValue > 1) {
+//                    root.__progValue = 1
+//                } else if (root.progValue < 0) {
+//                    root.__progValue = 0
+//                }
+            })
         }
     }
 }
