@@ -1,4 +1,5 @@
 from . import widgets_backend
+from .assets import pyassets
 from .hot_reloader import HotReloader
 from .js_evaluator import eval_js
 from .js_evaluator import js_eval
