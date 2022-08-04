@@ -26,6 +26,7 @@ listview_height: 120
 margin_s: 2
 margin_m: 4
 margin_l: 8
+margin_xl: 12
 
 padding_s: 2
 padding_m: 4
