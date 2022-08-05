@@ -13,7 +13,7 @@ Item {
     property int    size: pysize.icon_size
     property string source
 
-    signal clicked()
+    signal clicked(var mouse)
 
     Button {
         // https://stackoverflow.com/questions/15236304/need-to-change-color-of
@@ -34,6 +34,6 @@ Item {
         id: _area
         anchors.fill: parent
         hoverEnabled: true
-        onClicked: root.clicked()
+        onClicked: (mouse) => root.clicked(mouse)
     }
 }

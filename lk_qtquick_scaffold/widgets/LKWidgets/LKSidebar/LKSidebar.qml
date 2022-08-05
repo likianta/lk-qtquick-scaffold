@@ -43,10 +43,10 @@ LKRectangle {
         delegate: LKGhostButton {
             width: _listview.width
             height: pysize.button_height_l
-            iconColor: modelData.color
-            iconSize: 28
-            iconSource: modelData.icon
-            text: modelData.text
+            iconColor: modelData['color']
+            iconSize: pysize.icon_size_l
+            iconSource: modelData['icon']
+            text: modelData['text']
 
             property int index: model.index
 
