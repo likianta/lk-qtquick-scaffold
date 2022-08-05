@@ -1,4 +1,4 @@
-module LKButtons
+module LKWidgets.Buttons
 
 LKButton        1.0     LKButton.qml
 LKCheckBox      1.0     LKCheckBox.qml
