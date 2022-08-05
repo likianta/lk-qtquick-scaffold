@@ -14,11 +14,7 @@ Item {
     property real   progValue: 0  // usually 0.0 ~ 1.0, allow overflows.
     property int    __animDuration: 100  // 100ms
     property int    __padding: 4
-    property real   __progValue: {  // 0.0 ~ 1.0
-        if (progValue < 0) { return 0 }
-        if (progValue > 1) { return 1 }
-        return progValue
-    }
+    property real   __progValue  // 0.0 ~ 1.0
 
     signal textClicked()
 
@@ -153,33 +149,38 @@ Item {
                     this.text = lkprogress.get_nearest_value(
                         root.__progValue, root.model
                     )
+//                    console.log(root.__progValue, this.text)
                 })
             }
         }
     }
 
     Component.onCompleted: {
-        if (!root.model) {
-            root.progValueChanged.connect(() => {
-                if (root.progValue > 1) {
-                    root.__progValue = 1
-                } else if (root.progValue < 0) {
-                    root.__progValue = 0
-                } else {
-                    root.__progValue = root.progValue
-                }
-            })
-        } else {
-            root.progValueChanged.connect(() => {
-                root.__progValue = lkprogress.get_nearest_progress(
-                    root.progValue, root.model
-                )
-//                if (root.progValue > 1) {
-//                    root.__progValue = 1
-//                } else if (root.progValue < 0) {
-//                    root.__progValue = 0
-//                }
-            })
-        }
+        root.modelChanged.connect(() => {
+//            console.log(Boolean(root.model), root.model)
+            if (!root.model) {
+                root.progValueChanged.connect(() => {
+                    if (root.progValue > 1) {
+                        root.__progValue = 1
+                    } else if (root.progValue < 0) {
+                        root.__progValue = 0
+                    } else {
+                        root.__progValue = root.progValue
+                    }
+                })
+            } else {
+                root.progValueChanged.connect(() => {
+                    root.__progValue = lkprogress.get_nearest_progress(
+                        root.progValue, root.model
+                    )
+                    console.log(root.progValue, root.__progValue)
+    //                if (root.progValue > 1) {
+    //                    root.__progValue = 1
+    //                } else if (root.progValue < 0) {
+    //                    root.__progValue = 0
+    //                }
+                })
+            }
+        })
     }
 }
