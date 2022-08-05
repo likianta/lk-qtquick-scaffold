@@ -54,37 +54,13 @@ class Application(QApplication):
         
         self.on_exit = super().aboutToQuit  # noqa
         self.on_exit.connect(self._exit)
-        
-        from lk_utils.subproc import defer
-        self._promise = defer(self._backend_init)
     
     def _ui_fine_tune(self):
         from os import name
         if name == 'nt':
             self.setFont('Microsoft YaHei UI')  # noqa
     
-    def _backend_init(self):
-        """ asynchronously initialize backend stuff. """
-        from .pyside import pyside
-        from .qmlside import pyassets, pylayout, qlogger
-        from .qmlside import widgets_backend as wb
-        from .style import pystyle, pystyle_for_qml
-        
-        qlogger.setup(ignore_unpleasent_warnings=True)
-        
-        self.register_pyobj(pyassets, 'pyassets')
-        self.register_pyobj(pylayout, 'pylayout')
-        self.register_pyobj(pyside, 'pyside')
-        self.register_pyobj(pystyle_for_qml, 'pystyle')
-        self.register_pyobj(pystyle.color, 'pycolor')
-        self.register_pyobj(pystyle.font, 'pyfont')
-        self.register_pyobj(pystyle.motion, 'pymotion')
-        self.register_pyobj(pystyle.size, 'pysize')
-        
-        self.register_pyobj(wb.ListView(), 'lklistview')
-        self.register_pyobj(wb.Progress(), 'lkprogress')
-        self.register_pyobj(wb.Slider(), 'lkslider')
-        self.register_pyobj(wb.Util(), 'lkutil')
+    # -------------------------------------------------------------------------
     
     def set_app_name(self, name: str):
         # just made a consistent snake-case function alias for external caller,
@@ -95,6 +71,8 @@ class Application(QApplication):
     def set_assets_root(root_dir: str) -> None:
         from .qmlside import pyassets
         pyassets.set_root(root_dir)
+    
+    # -------------------------------------------------------------------------
     
     def register_qmldir(self, qmldir: str):
         """
@@ -158,6 +136,30 @@ class Application(QApplication):
     
     register = register_pyobj  # alias
     
+    def _register_backend(self):
+        from .pyside import pyside
+        from .qmlside import pyassets, pylayout, qlogger
+        from .qmlside import widgets_backend as wb
+        from .style import pystyle, pystyle_for_qml
+        
+        qlogger.setup(ignore_unpleasent_warnings=True)
+        
+        self.register_pyobj(pyassets, 'pyassets')
+        self.register_pyobj(pylayout, 'pylayout')
+        self.register_pyobj(pyside, 'pyside')
+        self.register_pyobj(pystyle_for_qml, 'pystyle')
+        self.register_pyobj(pystyle.color, 'pycolor')
+        self.register_pyobj(pystyle.font, 'pyfont')
+        self.register_pyobj(pystyle.motion, 'pymotion')
+        self.register_pyobj(pystyle.size, 'pysize')
+        
+        self.register_pyobj(wb.ListView(), 'lklistview')
+        self.register_pyobj(wb.Progress(), 'lkprogress')
+        self.register_pyobj(wb.Slider(), 'lkslider')
+        self.register_pyobj(wb.Util(), 'lkutil')
+    
+    # -------------------------------------------------------------------------
+    
     def run(self, qml_file: str, debug=False):
         if debug:
             from .qmlside import HotReloader
@@ -167,7 +169,7 @@ class Application(QApplication):
             self._run(qml_file)
     
     def _run(self, qmlfile: str):
-        self._promise()
+        self._register_backend()
         
         from lk_utils.filesniff import normpath
         self.engine.load('file:///' + normpath(qmlfile, force_abspath=True))
