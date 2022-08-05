@@ -1,21 +1,16 @@
 module LKWidgets
 
 LKCircle        1.0     LKCircle.qml
-LKColumn        1.0     LKColumn.qml
-LKFrame         1.0     LKFrame.qml
 LKIcon          1.0     LKIcon.qml
 LKImage         1.0     LKImage.qml
 LKInput         1.0     LKInput.qml
-LKListView      1.0     LKListView.qml
 LKMouseArea     1.0     LKMouseArea.qml
-LKProgress      1.0     LKProgress.qml
+LKProgress      1.0     LKProgress/LKProgress.qml
 LKRadioBox      1.0     LKRadioBox.qml
 LKRectangle     1.0     LKRectangle.qml
 LKRectangle2    1.0     LKRectangle2.qml
-LKRow           1.0     LKRow.qml
 LKSlider        1.0     LKSlider.qml
 LKText          1.0     LKText.qml
-LKWindow        1.0     LKWindow.qml
 
 # quick access to frequently used widgets in subdirectories.
 
@@ -23,3 +18,10 @@ LKButton        1.0     Buttons/LKButton.qml
 LKCheckBox      1.0     Buttons/LKCheckBox.qml
 LKComboBox      1.0     Buttons/LKComboBox.qml
 LKGhostButton   1.0     Buttons/LKGhostButton.qml
+
+LKColumn        1.0     Containers/LKColumn.qml
+LKListView      1.0     Containers/LKListView.qml
+LKRow           1.0     Containers/LKRow.qml
+
+LKFrame         1.0     Panels/LKFrame.qml
+LKWindow        1.0     Panels/LKWindow.qml

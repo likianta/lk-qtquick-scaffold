@@ -1,4 +1,5 @@
 import QtQuick 2.15
+import "LKProgress"
 
 LKProgress {
     id: root

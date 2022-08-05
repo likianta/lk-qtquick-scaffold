@@ -1,4 +1,4 @@
-import QtQuick
+import QtQuick 2.15
 
 Text {
     color: pycolor.text_default
