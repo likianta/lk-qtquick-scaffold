@@ -5,6 +5,7 @@ Item {
     id: root
     width: size
     height: size
+    clip: false
 
     property string color
     property alias  hovered: _area.containsMouse
@@ -19,7 +20,7 @@ Item {
         //  -an-svg-image-in-qml
         id: _btn
         enabled: false
-        anchors.fill: parent
+        anchors.centerIn: parent
         background: Item {}
         flat: true
         hoverEnabled: false

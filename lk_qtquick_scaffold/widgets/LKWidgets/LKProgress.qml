@@ -4,6 +4,7 @@ Item {
     id: root
 
     property bool   demoMode: false
+    property int    displayWidth
     property var    model  // optional[dict[float progress, str text]]
     property int    precision: 0  // suggest 0 or 2
     property string progColorBg: pycolor.prog_bg
@@ -94,11 +95,18 @@ Item {
             right: parent.right
             verticalCenter: parent.verticalCenter
         }
+        width: root.displayWidth
         
         MouseArea {
             anchors.fill: parent
             onClicked: {
                 root.textClicked()
+            }
+        }
+
+        onLoaded: {
+            if (!this.width) {
+                this.width = this.item.width
             }
         }
         
@@ -151,6 +159,7 @@ Item {
                     )
 //                    console.log(root.__progValue, this.text)
                 })
+                root.__progValueChanged()
             }
         }
     }
@@ -173,12 +182,6 @@ Item {
                     root.__progValue = lkprogress.get_nearest_progress(
                         root.progValue, root.model
                     )
-                    console.log(root.progValue, root.__progValue)
-    //                if (root.progValue > 1) {
-    //                    root.__progValue = 1
-    //                } else if (root.progValue < 0) {
-    //                    root.__progValue = 0
-    //                }
                 })
             }
         })
