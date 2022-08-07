@@ -67,10 +67,12 @@ ProgBase {
             return this.width - pysize.dot_radius_active * 2
         })
         this.modelChanged.connect(() => {
-            this.__model = pyside.eval(`
-                return {round(float(k), 5): v
-                        for k, v in model.items()}
-            `, {'model': this.model})
+            if (this.model) {
+                this.__model = pyside.eval(`
+                    return {round(float(k), 5): v
+                            for k, v in model.items()}
+                `, {'model': this.model})
+            }
         })
         this.progValueChanged.connect(() => {
             this.__progValue = lkprogress.get_nearest_progress(

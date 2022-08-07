@@ -3,7 +3,6 @@ border_width_l: 2
 border_width_xl: 3
 border_radius_m: '$radius_m'
 
-h_spacing_m: 4
 height_m: 20
 
 margin_s: 2
@@ -31,6 +30,9 @@ spacing_xl: 24
 spacing_v_m: 4
 
 # -----------------------------------------------------------------------------
+
+bar_width: 240
+bar_height: '$height_m'
 
 button_width: 52
 button_height: 20
@@ -62,7 +64,7 @@ panel_height: 240
 popup_width: 100
 popup_height: 60
 
-progress_width: 240
+progress_width: '$bar_width'
 progress_height: 4
 progress_radius: 2  # progress_height / 2
 

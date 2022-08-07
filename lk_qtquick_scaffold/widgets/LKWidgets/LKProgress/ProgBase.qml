@@ -2,8 +2,8 @@ import QtQuick 2.15
 
 Item {
     id: root
-    width: pysize.progress_width
-    height: pysize.progress_height
+    width: pysize.bar_width
+    height: pysize.bar_height
 
     property bool      demoMode: false
     property alias     progBgItem: _prog_bg

@@ -5,10 +5,11 @@ LKIcon          1.0     LKIcon.qml
 LKImage         1.0     LKImage.qml
 LKInput         1.0     LKInput.qml
 LKMouseArea     1.0     LKMouseArea.qml
-# LKProgress      1.0     LKProgress/LKProgress.qml
 LKProgress      1.0     LKProgress/LKProgressA.qml
 LKProgressA     1.0     LKProgress/LKProgressA.qml
 LKProgressB     1.0     LKProgress/LKProgressB.qml
+LKProgressC     1.0     LKProgress/LKProgressC.qml
+LKProgressD     1.0     LKProgress/LKProgressD.qml
 LKRadioBox      1.0     LKRadioBox.qml
 LKRectangle     1.0     LKRectangle.qml
 LKRectangle2    1.0     LKRectangle2.qml
