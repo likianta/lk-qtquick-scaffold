@@ -138,13 +138,15 @@ class Application(QApplication):
     
     def _register_backend(self):
         from .pyside import pyside
-        from .qmlside import pyassets, pylayout, qlogger
+        from .qmlside import pyassets, pybroad, pylayout
+        from .qmlside import qlogger
         from .qmlside import widgets_backend as wb
         from .style import pystyle, pystyle_for_qml
         
         qlogger.setup(ignore_unpleasent_warnings=True)
         
         self.register_pyobj(pyassets, 'pyassets')
+        self.register_pyobj(pybroad, 'pybroad')
         self.register_pyobj(pylayout, 'pylayout')
         self.register_pyobj(pyside, 'pyside')
         self.register_pyobj(pystyle_for_qml, 'pystyle')
