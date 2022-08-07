@@ -12,15 +12,16 @@ yellow: 'yellow'
 
 black_5: '#393355'
 
-blue_3: '#2839FF'
-blue_5: '#427ECC'
+blue_1: '#8EA2F8'
+blue_5: '#1732BC'
 blue_7: '#C5D8F9'
 blue_9: '#E9F0FB'
 
-grey_3: '#F2F2F2'
-grey_5: '#F5F7FD'
-grey_7: '#DBDBF7'
-grey_9: '#393355'
+grey_1: '#f5f7fd'
+grey_2: '#F1F1F3'
+grey_5: '#d3d3d3'
+grey_6: '#C2BABA'
+grey_7: '#9b9090'
 
 # -----------------------------------------------------------------------------
 
@@ -37,8 +38,21 @@ button_bg_default: 'white'
 button_bg_hovered: '$blue_9'
 button_bg_pressed: '$blue_7'
 
-frame_bg_default: '$grey_5'
-panel_bg_default: '$grey_3'
-win_bg_default: '$grey_5'
+dot_active: '$blue_1'
+dot_default: '$grey_5'
+dot_hovered: '$dot_active'
+dot_selected: '$dot_active'
+dot_border_active: '$blue_5'
+dot_border_default: '$grey_6'
+dot_border_hovered: '$dot_border_active'
+
+frame_bg: '$panel_bg'
+
+panel_bg: '$grey_2'
+
+progress_bg: '$grey_5'
+progress_fg: '$blue_5'
 
 text_default: '$black_5'
+
+win_bg: '$grey_1'

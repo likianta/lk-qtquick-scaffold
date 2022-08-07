@@ -11,7 +11,8 @@ class Progress(QObject):
     @slot(float, dict, result=float)
     def get_nearest_progress(self, prog: float,
                              model: dict[float, Any]) -> float:
-        return min(model.keys(), key=lambda x: abs(x - prog))
+        # print(model, [type(k) for k in model], ':vl')
+        return min(model.keys(), key=lambda x: abs(float(x) - prog))
     
     @slot(float, dict, result=str)
     def get_nearest_value(self, prog: float, model: dict[float, Any]) -> str:

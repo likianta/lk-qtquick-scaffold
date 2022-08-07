@@ -1,4 +1,5 @@
 import QtQuick 2.15
+import ".."
 
 Item {
     id: root
@@ -7,10 +8,10 @@ Item {
     property int    displayWidth
     property var    model  // optional[dict[float progress, str text]]
     property int    precision: 0  // suggest 0 or 2
-    property string progColorBg: pycolor.prog_bg
-    property string progColorFg: pycolor.prog_fg
+    property string progColorBg: pycolor.progress_bg
+    property string progColorFg: pycolor.progress_fg
     property alias  progWidth: _prog_bg.width
-    property int    progHeight: 4
+    property int    progHeight: pysize.progress_height
     property int    progRadius: progHeight / 2
     property real   progValue: 0  // usually 0.0 ~ 1.0, allow overflows.
     property int    __animDuration: 100  // 100ms
@@ -31,18 +32,35 @@ Item {
         radius: root.progRadius
         color: root.progColorBg
 
-        LKRectangle {
-            id: _prog_fg
-            anchors.left: parent.left
-            width: parent.width * root.__progValue
+        Loader {
+            id: _prog_fg_loader
+            anchors {
+                verticalCenter: parent.verticalCenter
+            }
+            width: parent.width
             height: parent.height
-//            radius: parent.radius
-            color: root.progColorFg
+            source: __isStaggered ? 'ForegroundBarB.qml' : 'ForegroundBarA.qml'
 
-            Behavior on width {
-                enabled: root.demoMode
-                NumberAnimation {
-                    duration: 200
+            property bool __isStaggered: Boolean(root.model)
+
+            onLoaded: {
+                if (this.__isStaggered) {
+                    this.item.dotCount = pyside.eval(`
+                        return len(model)
+                    `, {'model': root.model})
+                    this.item.step = Qt.binding(() => {
+                        return pyside.eval(`
+                            return min(
+                                enumerate(model),
+                                key=lambda x: abs(float(x[1]) - progress)
+                            )[0]
+                        `, {
+                            'model': root.model,
+                            'progress': root.__progValue,
+                        })
+                    })
+                } else {
+                    // TODO
                 }
             }
         }
