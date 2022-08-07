@@ -1,7 +1,3 @@
-from os import getcwd
-from os.path import abspath
-from os.path import relpath
-
 from qtpy.QtCore import QMessageLogContext
 from qtpy.QtCore import QtCriticalMsg
 from qtpy.QtCore import QtMsgType
@@ -76,7 +72,7 @@ def _log(mode: QtMsgType, ctx: QMessageLogContext, msg: str) -> None:
         print: '{file}:{lineno}  >>  {function}  >>  {message}'
     """
     # filename
-    filename = _use_relpath(ctx.file) if ctx.file else '<unknown_source>'
+    filename = _reformat_path(ctx.file) if ctx.file else '<unknown_source>'
     
     if _IGNORE_UNPLEASENT_WARNINGS:
         if filename in (
@@ -110,49 +106,41 @@ def _log(mode: QtMsgType, ctx: QMessageLogContext, msg: str) -> None:
                   ctx.function, msg, sep='\t>>\t')
 
 
-_dir = getcwd()
-
-
-def _use_relpath(path: str) -> str:
-    """ convert absolute path to relative.
-    
+def _reformat_path(path: str) -> str:
+    """
     args:
-        path: str qml file path.
+        path: qml file path.
             currently we've found 2 forms:
                 1. file:///c:/workspace/...
                 2. c:%5Cworkspace%5C...
                      ^^^         ^^^
-    
-    warning:
-        the path may include '../' in the middle part:
-            file:///c:/workspace/../ui/view.qml
-                                 ^^^
-    
-    note:
-        to compilance with lk_logger's relpath form, we suggest adding './' to
-        the beginning of the path.
+            warning:
+                the path may contain '../' in its body part.
+    return:
+        a. the relative path to current working dir:
+            ./view.qml
+        b. a short form to third party (lib) dir:
+            [xxx_lib]/view.qml
+        c. unknown type
+            <{path}>
     """
-    # print(':v', path)
+    from lk_logger.path_helper import path_helper
+    from lk_utils.filesniff import normpath
     
     if path.startswith('file:///'):
-        path = abspath(path[8:])
-        path = relpath(path, _dir).replace('\\', '/')
-        if not path.startswith('../'):
-            path = './' + path
-        return path
-    
+        path = path[8:]
     elif path.startswith('file://'):  # macos/linux
-        path = abspath('/' + path[7].upper() + path[8:])
-        #   'file://users/...' -> '/Users/...'
-        if path.split('/', 2)[1] == _dir.split('/', 2)[1]:
-            path = relpath(path, _dir)
-            if not path.startswith('../'):
-                path = './' + path
-        return path
-    
+        path = '/' + path[7].upper() + path[8:]
     elif path[1:].startswith(':%5C'):
-        return path.replace('%5C', '/')
-    
+        path = path.replace('%5C', '/')
     else:
-        # # raise ValueError('Unknown path type', path)
         return f'<{path}>'  # e.g. '<eval code>'
+    
+    path = normpath(path, force_abspath=True)
+    
+    if path_helper.is_external_lib(path):
+        return path_helper.reformat_external_lib_path(
+            path, style='pretty_relpath'
+        )
+    else:
+        return path_helper.relpath(path)
