@@ -2,7 +2,7 @@ import QtQuick 2.15
 
 Row {
     height: pysize.row_height_m
-    spacing: pysize.h_spacing_m
+    spacing: pysize.spacing_m
 
     property string alignment: 'vcenter'
     //  see [lib:lk-qtquick-scaffold/qmlside/layout_helper/layout_helper.py
