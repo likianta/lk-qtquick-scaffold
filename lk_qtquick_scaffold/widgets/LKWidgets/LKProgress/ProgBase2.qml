@@ -13,6 +13,7 @@ Item {
     property real      progValue
     property int       progWidth: 0
     property alias     textItem: _text
+    property real      __progValue
     property int       __spacing: pysize.spacing_l
 
     Loader {
@@ -25,7 +26,8 @@ Item {
         onLoaded: {
             this.item.demoMode = Qt.binding(() => root.demoMode)
             this.item.progColorFg = Qt.binding(() => root.progColorFg)
-            root.progValue = Qt.binding(() => this.item.__progValue)
+            this.item.progValue = Qt.binding(() => root.progValue)
+            root.__progValue = Qt.binding(() => this.item.__progValue)
         }
 
         Component.onCompleted: {

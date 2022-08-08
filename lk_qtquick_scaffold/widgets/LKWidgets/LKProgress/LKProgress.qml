@@ -10,13 +10,18 @@ Loader {
     property int    precision: 0  // suggested 0 or 2
 //    property string progColorBg: pycolor.progress_bg
     property string progColorFg: pycolor.progress_fg
+    property var    progItem
+    property real   progValue: 0.0
     property int    progWidth: 0
     property bool   showText: false
     property var    textItem
 
     onLoaded: {
+        this.progItem = this.item.progItem
+
         this.item.demoMode = Qt.binding(() => this.demoMode)
         this.item.progColorFg = Qt.binding(() => this.progColorFg)
+        this.item.progValue = Qt.binding(() => this.progValue)
 
         if (this.model) {
             this.item.model = Qt.binding(() => this.model)

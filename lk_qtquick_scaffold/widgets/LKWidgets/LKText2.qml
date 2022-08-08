@@ -12,7 +12,7 @@ LKText {
     }
 
     function measureContent(text) {
-        return _metrics.advanceWidth(text)
+        return _metrics.advanceWidth(' ' + text + ' ')
     }
 
     FontMetrics {
