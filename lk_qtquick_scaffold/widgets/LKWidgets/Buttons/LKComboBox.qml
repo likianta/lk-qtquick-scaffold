@@ -23,7 +23,8 @@ Item {
     property bool   editable: false  // TODO
     property int    indicatorSize: pysize.indicator_size
     property var    model  // list[str]
-    property bool   wheelEnabled: true  // TODO
+    property bool   wheelEnabled: true
+    property bool   wheelLoop: false
     property int    __padding: pysize.padding_m
 
     signal clicked(int index, string text)
@@ -72,12 +73,21 @@ Item {
             onWheel: (whl) => {
                 if (root.wheelEnabled) {
                     const delta = -Math.round(whl.angleDelta.y / 120)
-                    const nextIndex = root.currentIndex + delta
+                    let nextIndex = root.currentIndex + delta
                     if (nextIndex < 0) {
-                        root.currentIndex = root.model.length - 1
+                        if (root.wheelLoop) {
+                            nextIndex = root.model.length - 1
+                        } else {
+                            nextIndex = 0
+                        }
                     } else if (nextIndex >= root.model.length) {
-                        root.currentIndex = 0
-                    } else {
+                        if (root.wheelLoop) {
+                            nextIndex = 0
+                        } else {
+                            nextIndex = root.model.length - 1
+                        }
+                    }
+                    if (root.currentIndex != nextIndex) {
                         root.currentIndex = nextIndex
                     }
                 }
