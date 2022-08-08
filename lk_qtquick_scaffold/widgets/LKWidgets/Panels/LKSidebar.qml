@@ -1,6 +1,6 @@
 import QtQuick 2.15
 import ".."
-import "../LKButtons"
+import "../Buttons"
 
 LKRectangle {
     id: root

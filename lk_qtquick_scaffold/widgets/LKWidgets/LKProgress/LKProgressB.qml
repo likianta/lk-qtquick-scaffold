@@ -1,6 +1,6 @@
 import QtQuick 2.15
 
-ProgBase {
+ProgBaseAB {
     id: root
 
     property var model
@@ -12,7 +12,7 @@ ProgBase {
     //  dict[float rounded_key, str value]
     //      rounded_key: the precision is 0.00001 (5 digits).
 
-    progFgItem: ProgFgB {
+    progFgDelegate: ProgFgB {
         id: _fg
 
         property real value

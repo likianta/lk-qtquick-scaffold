@@ -28,6 +28,12 @@ Rectangle {
         }
     }
 
+    Behavior on color {
+        ColorAnimation {
+            duration: pymotion.duration_s
+        }
+    }
+
     LKMouseArea {
         id: _area
         anchors.fill: parent

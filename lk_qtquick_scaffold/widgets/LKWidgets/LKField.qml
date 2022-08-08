@@ -42,7 +42,7 @@ Item {
         Component.onCompleted: {
             if (this.width == 0) {
                 this.width = Qt.binding(() => {
-                    console.log(root.width, _text.contentWidth)
+//                    console.log(root.width, _text.contentWidth)
                     return root.width - _text.contentWidth - root.__spacing
                 })
             }

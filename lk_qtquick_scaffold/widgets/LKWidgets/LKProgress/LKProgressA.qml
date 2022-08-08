@@ -1,9 +1,9 @@
 import QtQuick 2.15
 
-ProgBase {
+ProgBaseAB {
     id: root
 
-    progFgItem: ProgFgA {
+    progFgDelegate: ProgFgA {
         Behavior on value {
             enabled: root.demoMode
             NumberAnimation {

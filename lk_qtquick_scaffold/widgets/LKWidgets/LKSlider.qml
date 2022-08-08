@@ -7,9 +7,12 @@ Item {
     height: pysize.bar_height
 
     property var    model
+    property string progColorFg: pycolor.progress_fg
+    property alias  progItem: _prog_loader.item
     property real   progValue
-    property bool   showText
-    property string __progType: {  // 'A' | 'B' | 'C' | 'D'
+    property int    progWidth: 0
+    property bool   showText: true
+    property string __progType: {  // literal['A', 'B', 'C', 'D']
         if (model) {
             if (showText) {
                 return 'D'
@@ -25,8 +28,8 @@ Item {
         }
     }
 
+    signal progItemLoaded(var progItem)
     signal progressChangedByUser(real value)
-//    signal __loaded(var progItem)
 
     Loader {
         id: _prog_loader
@@ -41,12 +44,29 @@ Item {
                     this.item.model = Qt.binding(() => root.model)
                     break
                 case 'C':
+                    this.item.progWidth = Qt.binding(() => root.progWidth)
                     break
                 case 'D':
                     this.item.model = Qt.binding(() => root.model)
+                    this.item.progWidth = Qt.binding(() => root.progWidth)
                     break
             }
+
+            if (root.progWidth == 0) {
+                if (root.showText) {
+                    root.progWidth = Qt.binding(() => {
+                        return root.width
+                            - this.item.textItem.contentWidth
+                            - pysize.spacing_l
+                    })
+                } else {
+                    root.progWidth = Qt.binding(() => root.width)
+                }
+            }
+
+            this.item.progColorFg = Qt.binding(() => root.progColorFg)
             this.item.progValue = Qt.binding(() => root.progValue)
+            root.progItemLoaded(this.item)
         }
     }
 
