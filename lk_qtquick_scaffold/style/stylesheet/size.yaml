@@ -50,6 +50,9 @@ dot_border_hovered: 2
 edit_width: 64
 edit_height: '$button_height'
 
+field_width: 120
+field_height: '$height_m'
+
 icon_size_m: 16
 icon_size_l: 20
 
