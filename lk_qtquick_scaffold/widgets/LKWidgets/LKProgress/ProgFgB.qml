@@ -12,6 +12,8 @@ Item {
     property real   __stepSize: width / (__totalSteps - 1)
     property int    __totalSteps: totalSteps >= 2 ? totalSteps : 2
 
+    signal clicked(int step)
+
     Rectangle {
         id: _prog
         width: root.__stepSize * root.step
@@ -43,6 +45,7 @@ Item {
                     LKMouseArea {
                         id: _dot_area
                         anchors.fill: parent
+                        onClicked: root.clicked(_dot.index)
                     }
 
                     Component.onCompleted: {

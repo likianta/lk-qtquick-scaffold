@@ -40,6 +40,12 @@ ProgBase {
                     'value': this.value
                 })
             })
+
+            this.clicked.connect((step) => {
+                root.progValue = pyside.eval(`
+                    return tuple(model)[index]
+                `, {'model': root.__model, 'index': step})
+            })
         }
     }
 
