@@ -11,6 +11,7 @@ Item {
     property string    progColorBg: pycolor.progress_bg
     property string    progColorFg: pycolor.progress_fg
     property real      progValue: 0  // usually 0.0 ~ 1.0, allow overflows.
+    property alias     progWidth: root.width
     property real      __progValue  // 0.0 ~ 1.0
 
     ProgBg {

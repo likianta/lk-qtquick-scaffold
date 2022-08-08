@@ -9,6 +9,8 @@ Item {
     property alias  demoMode: _prog.demoMode
     property int    precision: 0  // suggested 0 or 2
     property alias  progItem: _prog
+    property alias  progValue: _prog.progValue
+    property alias  progWidth: _prog.width
     property alias  textItem: _text
 
     LKProgressA {

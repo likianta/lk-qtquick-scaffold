@@ -44,7 +44,7 @@ dot_hovered: '$dot_active'
 dot_selected: '$dot_active'
 dot_border_active: '$blue_5'
 dot_border_default: '$grey_6'
-dot_border_hovered: '$dot_border_active'
+dot_border_hovered: '$dot_hovered'
 
 frame_bg: '$panel_bg'
 

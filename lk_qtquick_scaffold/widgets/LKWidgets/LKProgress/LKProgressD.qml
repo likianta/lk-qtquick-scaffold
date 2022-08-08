@@ -9,13 +9,15 @@ Item {
     property alias  demoMode: _prog.demoMode
     property alias  model: _prog.model
     property alias  progItem: _prog
+    property alias  progValue: _prog.progValue
+    property alias  progWidth: _prog.width
     property alias  textItem: _text
 
     LKProgressB {
         id: _prog
         anchors.verticalCenter: parent.verticalCenter
         width: 0
-        model: root.model
+//        model: root.model
         Component.onCompleted: {
             if (this.width == 0) {
                 this.anchors.left = Qt.binding(() => root.left)
