@@ -19,8 +19,9 @@ ProgBaseCD {
     }
 
     Component.onCompleted: {
-        this.textItem.text = lkprogress.show_value(100, root.precision)
-        this.textItem.width = this.textItem.contentWidth
+        this.textItem.maxText = lkprogress.show_value(1.0, root.precision)
+//        this.textItem.text = lkprogress.show_value(1.0, root.precision)
+//        this.textItem.width = this.textItem.contentWidth
         root.__valueChanged.connect(() => {
             this.textItem.text = lkprogress.show_value(
                 root.__value, root.precision

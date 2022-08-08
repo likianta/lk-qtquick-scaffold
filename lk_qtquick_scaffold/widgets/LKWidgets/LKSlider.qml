@@ -52,6 +52,8 @@ Item {
                     break
             }
 
+//            console.log(root.__progType)
+
             if (root.progWidth == 0) {
                 if (root.showText) {
                     root.progWidth = Qt.binding(() => {

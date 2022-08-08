@@ -13,14 +13,16 @@ LKWindow {
         alignment: 'hcenter,hfill'
         autoSize: true
 
-        LKProgressA {
+        LKProgress {
             height: 0
             demoMode: root.demoMode
+            showText: false
         }
 
-        LKProgressB {
+        LKProgress {
             height: 0
             demoMode: root.demoMode
+            showText: false
             model: {
                 0.0: 'low',
                 0.5: 'medium',
@@ -28,15 +30,17 @@ LKWindow {
             }
         }
 
-        LKProgressC {
+        LKProgress {
             height: 0
+            demoMode: root.demoMode
             precision: 2
-            progItem.demoMode: root.demoMode
+            showText: true
         }
 
-        LKProgressD {
+        LKProgress {
             height: 0
-            progItem.demoMode: root.demoMode
+            demoMode: root.demoMode
+            showText: true
             model: {
                 0.0: 'low',
                 0.5: 'medium',

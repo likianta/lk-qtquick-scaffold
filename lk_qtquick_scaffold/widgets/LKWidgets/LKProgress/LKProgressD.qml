@@ -29,6 +29,7 @@ ProgBaseCD {
             const maxLen = pyside.eval(`
                 return max(map(len, map(str, model.values())))
             `, {'model': this.__model})
+//            console.log(this.__model, maxLen)
             this.textItem.width = maxLen * this.textItem.font.pixelSize
 //                console.log(maxLen, this.textItem.width)
             this.__valueChanged()

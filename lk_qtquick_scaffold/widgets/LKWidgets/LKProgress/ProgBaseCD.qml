@@ -19,6 +19,7 @@ Item {
         id: _loader
         anchors.verticalCenter: parent.verticalCenter
         width: root.progWidth
+        height: parent.height
         sourceComponent: root.delegate
         onLoaded: {
             this.item.demoMode = Qt.binding(() => root.demoMode)
@@ -28,7 +29,7 @@ Item {
         Component.onCompleted: {
             if (root.progWidth == 0) {
                 root.progWidth = Qt.binding(() => {
-                    return root.width - _text.contentWidth - root.__spacing
+                    return root.width - _text.maxContentWidth - root.__spacing
                 })
             }
         }
