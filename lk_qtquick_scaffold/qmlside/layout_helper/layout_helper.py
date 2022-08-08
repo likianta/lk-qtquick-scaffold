@@ -15,17 +15,6 @@ class T:
 
 class LayoutHelper(QObject):
     
-    @slot(object, result=int)
-    @slot(object, str, result=int)
-    def get_content_width(self, text_item: QObject, text: str = None) -> int:
-        if not text:
-            return text_item.property('contentWidth')
-        old, new = text_item.property('text'), text
-        text_item.setProperty('text', text)
-        size = text_item.property('contentWidth')
-        text_item.setProperty('text', old)
-        return size
-    
     @slot(object, str)
     def auto_align(self, container: QObject, alignment: str):
         """
