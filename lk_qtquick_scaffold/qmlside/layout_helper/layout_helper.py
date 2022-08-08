@@ -3,6 +3,8 @@ from __future__ import annotations
 import typing as t
 from functools import partial
 
+from qtpy.QtGui import QFontMetrics
+
 from ..js_evaluator import eval_js
 from ...qt_core import QObject
 from ...qt_core import bind_func  # noqa

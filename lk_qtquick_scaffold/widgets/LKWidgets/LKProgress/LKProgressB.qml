@@ -1,6 +1,6 @@
 import QtQuick 2.15
 
-ProgBaseAB {
+ProgBase {
     id: root
 
     property var model
@@ -52,12 +52,11 @@ ProgBaseAB {
         anchors.fill: parent
         drag.target: _invisible_draggee
         onClicked: (mouse) => {
-            root.progValue = mouse.x / root.width
-//            console.log(mouse.x, root.progValue)
+            root.progValue = mouse.x / root.progWidth
         }
         onPositionChanged: (mouse) => {
             if (this.drag.active) {
-                root.progValue = mouse.x / root.width
+                root.progValue = mouse.x / root.progWidth
             }
         }
     }
@@ -72,6 +71,8 @@ ProgBaseAB {
                     return {round(float(k), 5): v
                             for k, v in model.items()}
                 `, {'model': this.model})
+            } else {
+                this.__model = {}
             }
         })
         this.progValueChanged.connect(() => {

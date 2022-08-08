@@ -159,6 +159,9 @@ class Application(QApplication):
         self.register_pyobj(wb.Progress(), 'lkprogress')
         self.register_pyobj(wb.Slider(), 'lkslider')
         self.register_pyobj(wb.Util(), 'lkutil')
+        
+        from lk_utils import relpath
+        pyassets.add_source(relpath('widgets'), 'lkwidgets')
     
     # -------------------------------------------------------------------------
     

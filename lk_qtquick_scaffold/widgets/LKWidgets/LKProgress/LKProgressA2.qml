@@ -1,9 +1,9 @@
 import QtQuick 2.15
 
-ProgBaseCD {
+ProgBase2 {
     id: root
 
-    property int precision: 0  // suggested 0 or 2
+    property int  precision: 0  // suggested 0 or 2
     property real __value
 
     delegate: LKProgressA {
@@ -19,14 +19,13 @@ ProgBaseCD {
     }
 
     Component.onCompleted: {
-        this.textItem.maxText = lkprogress.show_value(1.0, root.precision)
-//        this.textItem.text = lkprogress.show_value(1.0, root.precision)
-//        this.textItem.width = this.textItem.contentWidth
-        root.__valueChanged.connect(() => {
-            this.textItem.text = lkprogress.show_value(
+        this.textItem.maxText = Qt.binding(
+            () => lkprogress.show_value(1.0, root.precision)
+        )
+        this.textItem.text = Qt.binding(
+            () => lkprogress.show_value(
                 root.__value, root.precision
             )
-        })
-        root.__valueChanged()
+        )
     }
 }

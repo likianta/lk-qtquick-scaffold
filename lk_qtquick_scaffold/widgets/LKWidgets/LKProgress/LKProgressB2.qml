@@ -1,6 +1,6 @@
 import QtQuick 2.15
 
-ProgBaseCD {
+ProgBase2 {
     id: root
     width: pysize.bar_width
     height: pysize.bar_height
@@ -19,19 +19,18 @@ ProgBaseCD {
 
     Component.onCompleted: {
         this.__valueChanged.connect(() => {
-            if (this.model) {
+            if (this.__model) {
                 this.textItem.text = lkprogress.get_nearest_value(
                     this.__value, this.__model
                 )
             }
         })
         this.__modelChanged.connect(() => {
-            const maxLen = pyside.eval(`
-                return max(map(len, map(str, model.values())))
-            `, {'model': this.__model})
-//            console.log(this.__model, maxLen)
-            this.textItem.width = maxLen * this.textItem.font.pixelSize
-//                console.log(maxLen, this.textItem.width)
+            if (this.__model) {
+                this.textItem.maxText = pyside.eval(`
+                    return max(map(str, model.values()), key=len)
+                `, {'model': this.__model})
+            }
             this.__valueChanged()
         })
     }

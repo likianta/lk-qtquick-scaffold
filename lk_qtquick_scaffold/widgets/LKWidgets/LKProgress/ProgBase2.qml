@@ -18,24 +18,36 @@ Item {
     Loader {
         id: _loader
         anchors.verticalCenter: parent.verticalCenter
-        width: root.progWidth
+//        width: root.progWidth
         height: parent.height
         sourceComponent: root.delegate
+
         onLoaded: {
             this.item.demoMode = Qt.binding(() => root.demoMode)
             this.item.progColorFg = Qt.binding(() => root.progColorFg)
             root.progValue = Qt.binding(() => this.item.__progValue)
         }
+
         Component.onCompleted: {
-            if (root.progWidth == 0) {
-                root.progWidth = Qt.binding(() => {
-                    return root.width - _text.maxContentWidth - root.__spacing
-                })
-            }
+            this.width = Qt.binding(() => {
+                if (root.progWidth) {
+                    return root.progWidth
+                } else {
+                    return root.width - _text.maxWidth - root.__spacing
+                }
+            })
+//            pybroad.cast.connect((e) => {
+//                console.log(
+//                    e,
+//                    [_text.maxText, _text.maxWidth],
+//                    [_text.text, _text.width],
+//                    [root.width, this.width],
+//                )
+//            })
         }
     }
 
-    LKText {
+    LKText2 {
         id: _text
         anchors {
             left: _loader.right

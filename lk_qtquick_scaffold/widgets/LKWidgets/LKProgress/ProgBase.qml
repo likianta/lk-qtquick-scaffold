@@ -6,13 +6,16 @@ Item {
     height: pysize.bar_height
 
     property bool      demoMode: false
-    property alias     progBgItem: _prog_bg
     property Component progFgDelegate
+    property alias     progBgItem: _prog_bg
     property alias     progFgItem: _prog_fg_loader.item
     property string    progColorBg: pycolor.progress_bg
     property string    progColorFg: pycolor.progress_fg
     property real      progValue: 0  // usually 0.0 ~ 1.0, allow overflows.
+    property real      progWidth: root.width
     property real      __progValue  // 0.0 ~ 1.0
+
+    signal loaded(var item)
 
     ProgBg {
         id: _prog_bg
@@ -28,6 +31,7 @@ Item {
             onLoaded: {
                 this.item.color = Qt.binding(() => root.progColorFg)
                 this.item.value = Qt.binding(() => root.__progValue)
+                root.loaded(this.item)
             }
         }
     }

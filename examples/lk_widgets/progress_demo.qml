@@ -1,3 +1,4 @@
+import QtQuick 2.15
 import LKWidgets 1.0
 
 LKWindow {
@@ -14,12 +15,14 @@ LKWindow {
         autoSize: true
 
         LKProgress {
+            id: _prog_1
             height: 0
             demoMode: root.demoMode
             showText: false
         }
 
         LKProgress {
+            id: _prog_2
             height: 0
             demoMode: root.demoMode
             showText: false
@@ -31,6 +34,7 @@ LKWindow {
         }
 
         LKProgress {
+            id: _prog_3
             height: 0
             demoMode: root.demoMode
             precision: 2
@@ -38,6 +42,7 @@ LKWindow {
         }
 
         LKProgress {
+            id: _prog_4
             height: 0
             demoMode: root.demoMode
             showText: true
@@ -47,5 +52,14 @@ LKWindow {
                 1.0: 'high',
             }
         }
+    }
+
+    LKButton {
+        anchors {
+            bottom: parent.bottom
+            horizontalCenter: parent.horizontalCenter
+        }
+        text: 'test'
+        onClicked: pybroad.cast('test')
     }
 }

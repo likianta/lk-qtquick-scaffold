@@ -1,6 +1,6 @@
 import QtQuick 2.15
 
-ProgBaseAB {
+ProgBase {
     id: root
 
     progFgDelegate: ProgFgA {
