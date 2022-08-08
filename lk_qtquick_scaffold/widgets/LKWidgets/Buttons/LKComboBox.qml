@@ -69,6 +69,19 @@ Item {
             anchors.fill: parent
             hoverEnabled: true
             onClicked: parent.clicked()
+            onWheel: (whl) => {
+                if (root.wheelEnabled) {
+                    const delta = -Math.round(whl.angleDelta.y / 120)
+                    const nextIndex = root.currentIndex + delta
+                    if (nextIndex < 0) {
+                        root.currentIndex = root.model.length - 1
+                    } else if (nextIndex >= root.model.length) {
+                        root.currentIndex = 0
+                    } else {
+                        root.currentIndex = nextIndex
+                    }
+                }
+            }
         }
     }
 
