@@ -1,17 +1,17 @@
-from os import getcwd
-
 from .__ext__ import QObject
 from .__ext__ import slot
-
-_cwd = 'file:///' + getcwd().replace('\\', '/')
 
 
 class Util(QObject):
     
     @slot(result=str)
-    @slot(str, result=str)
-    def get_path(self, relpath: str = '') -> str:
-        if relpath == '':
-            return _cwd
+    def get_monospaced_font(self) -> str:
+        """ get an available monospaced font family name based on OS. """
+        from platform import system
+        name = system()
+        if name == 'Darwin':
+            return 'Menlo'
+        elif name == 'Windows':
+            return 'Consolas'
         else:
-            return f'{_cwd}/{relpath}'
+            return 'Ubuntu Mono'
