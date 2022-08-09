@@ -12,7 +12,12 @@ LKText {
     }
 
     function measureContent(text) {
-        return _metrics.advanceWidth(' ' + text + ' ')
+        if (text.includes('\n')) {
+            text = pyside.eval(`
+                return max(text.splitlines(), key=len)
+            `, {'text': text})
+        }
+        return _metrics.advanceWidth(text) * 1.2
     }
 
     FontMetrics {

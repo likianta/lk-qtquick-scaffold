@@ -23,6 +23,7 @@ LKRectangle {
     property int    __padding: pysize.padding_m
 
     signal clicked()
+    signal toggled(bool checked)
 
     LKRectangle {
         id: _indicator
@@ -70,6 +71,7 @@ LKRectangle {
     }
 
     Component.onCompleted: {
+        this.checkedChanged.connect(() => this.toggled(this.checked))
         if (this.width == 0) {
             this.width = this.childrenRect.width * 1.5
         }

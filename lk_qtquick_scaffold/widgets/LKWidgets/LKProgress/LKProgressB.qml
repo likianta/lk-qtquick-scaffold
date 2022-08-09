@@ -12,6 +12,8 @@ ProgBase {
     //  dict[float rounded_key, str value]
     //      rounded_key: the precision is 0.00001 (5 digits).
 
+    signal stepChanged(int step)
+
     progFgDelegate: ProgFgB {
         id: _fg
 
@@ -19,6 +21,8 @@ ProgBase {
 //        property var  __valueToStep
 
         Component.onCompleted: {
+            this.stepChanged.connect(() => root.stepChanged(this.step))
+
             root.__modelChanged.connect(() => {
                 this.totalSteps = pyside.eval(`
                     return len(model)

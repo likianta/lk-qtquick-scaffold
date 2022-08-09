@@ -12,9 +12,9 @@ Item {
     property alias     progItem: _loader.item
     property real      progValue
     property int       progWidth: 0
+    property int       spacing: pysize.spacing_l
     property alias     textItem: _text
     property real      __progValue
-    property int       __spacing: pysize.spacing_l
 
     Loader {
         id: _loader
@@ -35,7 +35,7 @@ Item {
                 if (root.progWidth) {
                     return root.progWidth
                 } else {
-                    return root.width - _text.maxWidth - root.__spacing
+                    return root.width - _text.maxWidth - root.spacing
                 }
             })
 //            pybroad.cast.connect((e) => {
@@ -55,7 +55,7 @@ Item {
             left: _loader.right
             right: parent.right
             verticalCenter: parent.verticalCenter
-            leftMargin: root.__spacing
+            leftMargin: root.spacing
         }
         clip: true
         elide: Text.ElideRight

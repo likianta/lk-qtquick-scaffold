@@ -14,6 +14,7 @@ Loader {
     property real   progValue: 0.0
     property int    progWidth: 0
     property bool   showText: false
+    property int    spacing: pysize.spacing_l
     property var    textItem
 
     onLoaded: {
@@ -33,6 +34,7 @@ Loader {
 
         if (this.showText) {
             this.item.progWidth = Qt.binding(() => this.progWidth)
+            this.item.spacing = Qt.binding(() => this.spacing)
             this.textItem = Qt.binding(() => this.item.textItem)
         }
     }

@@ -16,13 +16,17 @@ LKRectangle {
     property string colorBottomHighlight: pycolor.input_indicator_active
     property int    cursorShape: -1
     property alias  displayText: _input.displayText
+    property bool   editable: true
     property alias  focus_: _input.focus
+    property alias  horizontalAlignment: _input.horizontalAlignment
     property alias  inputMask: _input.inputMask
+    property int    padding: pysize.padding_l
     property bool   showIndicator: false
 //    property bool   showIndicator: Boolean(colorBottomHighlight)
     property alias  text: _input.text
     property alias  textColor: _input.color
     property alias  textHint: _placeholder.text
+    property alias  validator: _input.validator
 
     signal textEdited(string text)
 
@@ -52,8 +56,8 @@ LKRectangle {
         anchors {
             left: parent.left
             right: parent.right
-            leftMargin: 8
-            rightMargin: 8
+            leftMargin: root.padding
+            rightMargin: root.padding
             verticalCenter: parent.verticalCenter
         }
         color: pycolor.text_hint
@@ -61,6 +65,7 @@ LKRectangle {
 
     TextInput {
         id: _input
+        enabled: root.editable
         anchors.fill: _placeholder
         clip: true
         color: pycolor.text_default

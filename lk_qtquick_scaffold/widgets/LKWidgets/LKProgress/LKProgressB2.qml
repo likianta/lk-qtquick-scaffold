@@ -9,9 +9,12 @@ ProgBase2 {
     property var  __model
     property real __value
 
+    signal stepChanged(int step)
+
     delegate: LKProgressB {
         model: root.model
         Component.onCompleted: {
+            this.stepChanged.connect(root.stepChanged)
             root.__model = Qt.binding(() => this.__model)
             root.__value = Qt.binding(() => this.__progValue)
         }
