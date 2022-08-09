@@ -24,6 +24,7 @@ LKButton        1.0     Buttons/LKButton.qml
 LKCheckBox      1.0     Buttons/LKCheckBox.qml
 LKComboBox      1.0     Buttons/LKComboBox.qml
 LKGhostButton   1.0     Buttons/LKGhostButton.qml
+LKIconButton    1.0     Buttons/LKIconButton.qml
 
 LKColumn        1.0     Containers/LKColumn.qml
 LKListView      1.0     Containers/LKListView.qml

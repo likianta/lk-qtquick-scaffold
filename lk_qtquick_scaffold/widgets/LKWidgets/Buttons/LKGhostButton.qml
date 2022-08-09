@@ -32,9 +32,9 @@ LKRectangle {
             leftMargin: pysize.padding_h_m
             verticalCenter: parent.verticalCenter
         }
-        width: root.iconSize
-        height: root.iconSize
-        sourceComponent: LKIcon { }
+//        width: root.iconSize
+//        height: root.iconSize
+        sourceComponent: LKIconButton { }
         onLoaded: {
             this.item.color = root.iconColor
             this.item.size = root.iconSize
