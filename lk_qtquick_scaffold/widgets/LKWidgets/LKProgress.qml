@@ -7,8 +7,8 @@ Item {
     property int    displayWidth
     property var    model  // optional[dict[float progress, str text]]
     property int    precision: 0  // suggest 0 or 2
-    property string progColorBg: pycolor.prog_bg
-    property string progColorFg: pycolor.prog_fg
+    property string progColorBg: pycolor.progress_bg
+    property string progColorFg: pycolor.progress_fg
     property alias  progWidth: _prog_bg.width
     property int    progHeight: 4
     property int    progRadius: progHeight / 2
