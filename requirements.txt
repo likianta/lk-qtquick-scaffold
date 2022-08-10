@@ -1,5 +1,5 @@
 argsense
-lk-lambdex
+lambda-ex >= 1.0.0b2
 lk-logger >= 5.2.0
 lk-utils
 pyyaml
