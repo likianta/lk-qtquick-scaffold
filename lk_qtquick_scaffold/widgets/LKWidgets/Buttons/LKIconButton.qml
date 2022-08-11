@@ -16,7 +16,7 @@ Item {
     property int    size: pysize.icon_size
     property string source
 
-    signal clicked()
+    signal clicked(var mouse)
 
     Rectangle {
         visible: root.halo
@@ -52,6 +52,6 @@ Item {
         id: _area
         anchors.fill: parent
         hoverEnabled: true
-        onClicked: root.clicked()
+        onClicked: (mouse) => root.clicked(mouse)
     }
 }
