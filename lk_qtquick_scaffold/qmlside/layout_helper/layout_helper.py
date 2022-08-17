@@ -3,6 +3,7 @@ from __future__ import annotations
 import typing as t
 from functools import partial
 
+from qtpy.QtGui import QFont
 from qtpy.QtGui import QFontMetrics
 
 from ..js_evaluator import eval_js
@@ -16,6 +17,17 @@ class T:
 
 
 class LayoutHelper(QObject):
+    
+    def __init__(self):
+        super().__init__()
+        
+        # see also `../../style/font.py`.
+        from os import name
+        font = QFont()
+        font.setPixelSize(12)
+        if name == 'nt':
+            font.setFamily('Microsoft YaHei UI')
+        self._font_metrics = QFontMetrics(font)
     
     @slot(object, str)
     def auto_align(self, container: QObject, alignment: str):
@@ -244,10 +256,28 @@ class LayoutHelper(QObject):
                     - item.property('spacing') * (children_count - 1)
             )
     
+    @slot('any', result=int)
+    @slot('any', object, result=int)
+    def calc_content_width(
+            self,
+            text: str | list[str],
+            text_item: QObject = None,
+    ) -> int:
+        if isinstance(text, list):
+            text = max(text, key=len)
+        if '\n' in text:
+            text = max(text.split('\n'), key=len)
+        
+        if text_item is None:
+            fm = self._font_metrics
+        else:
+            fm = QFontMetrics(text_item.property('font'))
+        return fm.horizontalAdvance(text)
+    
     @slot(list, result=tuple)
     @slot(list, int, result=tuple)
     @slot(list, int, int, result=tuple)
-    def calc_text_block_size(
+    def calc_text_block_size(  # DELETE
             self, lines: list[str],
             char_width=10, line_height=20
     ):

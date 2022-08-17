@@ -5,13 +5,16 @@ LKText {
     id: root
 
     property string maxText
-    property int    maxWidth
+    property int    maxWidth: measureContent(root.text)
 
     onMaxTextChanged: {
         this.maxWidth = measureContent(this.maxText)
     }
 
     function measureContent(text) {
+//        if (text == '') {
+//            text = root.text
+//        }
         if (text.includes('\n')) {
             text = pyside.eval(`
                 return max(text.splitlines(), key=len)

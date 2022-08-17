@@ -2,6 +2,7 @@
 /.vscode/
 /deleted/
 /dist/
-/tests/
+/tests/test*.py
+/tests/view*.qml
 __pycache__/
 .DS_Store
