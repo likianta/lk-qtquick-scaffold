@@ -27,7 +27,7 @@ Item {
     property bool   wheelLoop: false
     property int    __padding: pysize.padding_m
 
-    signal clicked(int index, string text)
+    signal selected(int index, string text)
 
     component MyItem: LKRectangle {
         width: root.width
@@ -165,7 +165,7 @@ Item {
                 property int index: model.index
                 onClicked: {
                     root.currentIndex = this.index
-                    root.clicked(this.index, this.textDelegate.text)
+                    root.selected(this.index, this.textDelegate.text)
                     _dropdown.close()
                 }
             }

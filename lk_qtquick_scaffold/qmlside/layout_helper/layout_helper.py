@@ -272,7 +272,7 @@ class LayoutHelper(QObject):
             fm = self._font_metrics
         else:
             fm = QFontMetrics(text_item.property('font'))
-        return fm.horizontalAdvance(text)
+        return int(fm.horizontalAdvance(text) * 1.2)
     
     @slot(list, result=tuple)
     @slot(list, int, result=tuple)
