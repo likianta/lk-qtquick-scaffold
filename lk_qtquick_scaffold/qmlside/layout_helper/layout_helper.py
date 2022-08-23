@@ -13,7 +13,8 @@ from ...qt_core import slot
 
 
 class T:
-    Orientation = t.Literal['h', 'horizontal', 'v', 'vertical']
+    # Orientation = t.Literal['h', 'horizontal', 'v', 'vertical']
+    Orientation = t.Literal['h', 'v']
 
 
 class LayoutHelper(QObject):
@@ -28,6 +29,153 @@ class LayoutHelper(QObject):
         if name == 'nt':
             font.setFamily('Microsoft YaHei UI')
         self._font_metrics = QFontMetrics(font)
+    
+    # -------------------------------------------------------------------------
+    # new generation of auto alignment.
+    
+    # for LKHBox.qml
+    @slot(object)
+    def halign_children(self, hbox: QObject):
+        self._resize_children(hbox, 'h')
+        self._align_children(hbox, 'h')
+    
+    # for LKVBox.qml
+    @slot(object)
+    def valign_children(self, vbox: QObject):
+        self._resize_children(vbox, 'v')
+        self._align_children(vbox, 'v')
+    
+    @staticmethod
+    def _align_children(box: QObject, orientation: T.Orientation):
+        children = box.children()
+        last = None
+        
+        if orientation == 'h':
+            center = 'verticalCenter'
+            side_0 = 'left'
+            side_1 = 'right'
+        else:
+            center = 'horizontalCenter'
+            side_0 = 'top'
+            side_1 = 'bottom'
+        
+        for i, child in enumerate(children):
+            eval_js('''
+                $child.anchors.{center} = Qt.binding(() => $parent.{center})
+            '''.format(center=center), {'child': child, 'parent': box})
+            
+            if i == 0:
+                eval_js('''
+                    $child.anchors.{side0} = Qt.binding(() => $parent.{side0})
+                    $child.anchors.{side0}Margin = Qt.binding(
+                        () => $parent.padding)
+                '''.format(side0=side_0), {'child': child, 'parent': box})
+            
+            else:
+                eval_js('''
+                    $child.anchors.{side0} = Qt.binding(() => $last.{side1})
+                    $child.anchors.{side0}Margin = Qt.binding(
+                        () => $parent.spacing)
+                '''.format(side0=side_0, side1=side_1), {
+                    'child': child, 'last': last, 'parent': box
+                })
+                
+                if i == len(children) - 1:
+                    eval_js('''
+                        $child.anchors.{side1} = Qt.binding(
+                            () => $parent.{side1})
+                        $child.anchors.{side1}Margin = Qt.binding(
+                            () => $parent.spacing)
+                    '''.format(side1=side_1), {'child': child, 'parent': box})
+            
+            last = child
+    
+    @staticmethod
+    def _resize_children(box: QObject, orientation: T.Orientation):
+        children = box.children()
+        
+        # stretch items in opposite direction
+        def rstretch():
+            prop_r = 'height' if orientation == 'h' else 'width'
+            for child in children:
+                if child.property(prop_r) == 0:
+                    eval_js('''
+                        $child.{0} = Qt.binding(() => $parent.{0})
+                    '''.format(prop_r), {'child': child, 'parent': box})
+        
+        if (orientation == 'h' and box.property('vfill')) or \
+                (orientation == 'v' and box.property('hfill')):
+            rstretch()
+        
+        # ---------------------------------------------------------------------
+        # auto size children
+        
+        prop = 'width' if orientation == 'h' else 'height'
+        # if container.property(prop_name) <= 0: return False
+        
+        elastic_items: dict[int, float] = {}  # dict[int index, float ratio]
+        stretch_items: dict[int, int] = {}  # dict[int index, int _]
+        #   note: stretch_items.values() are useless (they are all zeros). it
+        #   is made just for keeping the same form with elastic_items.
+        
+        claimed_size = 0
+        for idx, item in enumerate(children):
+            size = item.property(prop)
+            if size >= 1:
+                claimed_size += size
+            elif 0 < size < 1:
+                elastic_items[idx] = size
+            elif size == 0 or size == -1:
+                # FIXME: see reason in `self.auto_size_children : [code]
+                #   size == -1`
+                stretch_items[idx] = 0
+            else:
+                raise ValueError('cannot allocate negative size', idx, item)
+        
+        if not elastic_items and not stretch_items:
+            return
+        
+        def get_total_available_size_for_children() -> int:
+            return (
+                    box.property(prop) -
+                    box.property('padding') * 2 -
+                    box.property('spacing') * (len(children) - 1)
+            )
+        
+        total_spare_size = get_total_available_size_for_children()
+        unclaimed_size = total_spare_size - claimed_size
+        
+        if unclaimed_size <= 0:
+            # fast finish leftovers
+            for idx, item in enumerate(children):
+                if idx in elastic_items:
+                    item.setProperty(prop, 0)
+                # note: no need to check if idx in stretch_items, because their
+                # size is already 0.
+            return
+        
+        # allocate elastic items
+        total_unclaimed_size = unclaimed_size
+        for idx, ratio in elastic_items.items():
+            child = children[idx]
+            size = total_unclaimed_size * ratio
+            child.setProperty(prop, size)
+            unclaimed_size -= size
+        
+        if unclaimed_size <= 0:
+            return
+        if not stretch_items:
+            return
+        
+        # allocate stretch items
+        total_unclaimed_size = unclaimed_size
+        stretch_items_count = len(stretch_items)
+        stretch_item_size_aver = total_unclaimed_size / stretch_items_count
+        for idx in stretch_items.keys():
+            child = children[idx]
+            child.setProperty(prop, stretch_item_size_aver)
+    
+    # -------------------------------------------------------------------------
     
     @slot(object, str)
     def auto_align(self, container: QObject, alignment: str):
@@ -144,15 +292,27 @@ class LayoutHelper(QObject):
         claimed_size = 0
         for idx, item in enumerate(children):
             size = item.property(prop_name)
-            if size < 0:
-                raise ValueError('cannot allocate negative size', idx, item)
-            elif size == 0:
-                stretch_items[idx] = 0
+            if size >= 1:
+                claimed_size += size
             elif 0 < size < 1:
                 elastic_items[idx] = size
+            elif size == 0 or size == -1:
+                """ FIXME
+                why `size == -1`?
+                    this is a workaround.
+                    for some widgets, their size default is 0, and they will
+                    resize themselves to a proper width in their `onCompleted`
+                    stage (based on their final content length).
+                    to avoid triggering their auto resize policy, we cannot
+                    give them zero at the start. so we have to seek a solution
+                    like this.
+                    i'm diggering qml mechanism, maybe we can find a better
+                    solution in future.
+                """
+                stretch_items[idx] = 0
             else:
-                claimed_size += size
-        
+                raise ValueError('cannot allocate negative size', idx, item)
+            
         if not elastic_items and not stretch_items:
             return False
         
@@ -221,6 +381,8 @@ class LayoutHelper(QObject):
             unclaimed_size -= size
         
         if unclaimed_size <= 0:
+            return
+        if not stretch_items:
             return
         
         # allocate stretch items
