@@ -27,6 +27,7 @@ LKIconButton    1.0     Buttons/LKIconButton.qml
 LKRadioBox      1.0     Buttons/LKRadioBox.qml
 
 LKColumn        1.0     Containers/LKColumn.qml
+LKHBox          1.0     Containers/LKHBox.qml
 LKListView      1.0     Containers/LKListView.qml
 LKRow           1.0     Containers/LKRow.qml
 
