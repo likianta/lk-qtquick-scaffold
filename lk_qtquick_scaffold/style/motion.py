@@ -1,4 +1,4 @@
-from .base import Base
+from ._base import Base
 
 
 class Motion(Base):

@@ -28,7 +28,7 @@ examples:
     - margin_l
     - margin_xl
 """
-from .base import Base
+from ._base import Base
 from ..qt_core import slot
 
 

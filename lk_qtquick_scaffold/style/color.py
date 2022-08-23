@@ -61,7 +61,7 @@ BEM naming style.
 - text_selection_default
 - text_cursor_default
 """
-from .base import Base
+from ._base import Base
 
 
 class Color(Base):
