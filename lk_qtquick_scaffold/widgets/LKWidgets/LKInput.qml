@@ -14,7 +14,6 @@ LKRectangle {
     property string colorBorderDefault: pycolor.input_border_default
     property string colorBorderActive: pycolor.input_border_active
     property string colorBottomHighlight: pycolor.input_indicator_active
-    property int    cursorShape: -1
     property alias  displayText: _input.displayText
     property bool   editable: true
     property alias  focus_: _input.focus
@@ -26,28 +25,17 @@ LKRectangle {
     property alias  text: _input.text
     property alias  textColor: _input.color
     property alias  textHint: _placeholder.text
+    property bool   useIBeamCursor: false
     property alias  validator: _input.validator
 
     signal textEdited(string text)
 
-    Loader {
-        // a workaround for adjusting cursor shape
-        id: _loader
+    MouseArea {
+        id: _cursor_shape_patch
+        visible: root.useIBeamCursor
         anchors.fill: parent
-
-        Component {
-            id: _cursor_shape_patch
-            MouseArea {
-                anchors.fill: parent
-                cursorShape: root.cursorShape
-            }
-        }
-
-        Component.onCompleted: {
-            if (root.cursorShape != -1) {
-                _loader.sourceComponent = _cursor_shape_patch
-            }
-        }
+        acceptedButtons: Qt.NoButton
+        cursorShape: Qt.IBeamCursor
     }
 
     LKText {
@@ -61,6 +49,7 @@ LKRectangle {
             verticalCenter: parent.verticalCenter
         }
         color: pycolor.text_hint
+        // TODO: font binds to _input.font
     }
 
     TextInput {

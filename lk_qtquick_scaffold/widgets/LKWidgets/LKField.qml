@@ -2,24 +2,25 @@ import QtQuick 2.15
 
 Item {
     id: root
-    width: widthA + widthB + __spacing
+    width: pysize.field_width
     height: pysize.field_height
     clip: true
 
     property Component delegate: LKInput { }
     property alias     fieldItem: _loader.item
-    property int       fieldWidth: 0
+    property int       spacing: pysize.spacing_l
     property alias     text: _text.text
     property alias     textItem: _text
     property int       widthA: 0
     property int       widthB: 0
-    property int       __spacing: pysize.spacing_l
 
     LKText {
         id: _text
+//        visible: Boolean(text)
         anchors {
-            right: _loader.left
-            rightMargin: root.__spacing
+//            left: parent.left
+//            right: _loader.left
+//            rightMargin: root.spacing
             verticalCenter: parent.verticalCenter
         }
         width: root.widthA
@@ -36,18 +37,33 @@ Item {
         width: root.widthB
 //        height: root.height
         sourceComponent: root.delegate
-
         onLoaded: {
             this.item.width = Qt.binding(() => this.width)
         }
     }
 
     Component.onCompleted: {
-        if (widthA == 0) {
-            widthA = pylayout.calc_content_width(_text.text)
-        }
-        if (widthB == 0) {
-            widthB = pysize.field_width
+        if (this.widthA && this.widthB) {
+            root.width = this.widthA + this.widthB + root.spacing
+        } else if (this.widthA && !this.widthB) {
+            this.widthB = Qt.binding(() => {
+                return root.width - this.widthA - root.spacing
+            })
+        } else if (!this.widthA && this.widthB) {
+            this.widthA = Qt.binding(() => {
+                return root.width - this.widthB - root.spacing
+            })
+        } else {
+            this.widthA = Qt.binding(() => {
+                return pylayout.calc_content_width(_text.text)
+            })
+            this.widthB = Qt.binding(() => {
+                if (this.widthA == 0) {
+                    return root.width
+                } else {
+                    return root.width - this.widthA - root.spacing
+                }
+            })
         }
     }
 }

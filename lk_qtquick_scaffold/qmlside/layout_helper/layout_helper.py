@@ -425,6 +425,8 @@ class LayoutHelper(QObject):
             text: str | list[str],
             text_item: QObject = None,
     ) -> int:
+        if text == '':
+            return 0
         if isinstance(text, list):
             text = max(text, key=len)
         if '\n' in text:
