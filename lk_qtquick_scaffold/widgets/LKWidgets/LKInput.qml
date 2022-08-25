@@ -8,7 +8,6 @@ LKRectangle {
     border.color: _input.activeFocus ? colorBorderActive : colorBorderDefault
     color: _input.activeFocus ? colorBgActive : colorBgDefault
 
-    property alias  activeFocus_: _input.activeFocus
     property string colorBgDefault: pycolor.input_bg_default
     property string colorBgActive: pycolor.input_bg_active
     property string colorBorderDefault: pycolor.input_border_default
@@ -16,10 +15,11 @@ LKRectangle {
     property string colorBottomHighlight: pycolor.input_indicator_active
     property alias  displayText: _input.displayText
     property bool   editable: true
-    property alias  focus_: _input.focus
     property alias  horizontalAlignment: _input.horizontalAlignment
+    property alias  inputItem: _input
     property alias  inputMask: _input.inputMask
     property int    padding: pysize.padding_l
+    property bool   pressEscToLostFocus: false  // TODO
     property bool   showIndicator: false
 //    property bool   showIndicator: Boolean(colorBottomHighlight)
     property alias  text: _input.text
@@ -28,7 +28,12 @@ LKRectangle {
     property bool   useIBeamCursor: false
     property alias  validator: _input.validator
 
+    signal submit(string text)
     signal textEdited(string text)
+
+    function activate() {
+        _input.forceActiveFocus()
+    }
 
     MouseArea {
         id: _cursor_shape_patch
@@ -61,9 +66,14 @@ LKRectangle {
         font.family: pyfont.font_default
         font.pixelSize: pyfont.size_m
         selectByMouse: true
+
         onTextEdited: {
 //            console.log(this.text, this.displayText)
             root.textEdited(this.text)
+        }
+
+        onEditingFinished: {
+            root.submit(this.text)
         }
     }
 

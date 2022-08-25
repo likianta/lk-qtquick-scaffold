@@ -13,6 +13,7 @@ Item {
     //  or pycolor.button_bg_hovered
     property string colorBgPressed: pycolor.button_bg_pressed
     property int    currentIndex: 0
+    property alias  displayText: _display.text
     property int    dropdownHeight: 0
     property string dropdownBgColor: colorBgDefault
     property string dropdownBorderColor: _display.border.color
@@ -48,9 +49,10 @@ Item {
             }
         }
 
-        property alias hovered: _area.containsMouse
-        property alias pressed: _area.containsPress
-        property alias textDelegate: _text
+        property alias  hovered: _area.containsMouse
+        property alias  pressed: _area.containsPress
+        property string text
+        property alias  textItem: _text
 
         signal clicked()
 
@@ -63,6 +65,7 @@ Item {
             }
             color: root.expandable ?
                 pycolor.text_default : pycolor.text_disabled
+            text: parent.text
         }
 
         MouseArea {
@@ -98,7 +101,7 @@ Item {
     MyItem {
         id: _display
         border.width: 1
-        textDelegate.text: root.model[root.currentIndex]
+        text: root.model[root.currentIndex]
 
         onClicked: {
             if (root.expandable) {
@@ -161,11 +164,11 @@ Item {
             spacing: pysize.spacing_s
 
             delegate: MyItem {
-                textDelegate.text: modelData
+                text: modelData
                 property int index: model.index
                 onClicked: {
                     root.currentIndex = this.index
-                    root.selected(this.index, this.textDelegate.text)
+                    root.selected(this.index, this.text)
                     _dropdown.close()
                 }
             }
@@ -196,16 +199,16 @@ Item {
             `, {'model': root.model})
 //            console.log(longestContent)
 
-            _display.textDelegate.text = longestContent
+            _display.text = longestContent
             this.width = (
-                _display.textDelegate.contentWidth +
+                _display.textItem.contentWidth +
                 root.indicatorSize +
                 root.__padding * 3
             ) * 1.5
 
             // restore text binding
-            _display.textDelegate.text = root.model[root.currentIndex]
-            _display.textDelegate.text = Qt.binding(() => {
+            _display.text = root.model[root.currentIndex]
+            _display.text = Qt.binding(() => {
                 return root.model[root.currentIndex]
             })
         }

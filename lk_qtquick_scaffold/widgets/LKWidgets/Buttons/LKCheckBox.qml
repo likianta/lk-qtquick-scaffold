@@ -22,7 +22,6 @@ LKRectangle {
     property string text
     property int    __padding: pysize.padding_m
 
-    signal clicked()
     signal toggled(bool checked)
 
     LKRectangle {
@@ -65,13 +64,12 @@ LKRectangle {
         onClicked: {
             if (root.checkable) {
                 root.checked = !root.checked
-                root.clicked()
+                root.toggled(root.checked)
             }
         }
     }
 
     Component.onCompleted: {
-        this.checkedChanged.connect(() => this.toggled(this.checked))
         if (this.width == 0) {
             this.width = this.childrenRect.width * 1.5
         }
