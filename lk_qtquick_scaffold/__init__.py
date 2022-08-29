@@ -39,6 +39,7 @@ from .pyside import pyside
 from .pyside import register
 from .qmlside import Model
 from .qmlside import eval_js
+from .qmlside import pyassets
 from .qmlside import js_eval
 from .qt_core import PObject
 from .qt_core import QObject
