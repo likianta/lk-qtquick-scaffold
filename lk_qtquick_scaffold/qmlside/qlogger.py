@@ -101,9 +101,9 @@ def _log(mode: QtMsgType, ctx: QMessageLogContext, msg: str) -> None:
         msg = '\033[31m' + msg + '!' + '\033[0m'
         #   change font color to red, and add an exclamation mark to it.
     
-    from lk_logger import default_print
-    default_print('{}:{}'.format(filename, lineno),
-                  ctx.function, msg, sep='\t>>\t')
+    from lk_logger import bprint
+    bprint('{}:{}'.format(filename, lineno),
+           ctx.function, msg, sep='\t>>\t')
 
 
 def _reformat_path(path: str) -> str:

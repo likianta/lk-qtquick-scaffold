@@ -1,6 +1,6 @@
-argsense
-lambda-ex >= 1.0.0b2
-lk-logger >= 5.2.0
-lk-utils
+argsense >= 0.4.2
+lambda-ex >= 1.1.0
+lk-logger >= 5.2.4
+lk-utils >= 2.3.2
 pyyaml
 qtpy
