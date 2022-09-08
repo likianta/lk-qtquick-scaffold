@@ -30,6 +30,7 @@ Item {
             anchors.fill: parent
             sourceComponent: root.progFgDelegate
             onLoaded: {
+                this.item.radius = Qt.binding(() => _prog_bg.radius)
                 this.item.color = Qt.binding(() => root.progColorFg)
                 this.item.value = Qt.binding(() => root.__progValue)
                 root.loaded(this.item)
