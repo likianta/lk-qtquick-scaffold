@@ -10,9 +10,19 @@ Rectangle {
 //    border.width: pressed ? 2 : 1
     border.color: hovered ? pycolor.border_active : pycolor.border_default
 //    color: pycolor.white
-    color:
-        pressed ? pycolor.button_bg_pressed :
-        hovered ? pycolor.button_bg_hovered : pycolor.button_bg_default
+//    color: {
+//        if (enabled) {
+//            if (pressed) {
+//                return pycolor.button_bg_pressed
+//            } else if (hovered) {
+//                return pycolor.button_bg_hovered
+//            } else {
+//                return pycolor.button_bg_default
+//            }
+//        } else {
+//            return pycolor.button_bg_disabled
+//        }
+//    }
 
     property alias  hovered: _area.containsMouse
     property alias  pressed: _area.pressed
@@ -44,6 +54,7 @@ Rectangle {
     LKText {
         id: _text
         anchors.centerIn: parent
+        color: root.enabled ? pycolor.text_default : pycolor.text_disabled
         text: root.text
     }
 
@@ -53,5 +64,19 @@ Rectangle {
                 return _text.contentWidth * 1.5
             })
         }
+
+        this.color = Qt.binding(() => {
+            if (this.enabled) {
+                if (this.pressed) {
+                    return pycolor.button_bg_pressed
+                } else if (this.hovered) {
+                    return pycolor.button_bg_hovered
+                } else {
+                    return pycolor.button_bg_default
+                }
+            } else {
+                return pycolor.button_bg_disabled
+            }
+        })
     }
 }
