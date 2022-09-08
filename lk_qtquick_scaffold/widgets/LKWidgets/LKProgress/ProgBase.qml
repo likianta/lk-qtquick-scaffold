@@ -10,6 +10,7 @@ Item {
     property alias     progBgItem: _prog_bg
     property string    progColorBg: pycolor.progress_bg
     property string    progColorFg: pycolor.progress_fg
+//    property int       progCornerRadius
     property alias     progFgItem: _prog_fg_loader.item
     property alias     progItem: _prog_bg
     property real      progValue: 0  // usually 0.0 ~ 1.0, allow overflows.
