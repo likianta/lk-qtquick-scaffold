@@ -7,6 +7,7 @@ Item {
     height: pysize.progress_height
 
     property string color: pycolor.progress_fg
+    property int    radius: pysize.radius_s
     property int    step: 0
     property int    totalSteps: 0  // FIXME: must >= 2?
     property real   __stepSize: width / (__totalSteps - 1)
@@ -18,7 +19,7 @@ Item {
         id: _prog
         width: root.__stepSize * root.step
         height: parent.height
-        radius: pysize.radius_s
+        radius: root.radius
         color: root.color
     }
 
