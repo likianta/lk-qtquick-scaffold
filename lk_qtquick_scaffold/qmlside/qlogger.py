@@ -87,7 +87,7 @@ def _log(mode: QtMsgType, ctx: QMessageLogContext, msg: str) -> None:
     lineno = 0 if ctx.line == -1 else ctx.line
     
     # function
-    function = ctx.function if ctx.function else '<null>'
+    function = ctx.function
     
     # optimize msg
     if mode in (QtWarningMsg, QtCriticalMsg):
@@ -102,8 +102,12 @@ def _log(mode: QtMsgType, ctx: QMessageLogContext, msg: str) -> None:
         #   change font color to red, and add an exclamation mark to it.
     
     from lk_logger import bprint
-    bprint('{}:{}'.format(filename, lineno),
-           ctx.function, msg, sep='\t>>\t')
+    if function:
+        bprint('{}:{}'.format(filename, lineno),
+               ctx.function, msg, sep=' >> ')
+    else:
+        bprint('{}:{}'.format(filename, lineno),
+               msg, sep=' >> ')
 
 
 def _reformat_path(path: str) -> str:

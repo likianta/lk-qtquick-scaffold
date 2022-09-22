@@ -51,7 +51,7 @@ class JsEvaluator:
         #   .QQuickItem' object has no attribute 'eval_js'". i don't know why
         #   does it happen, unless we instantly call at least once `self.core
         #   .eval_js` here, that problem will be gone.
-        print(':v2', self.core.eval_js('"JsEvaluator.core is ready"', []))
+        print(':v', self.core.eval_js('"JsEvaluator.core is ready"', []))
     
     _placeholder = compile(r'\$\w+')
     
