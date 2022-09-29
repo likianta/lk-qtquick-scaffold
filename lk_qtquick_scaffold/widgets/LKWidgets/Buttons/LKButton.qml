@@ -9,21 +9,11 @@ Rectangle {
     border.width: pysize.border_width_m
 //    border.width: pressed ? 2 : 1
     border.color: hovered ? pycolor.border_active : pycolor.border_default
-//    color: pycolor.white
-//    color: {
-//        if (enabled) {
-//            if (pressed) {
-//                return pycolor.button_bg_pressed
-//            } else if (hovered) {
-//                return pycolor.button_bg_hovered
-//            } else {
-//                return pycolor.button_bg_default
-//            }
-//        } else {
-//            return pycolor.button_bg_disabled
-//        }
-//    }
 
+    property string colorDefault: pycolor.button_bg_default
+    property string colorDisabled: pycolor.button_bg_disabled
+    property string colorHovered: pycolor.button_bg_hovered
+    property string colorPressed: pycolor.button_bg_pressed
     property alias  hovered: _area.containsMouse
     property alias  pressed: _area.pressed
     property string text
@@ -68,14 +58,14 @@ Rectangle {
         this.color = Qt.binding(() => {
             if (this.enabled) {
                 if (this.pressed) {
-                    return pycolor.button_bg_pressed
+                    return root.colorPressed
                 } else if (this.hovered) {
-                    return pycolor.button_bg_hovered
+                    return root.colorHovered
                 } else {
-                    return pycolor.button_bg_default
+                    return root.colorDefault
                 }
             } else {
-                return pycolor.button_bg_disabled
+                return root.colorDisabled
             }
         })
     }
