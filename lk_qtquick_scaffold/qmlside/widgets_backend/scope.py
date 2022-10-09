@@ -111,6 +111,14 @@ class Scope(QObject):
         )
         # print(':l', self._current_state)
     
+    @slot(str, str)
+    def deactivate_scope(self, scope: T.Scope, sid: T.SID) -> None:
+        if sid not in self._current_state['active_sids']:
+            return
+        self._current_state['active_sids'].remove(sid)
+        for kid in self._registered[scope][sid]:
+            self._current_state['kid_2_fid'].pop(kid, None)
+    
     # -------------------------------------------------------------------------
     
     @slot(int, int)

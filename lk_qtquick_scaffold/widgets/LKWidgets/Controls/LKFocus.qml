@@ -3,12 +3,20 @@ import QtQuick 2.15
 Item {
     id: root
 
-    property bool   active: true
+    property bool   active: false
     property string scope: 'global'
     property string __sid: generateRandomId()
     property var    __registeredFuncs: Object()
 
     signal triggered(string fid)
+
+    onActiveChanged: {
+        if (root.active) {
+            lkscope.activate_scope(root.scope, root.__sid)
+        } else {
+            lkscope.deactivate_scope(root.scope, root.__sid)
+        }
+    }
 
     function generateRandomId() {
         return pyside.eval(`
@@ -31,12 +39,5 @@ Item {
         root.triggered.connect((fid) => {
             root.__registeredFuncs[fid]()
         })
-//        lkscope.triggered.connect(root.triggered)
-        root.activeChanged.connect(() => {
-            if (root.active) {
-                lkscope.activate_scope(root.scope, root.__sid)
-            }
-        })
-        root.activeChanged()
     }
 }
