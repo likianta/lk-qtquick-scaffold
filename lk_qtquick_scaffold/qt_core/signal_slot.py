@@ -88,7 +88,7 @@ def _reformat_argtypes(argtypes: tuple) -> tuple:
         qjsvalue:
             dict      : QJSValue
             list      : QJSValue
-            set       : QJSValue  # never happened
+            set       : QJSValue  # never used
             tuple     : QJSValue
             ...       : QJSValue
             'any'     : QJSValue

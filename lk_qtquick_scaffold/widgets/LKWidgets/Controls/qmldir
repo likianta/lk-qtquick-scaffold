@@ -1,0 +1,4 @@
+module LKWidgets.Controls
+
+LKFocus         1.0     LKFocus.qml
+LKFocusField    1.0     LKFocusField.qml

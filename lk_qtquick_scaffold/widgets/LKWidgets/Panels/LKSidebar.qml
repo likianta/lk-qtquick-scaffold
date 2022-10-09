@@ -10,6 +10,7 @@ LKRectangle {
     color: pycolor.sidebar_bg
 
     property alias currentIndex: _listview.currentIndex
+    property alias currentItem: _listview.currentItem
     property alias listview: _listview
     property var   model
     //  union[list[str], list[dict]]
