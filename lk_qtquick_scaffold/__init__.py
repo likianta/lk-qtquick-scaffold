@@ -48,4 +48,4 @@ from .qt_core import signal
 from .qt_core import slot
 from .style import pystyle
 
-__version__ = '2.0.0'
+__version__ = '2.1.0'

@@ -157,7 +157,7 @@ class Application(QApplication):
         
         self.register_pyobj(wb.ListView(), 'lklistview')
         self.register_pyobj(wb.Progress(), 'lkprogress')
-        self.register_pyobj(wb.Scope(), 'lkscope')
+        self.register_pyobj(wb.ScopeEngine(), 'lkscope')
         self.register_pyobj(wb.Slider(), 'lkslider')
         self.register_pyobj(wb.util, 'lkutil')
         

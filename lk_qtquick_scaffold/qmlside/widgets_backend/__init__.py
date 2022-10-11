@@ -1,6 +1,6 @@
 from .listview import ListView
 from .progress import Progress
-from .scope import Scope
+from .scope import ScopeEngine
 from .slider import Slider
 from .util import util
 

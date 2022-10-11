@@ -35,7 +35,7 @@ Item {
     }
 
     Component.onCompleted: {
-        lkscope.register_scope(root.scope, root.field)
+//        lkscope.register_scope(root.scope, root.field)
         root.triggered.connect((fid) => {
             root.__registeredFuncs[fid]()
         })
