@@ -4,6 +4,7 @@ from qtpy.QtCore import QtMsgType
 from qtpy.QtCore import QtWarningMsg
 from qtpy.QtCore import qInstallMessageHandler
 
+SHOW_FUNCNAME = True
 _IGNORE_UNPLEASENT_WARNINGS = False
 
 
@@ -102,7 +103,7 @@ def _log(mode: QtMsgType, ctx: QMessageLogContext, msg: str) -> None:
         #   change font color to red, and add an exclamation mark to it.
     
     from lk_logger import bprint
-    if function:
+    if SHOW_FUNCNAME and function:
         bprint('{}:{}'.format(filename, lineno),
                ctx.function, msg, sep=' >> ')
     else:
