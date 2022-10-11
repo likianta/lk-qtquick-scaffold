@@ -10,14 +10,6 @@ Item {
 
     signal triggered(string fid)
 
-    onActiveChanged: {
-        if (root.active) {
-            lkscope.activate_scope(root.scope, root.__sid)
-        } else {
-            lkscope.deactivate_scope(root.scope, root.__sid)
-        }
-    }
-
     function generateRandomId() {
         return pyside.eval(`
             from uuid import uuid1
@@ -35,7 +27,15 @@ Item {
     }
 
     Component.onCompleted: {
-//        lkscope.register_scope(root.scope, root.field)
+//        console.log(root.scope, root.__sid)
+        lkscope.register_sid(root.scope, root.__sid)
+        root.activeChanged.connect(() => {
+            if (root.active) {
+                lkscope.activate_scope(root.scope, root.__sid)
+            } else {
+                lkscope.deactivate_scope(root.scope, root.__sid)
+            }
+        })
         root.triggered.connect((fid) => {
             root.__registeredFuncs[fid]()
         })

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "lk-qtquick-scaffold"
-version = "2.1.0a0"
+version = "2.1.0a1"
 homepage = "https://github.com/likianta/lk-qtquick-scaffold"
 description = "A flexible toolset to improve QML coding experience for PyQt/PySide development."
 readme = "README.md"
