@@ -39,5 +39,6 @@ Item {
         root.triggered.connect((fid) => {
             root.__registeredFuncs[fid]()
         })
+        root.activeChanged()
     }
 }
