@@ -1,49 +1,43 @@
 import QtQuick
-// import QtGraphicalEffects5Compat
-import LightClean
-import LightClean.LCButtons
+import LKWidgets
 
-LCWindow {
+LKWindow {
     id: root
     objectName: 'view#root'
+    width: 600
+    height: 800
     color: '#eeeeee'  // f2f2f2 | eeeeee
-    visible: true
-    width: 600; height: 800
 
-    property string p_imgFile: ''
+    property string imgFile: ''
 
-    LCColumn {
+    LKColumn {
         id: _container
         anchors {
             fill: parent
             margins: 20
         }
 
-        LCRow {
+        LKRow {
             width: parent.width
             height: 160
+            alignment: 'vfill'
+            autoSize: true
 
-            p_fill_height: true
-
-            LCRectangle {
+            LKRectangle {
                 id: _profile
                 width: 0.5
-                p_color: 'transparent'
+                color: 'transparent'
 
-                LCColumn {
+                LKColumn {
                     anchors {
                         fill: parent
                     }
-                    LCText {
-                        p_color: '#065FFA'
-                        p_text: 'https://uimovement.com'
-                    }
-                    LCText {
-                        p_alignment: 'ltop'
-                        p_bold: true
-                        p_color: '#333333'
-                        p_size: 32
-                        p_text: 'Where the master\npiece derived...'
+                    LKText {
+                        horizontalAlignment: Text.AlignLeft
+                        color: '#333333'
+                        font.bold: true
+                        font.pixelSize: 24
+                        text: 'Mara bleak, mara sercious...'
                     }
                 }
             }
@@ -52,45 +46,30 @@ LCWindow {
                 id: _miniCard
                 width: 0.5
                 // sourceComponent: _imgCard
-
                 Component.onCompleted: {
-                    // 注意: this.onCompleted 与 this.xChanged 的时机是不同的: 当
-                    // this.onCompleted 发生时, this.x 还不正常; 当 this.xChanged
-                    // 发生时 (这是一个瞬发信号), this.x 才是正确的.
-                    // 我们需要把 this.x 正确时的那一刻的 x 和 y 位置, 初始化给
-                    // _fullCard, 二者使用 connect 实现, 如下.
                     this.xChanged.connect(_fullCard.initLocation)
                 }
             }
-        }
-
-        Rectangle {
-            id: _ruler
-            // anchors.top: _container.bottom
-            // anchors.topMargin: 10
-            width: 260
-            height: 5
-            color: '#EEDE25'
         }
     }
 
     Component {
         id: _imgCard
 
-        LCRectangle {
+        LKRectangle {
             id: _imgFrame
             // width: 0.5
             // clip: true
-            p_color: '#234471'
+            color: '#234471'
 
             layer.enabled: true  // true|false
-            // layer.effect: OpacityMask {
-            //     maskSource: Rectangle {
-            //         width: _imgFrame.width
-            //         height: _imgFrame.height
-            //         radius: _imgFrame.radius
-            //     }
-            // }
+//            layer.effect: OpacityMask {
+//                maskSource: Rectangle {
+//                    width: _imgFrame.width
+//                    height: _imgFrame.height
+//                    radius: _imgFrame.radius
+//                }
+//            }
 
             Image {
                 id: _img
@@ -99,25 +78,25 @@ LCWindow {
                     horizontalCenter: parent.horizontalCenter
                 }
                 // width: parent.width
-                height: parent.height + p_floatingOffset
+                height: parent.height + floatingOffset
                 fillMode: Image.Pad
-                source: p_imgFile
+                source: root.imgFile
                 visible: true
 
-                property bool p_hovered: _area.containsMouse
-                property bool p_expanded: false
-                property int  p_floatingOffset: 30
+                property bool expanded: false
+                property int  floatingOffset: 30
+                property bool hovered: _area.containsMouse
 
                 function switchFloatable() {
-                    _img.p_expanded = !_img.p_expanded
+                    _img.expanded = !_img.expanded
                 }
 
                 states: [
                     State {
-                        when: _img.p_hovered & !_img.p_expanded
+                        when: _img.hovered & !_img.expanded
                         PropertyChanges {
                             target: _img
-                            y: _imgFrame.y - p_floatingOffset
+                            y: _imgFrame.y - floatingOffset
                         }
                     }
                 ]
@@ -156,7 +135,7 @@ LCWindow {
         height: _miniCard.height
         sourceComponent: _imgCard
 
-        property bool p_show: false
+        property bool shown: false
         property int  __initX: 0
         property int  __initY: 0
 
@@ -166,16 +145,16 @@ LCWindow {
             const coord = _miniCard.mapToItem(null, 0, 0)
             _fullCard.__initX = coord.x
             _fullCard.__initY = coord.y
-            console.log(coord.x, coord.y)
+//            console.log(coord.x, coord.y)
         }
 
         function expand() {
-            _fullCard.p_show = !_fullCard.p_show
+            _fullCard.shown = !_fullCard.shown
         }
 
         states: [
             State {
-                when: _fullCard.p_show
+                when: _fullCard.shown
                 PropertyChanges {
                     target: _fullCard
                     width: root.width + 10
@@ -206,6 +185,7 @@ LCWindow {
     }
 
     Component.onCompleted: {
-        this.p_imgFile = './test_img.jpg'
+        this.imgFile = './test_image.jpg'
+//        this.imgFile = './test_image_2.gif'
     }
 }
