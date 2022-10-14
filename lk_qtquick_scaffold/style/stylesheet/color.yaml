@@ -35,6 +35,7 @@ border_inactive: '$inactive'
 
 button_bg_active: 'white'
 button_bg_default: 'white'
+button_bg_disabled: '$inactive'
 button_bg_hovered: '$blue_9'
 button_bg_pressed: '$blue_7'
 

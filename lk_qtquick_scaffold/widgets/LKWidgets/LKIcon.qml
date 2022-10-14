@@ -16,8 +16,14 @@ Button {
     icon.source: root.source
 
     property string color
-    property alias  hovered: _area.containsMouse
-    property alias  icon: _btn.icon
+    property alias  hovered_: _area.containsMouse
     property int    size: pysize.icon_size
     property string source
+
+    MouseArea {
+        id: _area
+        anchors.fill: parent
+        hoverEnabled: true
+        onClicked: (mouse) => root.clicked(mouse)
+    }
 }
