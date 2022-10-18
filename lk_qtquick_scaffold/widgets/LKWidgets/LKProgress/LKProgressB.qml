@@ -78,8 +78,11 @@ ProgBase {
         this.modelChanged.connect(() => {
             if (this.model) {
                 this.__model = pyside.eval(`
-                    return {round(float(k), 5): v
-                            for k, v in model.items()}
+                    try:
+                        return {round(float(k), 5): v
+                                for k, v in model.items()}
+                    except:
+                        return {}
                 `, {'model': this.model})
             } else {
                 this.__model = {}
