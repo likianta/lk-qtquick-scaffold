@@ -20,6 +20,7 @@ LKRectangle {
     property int    indicatorSize: pysize.indicator_size
     property bool   showGhostBorder: false
     property string text
+    property alias  textItem: _text
     property int    __padding: pysize.padding_m
 
     signal toggled(bool checked)
@@ -48,6 +49,7 @@ LKRectangle {
     }
 
     LKText {
+        id: _text
         anchors {
             left: _indicator.right
             leftMargin: root.__padding
