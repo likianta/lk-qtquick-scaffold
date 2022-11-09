@@ -36,22 +36,15 @@ class JsEvaluator:
     core: T.JsEvaluatorCore
     
     def __init__(self):
-        from lk_utils.filesniff import relpath
+        from lk_utils import xpath
         from ..application import app
         component = QQmlComponent(
-            app.engine, relpath('js_evaluator_core.qml')
+            app.engine, xpath('js_evaluator_core.qml'),
+            parent=app.root
         )
         qobject = component.create()
         self.core = qobject
-        
-        # activate `self.core`.
-        # FIXME: the following line is very necessary, if we comment this line,
-        #   `.layout_helper.LKLayoutHelper.quick_anchors.<usage:eval_js(...)>`
-        #   will raise an error says "AttributeError: 'PySide6.QtQuick
-        #   .QQuickItem' object has no attribute 'eval_js'". i don't know why
-        #   does it happen, unless we instantly call at least once `self.core
-        #   .eval_js` here, that problem will be gone.
-        print(':v', self.core.eval_js('"JsEvaluator.core is ready"', []))
+        assert self.core
     
     _placeholder = compile(r'\$\w+')
     
