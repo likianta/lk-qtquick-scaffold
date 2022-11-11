@@ -85,7 +85,7 @@ class ScopeEngine(QObject):
                 self._current_state['kid_2_sid_fid'][kid] = (sid, fid)
         
         def dettach(scope, remove_old_sid: bool):
-            # check if there another sid in the same scope is active.
+            # check if is there another sid in the same scope is active.
             if remove_old_sid:
                 if old_sid := self._current_state['scope_2_sid'].get(scope):
                     self._current_state['active_sids'].remove(old_sid)
@@ -186,8 +186,22 @@ class ScopeEngine(QObject):
                 qobj = self._fid_2_qobj[fid]
                 qobj.triggered.emit(fid)
     
-    @staticmethod
-    def _compose_kid(key: int, modifier: int) -> T.KID:
+    from enum import Enum
+    if isinstance(Qt.ControlModifier, Enum):
+        # see a reference at `PySide6 (v6.4.0) > Qt3DRender.pyi > line 1014`
+        _pyside6_640_patch = True
+    else:
+        _pyside6_640_patch = False
+    
+    def _compose_kid(self, key: int, modifier: int) -> T.KID:
+        if self._pyside6_640_patch:
+            # https://www.qt.io/blog/qt-for-python-release-6.4-is-finally-here
+            #   open this link and search "Modifier" (seen in comment zone).
+            return (key, (
+                bool(modifier & Qt.ControlModifier.value),
+                bool(modifier & Qt.ShiftModifier.value),
+                bool(modifier & Qt.AltModifier.value),
+            ))
         return (key, (
             bool(modifier & Qt.ControlModifier),
             bool(modifier & Qt.ShiftModifier),
