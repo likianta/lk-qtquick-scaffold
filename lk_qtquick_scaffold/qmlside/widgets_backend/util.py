@@ -20,13 +20,17 @@ class Util(QObject):
     @slot(str, result=str)
     @slot(str, str, result=str)
     @slot(str, str, str, result=str)
+    @slot(str, str, str, bool, result=str)
     def open_file_dialog(
             self, action='open', title='Confirm file selection', opener='qt',
+            use_native_dialog=True
     ) -> str:
         """
         args:
             action: literal['open', 'save']
             opener: literal['auto', 'tk', 'qt']
+            use_native_dialog: set to False may resolve an issue that cannot
+                remember the last opened directory.
         """
         if (opener == 'auto' and _has_tkinter()) or opener == 'tk':
             from tkinter import Tk
@@ -40,11 +44,17 @@ class Util(QObject):
                 return asksaveasfilename(title=title)
         else:  # _opener == 'qt'
             from qtpy.QtWidgets import QFileDialog
-            dialog = QFileDialog(None)
+            kwargs = {
+                'parent' : None,
+                'caption': title,
+                'dir'    : '',
+            }
+            if not use_native_dialog:
+                kwargs['options'] = QFileDialog.DontUseNativeDialog
             if action == 'open':
-                return dialog.getOpenFileName(caption=title)[0]
+                return QFileDialog.getOpenFileName(**kwargs)[0]
             else:
-                return dialog.getSaveFileName(caption=title)[0]
+                return QFileDialog.getSaveFileName(**kwargs)[0]
 
 
 def _has_tkinter() -> bool:
