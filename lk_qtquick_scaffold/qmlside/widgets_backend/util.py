@@ -20,41 +20,57 @@ class Util(QObject):
     @slot(str, result=str)
     @slot(str, str, result=str)
     @slot(str, str, str, result=str)
-    @slot(str, str, str, bool, result=str)
-    def open_file_dialog(
-            self, action='open', title='Confirm file selection', opener='qt',
+    @slot(str, str, str, str, result=str)
+    @slot(str, str, str, str, bool, result=str)
+    def file_dialog(
+            self,
+            action='open',
+            type_='file',
+            title='Confirm file selection',
+            backend='qt',
             use_native_dialog=True
     ) -> str:
         """
         args:
             action: literal['open', 'save']
-            opener: literal['auto', 'tk', 'qt']
-            use_native_dialog: set to False may resolve an issue that cannot
-                remember the last opened directory.
+            type_: literal['file', 'folder']
+            backend: literal['qt', 'tk']
+                warning: use 'tk' cannot remember last opened folder.
+            use_native_dialog: bool. deprecated!
+                set to False may resolve some issue that cannot remember the
+                last opened directory (it's a rare case).
         """
-        if (opener == 'auto' and _has_tkinter()) or opener == 'tk':
+        if backend == 'qt':
+            from qtpy.QtWidgets import QFileDialog
+            kwargs = {'parent' : None, 'caption': title, 'dir': ''}
+            if not use_native_dialog:
+                # noinspection PyUnresolvedReferences
+                kwargs['options'] = QFileDialog.DontUseNativeDialog
+            if action == 'open':
+                if type_ == 'file':
+                    return QFileDialog.getOpenFileName(**kwargs)[0]
+                else:
+                    return QFileDialog.getExistingDirectory(**kwargs)
+            else:
+                if type_ == 'file':
+                    return QFileDialog.getSaveFileName(**kwargs)[0]
+                else:
+                    raise ValueError('Cannot save folder.')
+        else:
             from tkinter import Tk
+            from tkinter import filedialog
             root = Tk()
             root.withdraw()
             if action == 'open':
-                from tkinter.filedialog import askopenfilename
-                return askopenfilename(title=title)
+                if type_ == 'file':
+                    return filedialog.askopenfilename(title=title)
+                else:
+                    return filedialog.askdirectory(title=title)
             else:
-                from tkinter.filedialog import asksaveasfilename
-                return asksaveasfilename(title=title)
-        else:  # _opener == 'qt'
-            from qtpy.QtWidgets import QFileDialog
-            kwargs = {
-                'parent' : None,
-                'caption': title,
-                'dir'    : '',
-            }
-            if not use_native_dialog:
-                kwargs['options'] = QFileDialog.DontUseNativeDialog
-            if action == 'open':
-                return QFileDialog.getOpenFileName(**kwargs)[0]
-            else:
-                return QFileDialog.getSaveFileName(**kwargs)[0]
+                if type_ == 'file':
+                    return filedialog.asksaveasfilename(title=title)
+                else:
+                    raise ValueError('Cannot save folder.')
 
 
 def _has_tkinter() -> bool:
